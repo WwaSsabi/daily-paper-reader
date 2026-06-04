@@ -1,141 +1,12 @@
 {
-  "generated_at": "2026-06-04T02:49:49.522173+00:00",
-  "updated_date": "20260526-20260604",
+  "generated_at": "2026-06-04T21:19:09.805531+00:00",
+  "updated_date": "20260604",
   "carryover_days": 9,
   "tag_states": {
     "ml-llm": {
-      "updated_date": "20260526-20260604",
+      "updated_date": "20260604",
       "carryover_days": 9,
       "items": [
-        {
-          "id": "2605.28058v1",
-          "source": "arxiv",
-          "title": "Prompting Is All You Need: Multi-view Prompting Large Language Models for Aspect-Based Sentiment Analysis",
-          "abstract": "Recent work explored the capabilities of Large Language Models (LLMs) in Aspect-Based Sentiment Analysis (ABSA) through few-shot prompting, requiring substantially fewer annotated examples while achieving notable improvements over zero-shot baselines. However, a performance gap remained compared to models fine-tuned on hundreds of examples, and the computational costs of LLM inference present practical barriers to deployment. We introduce LLM-based Multi-View Prompting (LLM-MvP), which adapts the multi-view principle of considering multiple element orderings to LLM prompting. By combining schema-constrained decoding with a context-free grammar and prefix batching, LLM-MvP achieves performance competitive or superior to fine-tuned approaches while substantially reducing computational overhead. Extensive experiments across five benchmark datasets demonstrate that LLM-MvP closes the gap between few-shot prompting and fine-tuned models, offering a practical and efficient solution for ABSA.",
-          "authors": [
-            "Nils Constantin Hellwig",
-            "Niklas Donhauser",
-            "Jakob Fehle",
-            "Udo Kruschwitz",
-            "Christian Wolff"
-          ],
-          "primary_category": "cs.CL",
-          "categories": [
-            "cs.CL"
-          ],
-          "published": "2026-05-27T07:04:39+00:00",
-          "link": "https://arxiv.org/pdf/2605.28058v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "LLM applied to ABSA via multi-view prompting",
-          "llm_evidence_cn": "用多视图提示对大语言模型进行情感分析",
-          "llm_evidence": "用多视图提示对大语言模型进行情感分析",
-          "canonical_evidence": "用多视图提示对大语言模型进行情感分析",
-          "llm_tldr_en": "LLM-MvP adapts multi-view principle to LLM prompting for aspect-based sentiment analysis, achieving competitive performance with fewer annotated examples.",
-          "llm_tldr_cn": "现有大语言模型在方面级情感分析中通过少样本提示取得进展，但仍有性能差距和推理成本问题。本文提出基于多视图提示的LLM-MvP方法，结合模式约束解码和上下文无关语法，在多个数据集上达到与全监督微调相当的性能，同时极大减少了标注需求。该方法展示了LLM在细粒度情感任务中的潜力。",
-          "llm_tldr": "现有大语言模型在方面级情感分析中通过少样本提示取得进展，但仍有性能差距和推理成本问题。本文提出基于多视图提示的LLM-MvP方法，结合模式约束解码和上下文无关语法，在多个数据集上达到与全监督微调相当的性能，同时极大减少了标注需求。该方法展示了LLM在细粒度情感任务中的潜力。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "large language model",
-          "matched_requirement_id": "req-2",
-          "selection_source": "carryover_cache",
-          "paper_id": "2605.28058v1",
-          "carry_days": 1
-        },
-        {
-          "id": "2606.03825v1",
-          "source": "arxiv",
-          "title": "Dynamic Short Convolutions Improve Transformers",
-          "abstract": "Transformers have become the dominant architecture for large language models, largely due to the scalability and flexibility of attention, feed-forward layers, residual connections, and normalization. This paper introduces dynamic short convolutions as an additional neural network primitive for improving Transformers. Unlike static short convolutions, dynamic convolutions use input-dependent filters, which preserves the locality bias of convolution while increasing expressivity. Motivating experiments show that applying dynamic short convolutions to key, query, and value representations improves performance on challenging associative recall tasks compared with static convolutional variants. Across language-modeling experiments ranging from 150M to 2B parameters, dynamic convolutions consistently outperform standard Transformers and Transformers augmented with static short convolutions. Fitting scaling laws indicates a 1.33$\\times$ compute advantage over compute-matched Transformers when dynamic convolutions are applied to the key, query, and value vectors, and a 1.60$\\times$ advantage when adding dynamic convolutions after every linear layer. Dynamic convolutions also offer improvements on linear RNNs (Mamba-2/Gated DeltaNet) and mixture-of-experts architectures. We make these gains practical with custom Triton kernels that enable efficient training with a manageable end-to-end slowdown. These results suggest that dynamic short convolutions are a scalable, hardware-efficient, and expressive primitive for advancing Transformer-based language models.",
-          "authors": [
-            "Oliver Sieberling",
-            "Bharat Runwal",
-            "Rameswar Panda",
-            "Yoon Kim"
-          ],
-          "primary_category": "cs.LG",
-          "categories": [
-            "cs.LG",
-            "cs.CL"
-          ],
-          "published": "2026-06-02T16:07:55+00:00",
-          "link": "https://arxiv.org/pdf/2606.03825v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "Introduces dynamic short convolutions to improve Transformer architecture",
-          "llm_evidence_cn": "引入动态短卷积改进Transformer架构",
-          "llm_evidence": "引入动态短卷积改进Transformer架构",
-          "canonical_evidence": "引入动态短卷积改进Transformer架构",
-          "llm_tldr_en": "Dynamic short convolutions using input-dependent filters improve Transformer performance on associative recall and language modeling tasks.",
-          "llm_tldr_cn": "Transformer已成为大语言模型的主流架构，但缺乏局部性偏置。本文提出动态短卷积作为Transformer的新原语，利用输入相关滤波器增强表达能力。在联想回忆任务上，动态卷积优于静态变体；在150M至2B参数的语言模型实验中，动态卷积显著提升了困惑度。该工作简单有效地增强了Transformer的局部建模能力。",
-          "llm_tldr": "Transformer已成为大语言模型的主流架构，但缺乏局部性偏置。本文提出动态短卷积作为Transformer的新原语，利用输入相关滤波器增强表达能力。在联想回忆任务上，动态卷积优于静态变体；在150M至2B参数的语言模型实验中，动态卷积显著提升了困惑度。该工作简单有效地增强了Transformer的局部建模能力。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "transformer model",
-          "matched_requirement_id": "req-4",
-          "selection_source": "carryover_cache",
-          "paper_id": "2606.03825v1",
-          "carry_days": 1
-        },
-        {
-          "id": "2605.27678v1",
-          "source": "arxiv",
-          "title": "Heterogeneous Parallelism for Multimodal Large Language Model Training",
-          "abstract": "Foundation model training is becoming multimodal, from post-training pipelines to large-scale pretraining. As modality coverage broadens, context windows grow, and encoder LLM scales diverge, a single LLM-centric TP/CP/PP/DP/EP layout increasingly limits throughput. This coupling forces encoders to inherit LLM-driven sharding and placement choices that can add communication, limit encoder parallelism, or constrain the LLM schedule; the mismatch is most pronounced at long contexts, where LLM context parallelism is needed for the fused multimodal sequence but encoder inputs remain bounded. We present heterogeneous parallelism for multimodal large language model training, an abstraction that lets modules in one end-to-end graph use independent layouts and rank placements, supporting colocated execution on shared GPUs and non-colocated execution on disjoint rank sets. The key challenge is preserving boundary tensor semantics across independent layouts: forward activations must be materialized for the destination layout, while backward gradients must be routed back to the source layout. We address this with boundary communicators that implement forward and backward layout transforms, plus scheduling extensions for both placement modes. We evaluate optimized homogeneous, colocated heterogeneous, and non-colocated heterogeneous configurations across multimodal workloads and GPU scales to characterize when added layout and placement freedom exposes a better operating point. Across this sweep, colocated heterogeneity improves TFLOPS/GPU by up to 49.3%, while non-colocated heterogeneity improves aggregate token throughput by up to 13.0% and TFLOPS/GPU by up to 9.6%. We validate loss convergence parity against homogeneous baselines and release the system as an open-source Megatron-LM extension.",
-          "authors": [
-            "Yashaswi Karnati",
-            "Kamran Jafari",
-            "Akash Mehra",
-            "Li Ding",
-            "Pranav Prashant Thombre",
-            "Ali Roshan Ghias",
-            "Shifang Xu",
-            "Parth Mannan",
-            "Yu Yao",
-            "Hao Wu",
-            "Eric Harper",
-            "Ashwath Aithal",
-            "Nima Tajbakhsh"
-          ],
-          "primary_category": "cs.LG",
-          "categories": [
-            "cs.LG",
-            "cs.DC"
-          ],
-          "published": "2026-05-26T20:53:06+00:00",
-          "link": "https://arxiv.org/pdf/2605.27678v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "Heterogeneous parallelism for multimodal LLM training",
-          "llm_evidence_cn": "多模态大语言模型训练的异构并行方法",
-          "llm_evidence": "多模态大语言模型训练的异构并行方法",
-          "canonical_evidence": "多模态大语言模型训练的异构并行方法",
-          "llm_tldr_en": "Proposes heterogeneous parallelism allowing different modules in multimodal LLM training to use independent parallel layouts, improving throughput and scalability.",
-          "llm_tldr_cn": "多模态大模型训练中，单一LLM中心的并行策略限制了编码器吞吐和长上下文扩展。本文提出异构并行抽象，允许图内各模块独立选择并行布局和硬件拓扑。该方法解除了编码器与LLM的耦合，显著提升长上下文训练效率，尤其在多模态和长序列场景下。实验表明吞吐量大幅提升，为大规模多模态训练提供新范式。",
-          "llm_tldr": "多模态大模型训练中，单一LLM中心的并行策略限制了编码器吞吐和长上下文扩展。本文提出异构并行抽象，允许图内各模块独立选择并行布局和硬件拓扑。该方法解除了编码器与LLM的耦合，显著提升长上下文训练效率，尤其在多模态和长序列场景下。实验表明吞吐量大幅提升，为大规模多模态训练提供新范式。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "how to train a large language model",
-          "matched_requirement_id": "req-8",
-          "selection_source": "carryover_cache",
-          "paper_id": "2605.27678v1",
-          "carry_days": 1
-        },
         {
           "id": "2605.31238v1",
           "source": "arxiv",
@@ -161,59 +32,21 @@
             "query:ml-llm"
           ],
           "llm_score": 8.0,
-          "llm_evidence_en": "proposes method to generate multi-hop training data for LLMs",
-          "llm_evidence_cn": "提出为LLM生成多跳训练数据的方法",
-          "llm_evidence": "提出为LLM生成多跳训练数据的方法",
-          "canonical_evidence": "提出为LLM生成多跳训练数据的方法",
-          "llm_tldr_en": "Scaling Multi-Hop Training Data via Graph-Constrained Path Selection generates multi-hop reasoning training data for LLMs from unannotated text by decoupling path discovery and verbalization, improving over single-teacher methods.",
-          "llm_tldr_cn": "当前为大型语言模型生成多跳推理训练数据的方法在结构化文档上表现不佳。本文提出通过图约束路径选择来解耦推理路径发现和问题生成，离线枚举基于关键词质心图的路径。实验表明该方法在专业文档上显著提升数据质量，有助于提升LLM的推理能力。",
-          "llm_tldr": "当前为大型语言模型生成多跳推理训练数据的方法在结构化文档上表现不佳。本文提出通过图约束路径选择来解耦推理路径发现和问题生成，离线枚举基于关键词质心图的路径。实验表明该方法在专业文档上显著提升数据质量，有助于提升LLM的推理能力。",
+          "llm_evidence_en": "multi-hop training data for LLMs",
+          "llm_evidence_cn": "为大型语言模型生成多跳训练数据",
+          "llm_evidence": "为大型语言模型生成多跳训练数据",
+          "canonical_evidence": "为大型语言模型生成多跳训练数据",
+          "llm_tldr_en": "Proposes a graph-constrained path selection method to decouple evidence path discovery and verbalization for scaling multi-hop training data for LLMs.",
+          "llm_tldr_cn": "针对现有方法在模板化密集引用文本中生成多跳训练数据质量下降的问题，提出将证据路径发现和口头化分离的方法：通过图约束的关键词质心离线枚举推理路径。该方法能够从非结构化文本中规模化构建多跳训练数据，从而支持大语言模型的组合推理能力。",
+          "llm_tldr": "针对现有方法在模板化密集引用文本中生成多跳训练数据质量下降的问题，提出将证据路径发现和口头化分离的方法：通过图约束的关键词质心离线枚举推理路径。该方法能够从非结构化文本中规模化构建多跳训练数据，从而支持大语言模型的组合推理能力。",
           "llm_tags": [
             "query:ml-llm"
           ],
           "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "how to train a large language model",
-          "matched_requirement_id": "req-8",
+          "matched_query_text": "large language model",
+          "matched_requirement_id": "req-2",
           "selection_source": "carryover_cache",
           "paper_id": "2605.31238v1",
-          "carry_days": 1
-        },
-        {
-          "id": "2606.02100v1",
-          "source": "arxiv",
-          "title": "PortBERT: Navigating the Depths of Portuguese Language Models",
-          "abstract": "Transformer models dominate modern NLP, but efficient, language-specific models remain scarce. In Portuguese, most focus on scale or accuracy, often neglecting training and deployment efficiency. In the present work, we introduce PortBERT, a family of RoBERTa-based language models for Portuguese, designed to balance performance and efficiency. Trained from scratch on over 450 GB of deduplicated and filtered mC4 and OSCAR23 from CulturaX using fairseq, PortBERT leverages byte-level BPE tokenization and stable pre-training routines across both GPU and TPU processors. We release two variants, PortBERT base and PortBERT large, and evaluate them on ExtraGLUE, a suite of translated GLUE and SuperGLUE tasks. Both models perform competitively, matching or surpassing existing monolingual and multilingual models. Beyond accuracy, we report training and inference times as well as fine-tuning throughput, providing practical insights into model efficiency. PortBERT thus complements prior work by addressing the underexplored dimension of compute-performance tradeoffs in Portuguese NLP. We release all models on Huggingface and provide fairseq checkpoints to support further research and applications.",
-          "authors": [
-            "Raphael Scheible-Schmitt",
-            "Henry He",
-            "Armando B. Mendes"
-          ],
-          "primary_category": "cs.CL",
-          "categories": [
-            "cs.CL"
-          ],
-          "published": "2026-06-01T11:32:02+00:00",
-          "link": "https://arxiv.org/pdf/2606.02100v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "introduces a transformer-based language model for Portuguese",
-          "llm_evidence_cn": "引入基于transformer的葡萄牙语语言模型",
-          "llm_evidence": "引入基于transformer的葡萄牙语语言模型",
-          "canonical_evidence": "引入基于transformer的葡萄牙语语言模型",
-          "llm_tldr_en": "PortBERT is a family of RoBERTa-based transformer language models for Portuguese, trained on 450GB of data, balancing performance and efficiency, evaluated on ExtraGLUE benchmarks.",
-          "llm_tldr_cn": "葡萄牙语缺乏兼顾效率与性能的Transformer语言模型。本文提出PortBERT，基于RoBERTa架构，在450GB过滤后的葡萄牙语数据上从头训练，采用字节级BPE分词。在ExtraGLUE基准上，PortBERT基座和大模型均达到或超越现有最佳模型，同时保持训练和部署效率。",
-          "llm_tldr": "葡萄牙语缺乏兼顾效率与性能的Transformer语言模型。本文提出PortBERT，基于RoBERTa架构，在450GB过滤后的葡萄牙语数据上从头训练，采用字节级BPE分词。在ExtraGLUE基准上，PortBERT基座和大模型均达到或超越现有最佳模型，同时保持训练和部署效率。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "transformer model",
-          "matched_requirement_id": "req-4",
-          "selection_source": "carryover_cache",
-          "paper_id": "2606.02100v1",
           "carry_days": 1
         },
         {
@@ -236,13 +69,13 @@
             "query:ml-llm"
           ],
           "llm_score": 8.0,
-          "llm_evidence_en": "proposes efficient test-time finetuning for LLMs",
-          "llm_evidence_cn": "提出LLM的高效测试时微调方法",
-          "llm_evidence": "提出LLM的高效测试时微调方法",
-          "canonical_evidence": "提出LLM的高效测试时微调方法",
-          "llm_tldr_en": "HullFT is a geometric approach for efficient test-time finetuning of LLMs, using convex reconstruction and gradient caching to speed up both selection and finetuning steps.",
-          "llm_tldr_cn": "测试时微调（TTFT）能按查询适配语言模型，但选择与微调两者均耗时。本文提出HullFT，通过凸重构将查询嵌入表示为少量训练序列的稀疏线性组合，并缓存梯度以加速微调。在多个基准上，HullFT在保持精度的同时大幅降低TTFT延迟，使实时适配成为可能。",
-          "llm_tldr": "测试时微调（TTFT）能按查询适配语言模型，但选择与微调两者均耗时。本文提出HullFT，通过凸重构将查询嵌入表示为少量训练序列的稀疏线性组合，并缓存梯度以加速微调。在多个基准上，HullFT在保持精度的同时大幅降低TTFT延迟，使实时适配成为可能。",
+          "llm_evidence_en": "test-time finetuning of LLMs efficient",
+          "llm_evidence_cn": "LLM测试时微调高效方法",
+          "llm_evidence": "LLM测试时微调高效方法",
+          "canonical_evidence": "LLM测试时微调高效方法",
+          "llm_tldr_en": "Proposes HullFT, a geometric approach for efficient test-time finetuning of LLMs using convex reconstruction and gradient caching to eliminate retrieval and finetuning bottlenecks.",
+          "llm_tldr_cn": "测试时微调（TTFT）使LLM适应每个查询，但检索和微调速度是瓶颈。本文提出HullFT，将查询嵌入表示为少量训练序列的稀疏凸组合，并用Frank-Wolfe优化加速。通过梯度缓存进一步减少计算。实验表明HullFT在保持质量的同时显著提高了速度。",
+          "llm_tldr": "测试时微调（TTFT）使LLM适应每个查询，但检索和微调速度是瓶颈。本文提出HullFT，将查询嵌入表示为少量训练序列的稀疏凸组合，并用Frank-Wolfe优化加速。通过梯度缓存进一步减少计算。实验表明HullFT在保持质量的同时显著提高了速度。",
           "llm_tags": [
             "query:ml-llm"
           ],
@@ -275,13 +108,13 @@
             "query:ml-llm"
           ],
           "llm_score": 8.0,
-          "llm_evidence_en": "compares data filtering methods for training language models",
-          "llm_evidence_cn": "比较训练语言模型的数据过滤方法",
-          "llm_evidence": "比较训练语言模型的数据过滤方法",
-          "canonical_evidence": "比较训练语言模型的数据过滤方法",
-          "llm_tldr_en": "Data filtering methods for training language models compares Confident Learning and Dataset Cartography for detecting label errors in Russian text classification datasets, showing that both improve model generalization.",
-          "llm_tldr_cn": "训练语言模型时数据质量至关重要。本文在三个俄语文本分类语料上比较了Confident Learning和Dataset Cartography两种自动标签错误检测方法。使用rubert-base-cased模型微调后，实验表明两种方法均能有效识别错误标签，且过滤后的数据训练出的模型泛化能力更强，与随机删除形成对比。",
-          "llm_tldr": "训练语言模型时数据质量至关重要。本文在三个俄语文本分类语料上比较了Confident Learning和Dataset Cartography两种自动标签错误检测方法。使用rubert-base-cased模型微调后，实验表明两种方法均能有效识别错误标签，且过滤后的数据训练出的模型泛化能力更强，与随机删除形成对比。",
+          "llm_evidence_en": "data filtering for training language models",
+          "llm_evidence_cn": "训练语言模型的数据过滤方法",
+          "llm_evidence": "训练语言模型的数据过滤方法",
+          "canonical_evidence": "训练语言模型的数据过滤方法",
+          "llm_tldr_en": "Compares Confident Learning and Dataset Cartography for label error detection in Russian text classification corpora for language model training.",
+          "llm_tldr_cn": "针对训练数据中标签错误降低语言模型泛化性能的问题，系统比较了置信学习和数据集制图两种自动标签错误检测方法。在三个俄语文本分类语料上进行实验，发现Confident Learning在训练数据过滤上表现更优，并通过随机删除控制实验验证了过滤的有效性。",
+          "llm_tldr": "针对训练数据中标签错误降低语言模型泛化性能的问题，系统比较了置信学习和数据集制图两种自动标签错误检测方法。在三个俄语文本分类语料上进行实验，发现Confident Learning在训练数据过滤上表现更优，并通过随机删除控制实验验证了过滤的有效性。",
           "llm_tags": [
             "query:ml-llm"
           ],
@@ -382,126 +215,6 @@
           "carry_days": 1
         },
         {
-          "id": "2605.27971v1",
-          "source": "arxiv",
-          "title": "Semantic Flow Regularization: Teaching LLMs to Generate Diverse Yet Coherent Responses",
-          "abstract": "When large language models are fine-tuned to generate persona- or tone-conditioned responses, their output diversity is severely limited--a failure we term Cross-Style Collapse. We trace this collapse to the cross-entropy objective, which under shared representations tends to suppress diverse continuations. We propose Semantic Flow Regularization (SFR), a lightweight auxiliary objective that supervises the backbone with continuous sentence-encoder embeddings of future segments via conditional flow matching. The stochastic flow source preserves multi-modality by construction; the flow-matching head is discarded at inference, adding zero deployment cost. On a large-scale industrial dialogue dataset (Qwen3-32B, 9 personas), SFR improves output diversity, style fidelity, and response quality over SFT. We further validate on the public LiveCodeBench-v5 (Qwen2.5-Coder-7B-Instruct), where SFR consistently improves pass@k, confirming generality beyond stylized dialogue. A controlled comparison on MBPP reveals Multi-Token Prediction to be a degenerate special case of SFR.",
-          "authors": [
-            "Kerui Peng",
-            "Feifei Li",
-            "Xingyu Fan",
-            "Wenhui Que"
-          ],
-          "primary_category": "cs.CL",
-          "categories": [
-            "cs.CL",
-            "cs.AI"
-          ],
-          "published": "2026-05-27T05:05:37+00:00",
-          "link": "https://arxiv.org/pdf/2605.27971v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "improving LLM fine-tuning for diverse and coherent generation",
-          "llm_evidence_cn": "提升LLM微调中生成多样性与连贯性的方法",
-          "llm_evidence": "提升LLM微调中生成多样性与连贯性的方法",
-          "canonical_evidence": "提升LLM微调中生成多样性与连贯性的方法",
-          "llm_tldr_en": "Proposes Semantic Flow Regularization (SFR) to mitigate cross-style collapse in LLM fine-tuning, improving diversity without sacrificing coherence.",
-          "llm_tldr_cn": "LLM微调至特定风格时输出多样性严重受限，称为跨风格坍缩。本文归因于交叉熵目标抑制多样延续，提出语义流正则化（SFR），利用条件流匹配监督连续句子嵌入，保有多模态性。在大规模工业对话数据集上，SFR在保持连贯的同时显著提升多样性，且推理时无额外开销。该方法对于生成式模型微调具有普适价值。",
-          "llm_tldr": "LLM微调至特定风格时输出多样性严重受限，称为跨风格坍缩。本文归因于交叉熵目标抑制多样延续，提出语义流正则化（SFR），利用条件流匹配监督连续句子嵌入，保有多模态性。在大规模工业对话数据集上，SFR在保持连贯的同时显著提升多样性，且推理时无额外开销。该方法对于生成式模型微调具有普适价值。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "large language model",
-          "matched_requirement_id": "req-2",
-          "selection_source": "carryover_cache",
-          "paper_id": "2605.27971v1",
-          "carry_days": 1
-        },
-        {
-          "id": "2605.27591v1",
-          "source": "arxiv",
-          "title": "Gradient Transformer: Learning to Generate Updates for LLMs",
-          "abstract": "Many organizations lack computational resources to fine-tune large language models (LLMs) on private (unshareable) data for better utility, while fine-tuning tiny language models (TinyLMs) alone performs poorly. To address this bottleneck, we propose a data-free knowledge distillation framework that generates LLM update vectors based on TinyLMs fine-tuned on private data. An update vector is a vector of parameter changes from an initial model to its fine-tuned version on a dataset, capturing the effect of cumulative gradient steps during fine-tuning. The key idea of our framework is a novel Gradient Transformer that transforms TinyLM's update vectors into LLM's update vectors. As derived from shadow datasets, Grad-Transformer captures the correlation between TinyLM and LLM update vectors, enabling third-party providers to generate LLM update vectors given the organization's TinyLM update vectors without accessing the organization's private data. The framework supports multi-organization collaboration to jointly update LLMs, improving performance and cost-efficiency. Extensive experiments across language modeling and reasoning tasks show that Grad-Transformer remarkably outperforms state-of-the-art knowledge distillation baselines, even under strict differential privacy protection.",
-          "authors": [
-            "Binh-Nguyen Nguyen",
-            "Khang Tran",
-            "NhatHai Phan",
-            "Issa Khalil"
-          ],
-          "primary_category": "cs.LG",
-          "categories": [
-            "cs.LG"
-          ],
-          "published": "2026-05-26T19:05:13+00:00",
-          "link": "https://arxiv.org/pdf/2605.27591v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "data-free knowledge distillation for LLM fine-tuning via Gradient Transformer",
-          "llm_evidence_cn": "通过Gradient Transformer实现LLM的无数据知识蒸馏",
-          "llm_evidence": "通过Gradient Transformer实现LLM的无数据知识蒸馏",
-          "canonical_evidence": "通过Gradient Transformer实现LLM的无数据知识蒸馏",
-          "llm_tldr_en": "Proposes a data-free knowledge distillation framework using Gradient Transformer to transfer update vectors from TinyLM to LLM, enabling efficient fine-tuning.",
-          "llm_tldr_cn": "许多组织缺乏计算资源微调LLM，而仅微调小模型效果不佳。本文提出无数据知识蒸馏框架，利用Gradient Transformer将微调后TinyLM的更新向量映射到LLM，从而生成LLM更新参数。该框架无需原始数据，仅需TinyLM的更新向量。实验表明，该方法使LLM在私有数据上获得可观性能提升，为资源受限场景提供实用解决方案。",
-          "llm_tldr": "许多组织缺乏计算资源微调LLM，而仅微调小模型效果不佳。本文提出无数据知识蒸馏框架，利用Gradient Transformer将微调后TinyLM的更新向量映射到LLM，从而生成LLM更新参数。该框架无需原始数据，仅需TinyLM的更新向量。实验表明，该方法使LLM在私有数据上获得可观性能提升，为资源受限场景提供实用解决方案。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "how to train a large language model",
-          "matched_requirement_id": "req-8",
-          "selection_source": "carryover_cache",
-          "paper_id": "2605.27591v1",
-          "carry_days": 1
-        },
-        {
-          "id": "2606.03867v1",
-          "source": "arxiv",
-          "title": "A Training-Free Mixture-of-Agents Framework for Multi-Document Summarization using LLMs and Knowledge Graphs",
-          "abstract": "Multi-Document Summarization (MDS) plays a critical role in distilling essential information from collections of textual data. Existing approaches often struggle to capture complex inter-document relationships, rely heavily on large amounts of labeled data for supervised training, or exhibit limited generalization across domains and languages. To address these limitations, we present a training-free mixture-of-agents framework for MDS that leverages the complementary strengths of large language models (LLMs) and knowledge graphs. Our approach decomposes summarization into specialized agent tasks: extractive selection, knowledge-aware abstraction, and iterative refinement, each operating without task-specific fine-tuning. We unify their outputs using a multi-perspective consistency mechanism guided by LLMs. Experiments across four datasets in English and Vietnamese demonstrate state-of-the-art or competitive performance, validating the effectiveness and adaptability of our modular design.",
-          "authors": [
-            "Cuong Vuong Tuan",
-            "Trang Mai Xuan",
-            "Tien-Cuong Nguyen",
-            "Vu-Duc Ngo",
-            "Thien Van Luong"
-          ],
-          "primary_category": "cs.CL",
-          "categories": [
-            "cs.CL",
-            "cs.AI"
-          ],
-          "published": "2026-06-02T16:39:07+00:00",
-          "link": "https://arxiv.org/pdf/2606.03867v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "Multi-document summarization using LLMs and knowledge graphs",
-          "llm_evidence_cn": "使用大语言模型和知识图谱的多文档摘要",
-          "llm_evidence": "使用大语言模型和知识图谱的多文档摘要",
-          "canonical_evidence": "使用大语言模型和知识图谱的多文档摘要",
-          "llm_tldr_en": "A training-free mixture-of-agents framework for MDS combines LLMs and knowledge graphs in specialized agent tasks, achieving strong performance without supervised fine-tuning.",
-          "llm_tldr_cn": "多文档摘要面临文档间关系捕获和领域泛化问题。本文提出无需训练的混合代理框架，利用LLM和知识图谱分别执行提取、感知抽象和迭代精炼任务。实验表明该方法在多个数据集上优于有监督基线，且无需标签数据。",
-          "llm_tldr": "多文档摘要面临文档间关系捕获和领域泛化问题。本文提出无需训练的混合代理框架，利用LLM和知识图谱分别执行提取、感知抽象和迭代精炼任务。实验表明该方法在多个数据集上优于有监督基线，且无需标签数据。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "large language model",
-          "matched_requirement_id": "req-2",
-          "selection_source": "carryover_cache",
-          "paper_id": "2606.03867v1",
-          "carry_days": 1
-        },
-        {
           "id": "2606.01400v1",
           "source": "arxiv",
           "title": "Consistent and Distinctive: LLM Benchmark Efficiency via Maximum Independent Set Prompt Selection on Similarity Graphs",
@@ -525,13 +238,13 @@
             "query:ml-llm"
           ],
           "llm_score": 8.0,
-          "llm_evidence_en": "proposes graph-based prompt selection for efficient LLM evaluation",
-          "llm_evidence_cn": "提出基于图的提示选择方法以高效评估LLM",
-          "llm_evidence": "提出基于图的提示选择方法以高效评估LLM",
-          "canonical_evidence": "提出基于图的提示选择方法以高效评估LLM",
-          "llm_tldr_en": "This paper presents a graph-based framework using Maximum Independent Set to select diverse prompts for LLM evaluation, reducing benchmark cost while maintaining accuracy.",
-          "llm_tldr_cn": "全面评估大型语言模型（LLM）需要大量计算资源。本文提出一种基于图的提示选择框架，将基准建模为相似图，应用最大独立集算法选择多样且无冗余的提示子集。在四个基准和66个LLM上的实验表明，该方法能显著降低评估成本，同时保持评估结果的准确性。该工作为高效LLM评估提供了新思路。",
-          "llm_tldr": "全面评估大型语言模型（LLM）需要大量计算资源。本文提出一种基于图的提示选择框架，将基准建模为相似图，应用最大独立集算法选择多样且无冗余的提示子集。在四个基准和66个LLM上的实验表明，该方法能显著降低评估成本，同时保持评估结果的准确性。该工作为高效LLM评估提供了新思路。",
+          "llm_evidence_en": "proposes graph-based prompt selection to improve LLM benchmark efficiency",
+          "llm_evidence_cn": "提出基于图的提示选择方法提高LLM基准测试效率",
+          "llm_evidence": "提出基于图的提示选择方法提高LLM基准测试效率",
+          "canonical_evidence": "提出基于图的提示选择方法提高LLM基准测试效率",
+          "llm_tldr_en": "Selects a diverse subset of prompts via Maximum Independent Set on similarity graphs to reduce LLM evaluation cost while maintaining ranking fidelity.",
+          "llm_tldr_cn": "大语言模型全面基准评估耗时且昂贵。本文提出图式提示选择框架，将每个基准构建为相似度图，通过最大独立集算法选择多样且不冗余的子集。在多个基准和LLM上的实验表明，该方法能在保持排名一致性的同时大幅减少评估开销。",
+          "llm_tldr": "大语言模型全面基准评估耗时且昂贵。本文提出图式提示选择框架，将每个基准构建为相似度图，通过最大独立集算法选择多样且不冗余的子集。在多个基准和LLM上的实验表明，该方法能在保持排名一致性的同时大幅减少评估开销。",
           "llm_tags": [
             "query:ml-llm"
           ],
@@ -540,83 +253,6 @@
           "matched_requirement_id": "req-2",
           "selection_source": "carryover_cache",
           "paper_id": "2606.01400v1",
-          "carry_days": 1
-        },
-        {
-          "id": "2605.27774v1",
-          "source": "arxiv",
-          "title": "Fine-Tuning Dynamics of In-Context Factual Recall in Transformers",
-          "abstract": "In-context learning \\ -- performing tasks based on examples given in the prompt \\ -- is an important capability that has emerged in large language models and has received significant attention in both theory and practice. Existing theoretical work often focuses on settings where the learning uses information purely from the prompt. However, many practical instances of in-context learning require the model to retrieve factual knowledge stored in the model's parameters, with the context serving to identify which knowledge is relevant. In this work, we study how in-context learning leverages factual knowledge recall. We formalize this behavior by introducing the \\emph{in-context factual recall (IC-recall)} task, where a transformer is provided a context of (subject, answer) pairs generated from a hidden relation, along with a query subject, and must both infer this hidden relation and retrieve the corresponding answer. Factual knowledge is modeled by the transformer having access to a simple pre-constructed MLP associative memory storing (subject, relation, answer) triplets. We analyze the supervised fine-tuning dynamics of a one-layer transformer on IC-recall data and prove that the model successfully performs IC-recall by converging to a particular pairwise attention pattern. This fine-tuning stage requires a very small number of samples \\ -- only polylogarithmic in the number of stored knowledge triplets. Experiments verify our theoretical predictions and show that the pairwise attention pattern emerges even when the MLP layer is pretrained instead of constructed.",
-          "authors": [
-            "Ruomin Huang",
-            "Eshaan Nichani",
-            "Jason D. Lee",
-            "Rong Ge"
-          ],
-          "primary_category": "cs.LG",
-          "categories": [
-            "cs.LG"
-          ],
-          "published": "2026-05-26T23:47:26+00:00",
-          "link": "https://arxiv.org/pdf/2605.27774v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "studies in-context factual recall dynamics in Transformers fine-tuning",
-          "llm_evidence_cn": "研究Transformer微调中上下文事实回忆的动态过程",
-          "llm_evidence": "研究Transformer微调中上下文事实回忆的动态过程",
-          "canonical_evidence": "研究Transformer微调中上下文事实回忆的动态过程",
-          "llm_tldr_en": "This paper formalizes in-context factual recall (IC-recall) in Transformers and analyzes how fine-tuning shapes this capability.",
-          "llm_tldr_cn": "大型语言模型的上下文学习能力通常被认为完全依赖提示信息，但实际应用中常需检索模型参数中的事实知识。本文形式化了上下文事实回忆（IC-recall）任务，并研究微调如何影响这一行为。通过理论分析和实验，揭示了Transformer在微调过程中如何利用参数知识进行上下文回忆。该工作为理解LLM的事实检索机制提供了新视角。",
-          "llm_tldr": "大型语言模型的上下文学习能力通常被认为完全依赖提示信息，但实际应用中常需检索模型参数中的事实知识。本文形式化了上下文事实回忆（IC-recall）任务，并研究微调如何影响这一行为。通过理论分析和实验，揭示了Transformer在微调过程中如何利用参数知识进行上下文回忆。该工作为理解LLM的事实检索机制提供了新视角。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "transformer model",
-          "matched_requirement_id": "req-4",
-          "selection_source": "carryover_cache",
-          "paper_id": "2605.27774v1",
-          "carry_days": 1
-        },
-        {
-          "id": "2605.27913v1",
-          "source": "arxiv",
-          "title": "Where LLM Annotators Fail: Label-Free Learning on Graphs with LLMs",
-          "abstract": "Node classification on graphs often requires labeled nodes, yet obtaining labels at graph scale is expensive. When node attributes contain semantic content, such as paper abstracts, web pages, or product descriptions, large language models (LLMs) can provide low-cost supervision by annotating a small subset of nodes. However, these LLM-generated labels are noisy, and existing label-free graph learning methods usually treat this noise as either global or class-conditional. We find that LLM annotation errors are not only class-dependent but also region-dependent: within the same class, reliability can vary sharply across feature-space clusters. In light of this, we propose Cluster-Aware Noise Estimation (CANE), a label-free learning framework that estimates cluster-conditional LLM reliability without ground truth labels, and uses this estimate to decide which pseudo-labels to trust, and which labels to correct. Across various graph benchmarks and GNN backbones, CANE improves over the strongest label-free baselines, with the largest gains on datasets exhibiting stronger cluster-conditional noise.",
-          "authors": [
-            "Safal Thapaliya",
-            "Jiatan Huang",
-            "Chuxu Zhang"
-          ],
-          "primary_category": "cs.LG",
-          "categories": [
-            "cs.LG"
-          ],
-          "published": "2026-05-27T03:41:04+00:00",
-          "link": "https://arxiv.org/pdf/2605.27913v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "proposes CANE framework for label-free graph learning using noisy LLM annotations",
-          "llm_evidence_cn": "提出CANE框架，利用LLM生成的噪声标注进行无标签图学习",
-          "llm_evidence": "提出CANE框架，利用LLM生成的噪声标注进行无标签图学习",
-          "canonical_evidence": "提出CANE框架，利用LLM生成的噪声标注进行无标签图学习",
-          "llm_tldr_en": "This paper introduces Cluster-Aware Noise Estimation (CANE) to handle region-dependent noise in LLM-generated labels for graph node classification.",
-          "llm_tldr_cn": "图节点分类通常需要大量标注，成本高昂。大型语言模型（LLM）可为节点提供低成本标注，但标注存在噪声。现有方法将噪声视为全局或类别条件，但本文发现LLM错误具有区域依赖性：同一类内不同特征簇的可靠性差异大。为此提出簇感知噪声估计（CANE），通过估计每个簇的噪声水平进行无标签学习。在多个图数据集上，CANE显著优于现有方法，展示了LLM在无标签学习中的潜力。",
-          "llm_tldr": "图节点分类通常需要大量标注，成本高昂。大型语言模型（LLM）可为节点提供低成本标注，但标注存在噪声。现有方法将噪声视为全局或类别条件，但本文发现LLM错误具有区域依赖性：同一类内不同特征簇的可靠性差异大。为此提出簇感知噪声估计（CANE），通过估计每个簇的噪声水平进行无标签学习。在多个图数据集上，CANE显著优于现有方法，展示了LLM在无标签学习中的潜力。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "large language model",
-          "matched_requirement_id": "req-2",
-          "selection_source": "carryover_cache",
-          "paper_id": "2605.27913v1",
           "carry_days": 1
         },
         {
@@ -697,52 +333,6 @@
           "carry_days": 1
         },
         {
-          "id": "2606.00539v1",
-          "source": "arxiv",
-          "title": "GNMR: Runtime Stability Control for Low-Precision Large Language Model Training",
-          "abstract": "Training stability is a key bottleneck in low-precision language model training: efficient low-cost paths can still produce short-lived numerical risks at a small set of operators. We formulate this as runtime stability control and present Gradient Norm-to-Mean Ratio (GNMR), a lightweight controller that compares each recoverable unit's current gradient norm with its historical mean. Together with $Δ$-GNMR for abrupt short-window increases, GNMR maps local risk signals to bounded recovery actions under a hard $\\mathrm{maxO}$ budget and a short lock interval, without changing the numerical format, kernel, or backend recipe. Across activation-quantization stress, DeepSeek-style recipe-level training, and LLaMA-2 13B fine-tuning, GNMR preserves high-fidelity quality with sparse, budgeted recovery. These results support GNMR as a backend-agnostic controller to improve low-precision training stability while preserving low-cost execution.",
-          "authors": [
-            "Boao Kong",
-            "Weichen Jia",
-            "Engao Zhang",
-            "Guohong Li",
-            "Yonghan Dong",
-            "Yao Wang",
-            "Yaoyuan Wang",
-            "Yunke Peng",
-            "Kun Yuan"
-          ],
-          "primary_category": "cs.LG",
-          "categories": [
-            "cs.LG",
-            "math.OC",
-            "stat.ML"
-          ],
-          "published": "2026-05-30T05:11:13+00:00",
-          "link": "https://arxiv.org/pdf/2606.00539v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "runtime stability control for low-precision LLM training",
-          "llm_evidence_cn": "低精度LLM训练的稳定性控制",
-          "llm_evidence": "低精度LLM训练的稳定性控制",
-          "canonical_evidence": "低精度LLM训练的稳定性控制",
-          "llm_tldr_en": "Presents GNMR for runtime stability control in low-precision LLM training, using gradient norm ratios to trigger recovery actions without changing numerical format.",
-          "llm_tldr_cn": "论文针对低精度LLM训练中的数值稳定性问题，提出运行时稳定性控制方法GNMR，通过对比当前梯度范数与历史均值检测局部风险，并在预算内执行恢复动作。在激活量化、DeepSeek-style和LLaMA-2微调等场景中，GNMR在保持模型性能的同时显著提升了训练稳定性，为低精度训练提供了实用解决方案。",
-          "llm_tldr": "论文针对低精度LLM训练中的数值稳定性问题，提出运行时稳定性控制方法GNMR，通过对比当前梯度范数与历史均值检测局部风险，并在预算内执行恢复动作。在激活量化、DeepSeek-style和LLaMA-2微调等场景中，GNMR在保持模型性能的同时显著提升了训练稳定性，为低精度训练提供了实用解决方案。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "how to train a large language model",
-          "matched_requirement_id": "req-8",
-          "selection_source": "carryover_cache",
-          "paper_id": "2606.00539v1",
-          "carry_days": 1
-        },
-        {
           "id": "2605.29327v1",
           "source": "arxiv",
           "title": "Reasoning-preserved Efficient Distillation of Large Language Models via Activation-aware Initialization",
@@ -784,6 +374,418 @@
           "matched_requirement_id": "req-8",
           "selection_source": "carryover_cache",
           "paper_id": "2605.29327v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2606.00328v1",
+          "source": "arxiv",
+          "title": "KG-Guard: Graph-Based Hallucination Detection for Knowledge Base Question Answering",
+          "abstract": "Large language models (LLMs) are increasingly used for knowledge base question answering (KBQA), where answering requires selecting entities from a question-specific knowledge-graph subgraph. Yet LLMs are known to hallucinate across tasks, and KBQA is no exception: even when we provide a graph as the knowledge source, the model may rely on parametric knowledge instead of graph evidence or perform invalid reasoning over the given relations. Such hallucinated answer nodes can limit the practical deployment of KBQA systems, especially in high-stakes domains such as healthcare. We formulate hallucination detection in KBQA as an answer-node classification problem and propose a lightweight graph-based framework that treats the answering LLM as a black box. \\methodname represents each KBQA instance as an augmented graph. It initializes node features with semantic representations of KG entities, marks topic entities and LLM-proposed answer nodes with learned vectors, and connect a virtual question node to the topic entities. A graph encoder then produces verification-oriented node representations, and a small MLP classifies each proposed answer node using its graph representation together with the question embedding. Experiments on WebQSP, ComplexWebQuestions, and PUGG show that our detector achieves the highest F1 on all three benchmarks ($82.0$, $87.4$, and $84.3$), outperforming LLM-as-judge and sampling-based baselines, while having $\\sim305\\times$ fewer parameters than the reference approaches. Beyond detection, the node-level feedback is actionable: when flagged answers are fed back to the KBQA system for iterative refinement, downstream KBQA F1 improves by $13.0$--$14.5$ points and Exact Match by $16.9$--$17.6$ points.",
+          "authors": [
+            "Albert Sawczyn",
+            "Piotr Bielak",
+            "Tomasz Kajdanowicz"
+          ],
+          "primary_category": "cs.LG",
+          "categories": [
+            "cs.LG"
+          ],
+          "published": "2026-05-29T20:11:41+00:00",
+          "link": "https://arxiv.org/pdf/2606.00328v1",
+          "tags": [
+            "keyword:ml-llm",
+            "query:ml-llm"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "hallucination detection in LLMs for KBQA",
+          "llm_evidence_cn": "LLM在知识库问答中的幻觉检测",
+          "llm_evidence": "LLM在知识库问答中的幻觉检测",
+          "canonical_evidence": "LLM在知识库问答中的幻觉检测",
+          "llm_tldr_en": "Proposes KG-Guard, a lightweight graph-based framework for hallucination detection in LLMs for KBQA.",
+          "llm_tldr_cn": "针对LLM在知识库问答中可能产生幻觉的问题，将幻觉检测建模为答案节点分类任务，提出轻量级图框架KG-Guard。该框架将问答LLM视为黑盒，仅利用图结构特征进行检测。在医疗等高风险领域具有实用价值。",
+          "llm_tldr": "针对LLM在知识库问答中可能产生幻觉的问题，将幻觉检测建模为答案节点分类任务，提出轻量级图框架KG-Guard。该框架将问答LLM视为黑盒，仅利用图结构特征进行检测。在医疗等高风险领域具有实用价值。",
+          "llm_tags": [
+            "query:ml-llm"
+          ],
+          "matched_query_tag": "query:ml-llm",
+          "matched_query_text": "large language model",
+          "matched_requirement_id": "req-2",
+          "selection_source": "carryover_cache",
+          "paper_id": "2606.00328v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2606.01075v2",
+          "source": "arxiv",
+          "title": "On the Generalization Gap in Self-Evolving Language Model Reasoning",
+          "abstract": "Recent work suggests that large language models (LLMs) can improve through self-evolution (SE), using supervision signals generated by the model itself. In this work, we ask: under a strict closed-loop setup, where the self-evolution algorithm has access only to an unlabeled prompt set and a base model, how close can internally generated supervision come to oracle-supervised training? We analyze four representative strategies in a unified offline self-evolution framework: single-round verification, multi-turn revision with feedback, iterative training, and curriculum learning. Our primary experiments use Knights and Knaves (KK) logical reasoning tasks, which provide deterministic solutions, controlled difficulty levels, and a clean testbed for easy-to-hard generalization. We first show that self-evolution consistently improves over the base model, but plateaus after excessive training compute is invested, and eventually still leaves a non-trivial gap to oracle supervision. We find that multi-turn critic-revision with large models can reach strong self-evolution performance, with Gemma 12B nearly matching oracle-supervised training. Beyond Knights and Knaves, we also evaluate self-evolution on real-world reasoning benchmarks, where gains are also modest. Overall, our results characterize when closed-loop self-evolution can help and show how internally generated supervision remains insufficient under this minimal formulation.",
+          "authors": [
+            "Zhenting Qi",
+            "Susanna Maria Baby",
+            "Stefanie Anna Baby",
+            "Kan Yuan",
+            "Andrew Tomkins",
+            "Tu Vu",
+            "Da-Cheng Juan",
+            "Cyrus Rashtchian"
+          ],
+          "primary_category": "cs.CL",
+          "categories": [
+            "cs.CL"
+          ],
+          "published": "2026-05-31T07:43:19+00:00",
+          "link": "https://arxiv.org/pdf/2606.01075v2",
+          "tags": [
+            "keyword:ml-llm",
+            "query:ml-llm"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "self-evolution of LLM reasoning",
+          "llm_evidence_cn": "大语言模型推理的自进化",
+          "llm_evidence": "大语言模型推理的自进化",
+          "canonical_evidence": "大语言模型推理的自进化",
+          "llm_tldr_en": "Analyzes the generalization gap in self-evolving LLMs using four strategies on logical reasoning tasks.",
+          "llm_tldr_cn": "研究大语言模型通过自进化提升推理能力的泛化差距，在严格闭环设置下比较了单轮验证、多轮修订、迭代训练和课程学习四种策略。实验使用骑士与无赖逻辑推理任务，揭示了自生成监督与教师监督之间的性能差距。",
+          "llm_tldr": "研究大语言模型通过自进化提升推理能力的泛化差距，在严格闭环设置下比较了单轮验证、多轮修订、迭代训练和课程学习四种策略。实验使用骑士与无赖逻辑推理任务，揭示了自生成监督与教师监督之间的性能差距。",
+          "llm_tags": [
+            "query:ml-llm"
+          ],
+          "matched_query_tag": "query:ml-llm",
+          "matched_query_text": "large language model",
+          "matched_requirement_id": "req-2",
+          "selection_source": "carryover_cache",
+          "paper_id": "2606.01075v2",
+          "carry_days": 1
+        },
+        {
+          "id": "2605.29751v1",
+          "source": "arxiv",
+          "title": "DySem: Uncovering Dynamic Semantic Components via Multilingual Consensus for Calculating Semantic Textual Similarity",
+          "abstract": "Calculating semantic textual similarity is a foundational task in natural language processing. Current large language models (LLMs) based methods typically rely on extracting last-layer hidden states with fixed dimensions to compute similarity for every text pairs. We argue that this paradigm is suffer from two limitations: (i) The last hidden layer encodes more general knowledge rather than just semantic knowledge, making it suboptimal for semantic similarity computation; (ii) The hidden layer dimensions of LLMs are generally very large, which introduces some redundancy and noise for representing semantics. In this work, we propose DySem, a novel training-free framework that investigates more semantic-related internal components of LLMs via multilingual consensus, and shifts away from static representation spaces in favor of dynamic, sample-specific semantic dimensions by constructing text-dependent joint semantic set and computes similarity over this shared dimensional subset. Extensive experiments across various LLMs show that our method consistently outperforms recent baselines while maintaining lower dimensions for similarity calculation. The code is released at https://github.com/szu-tera/DySem.",
+          "authors": [
+            "Kaijie Zheng",
+            "Weiqin Wang",
+            "Yile Wang",
+            "Hui Huang"
+          ],
+          "primary_category": "cs.CL",
+          "categories": [
+            "cs.CL"
+          ],
+          "published": "2026-05-28T10:47:32+00:00",
+          "link": "https://arxiv.org/pdf/2605.29751v1",
+          "tags": [
+            "keyword:ml-llm",
+            "query:ml-llm"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "semantic textual similarity natural language processing",
+          "llm_evidence_cn": "语义文本相似度自然语言处理",
+          "llm_evidence": "语义文本相似度自然语言处理",
+          "canonical_evidence": "语义文本相似度自然语言处理",
+          "llm_tldr_en": "Proposes DySem, a training-free framework for computing semantic textual similarity using multilingual consensus to extract dynamic semantic components from LLMs.",
+          "llm_tldr_cn": "当前基于大语言模型的语义相似度计算方法依赖最后一层隐藏状态，存在语义不纯净和噪声冗余问题。本文提出DySem，一种无需训练的多语言共识框架，通过从LLM中提取动态语义组件来更准确计算相似度。该方法在保留多语言能力的同时提高了语义表示质量。实验证明了其有效性。",
+          "llm_tldr": "当前基于大语言模型的语义相似度计算方法依赖最后一层隐藏状态，存在语义不纯净和噪声冗余问题。本文提出DySem，一种无需训练的多语言共识框架，通过从LLM中提取动态语义组件来更准确计算相似度。该方法在保留多语言能力的同时提高了语义表示质量。实验证明了其有效性。",
+          "llm_tags": [
+            "query:ml-llm"
+          ],
+          "matched_query_tag": "query:ml-llm",
+          "matched_query_text": "natural language processing",
+          "matched_requirement_id": "req-6",
+          "selection_source": "carryover_cache",
+          "paper_id": "2605.29751v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2606.01249v1",
+          "source": "arxiv",
+          "title": "Trust Region On-Policy Distillation",
+          "abstract": "On-Policy Distillation (OPD) is a fundamental technique for efficient post-training of large language models (LLMs), with broad applications in agent learning, multi-task enhancement, and model compression. However, OPD training becomes unstable when the teacher and student distributions differ substantially, as teacher supervision on student-generated tokens may yield unreliable policy gradients and even cause optimization failure. This work addresses reliable on-policy token-level supervision through credit assignment strategies, and proposes Trust Region On-Policy Distillation, TrOPD. It features the following characteristics: 1) Trust-Region On-Policy Learning: TrOPD performs OPD only in regions where the teacher provides reliable supervision, mitigating the optimization difficulty of the K1 reverse-KL estimator under distribution mismatch. 2) Outlier Estimation: For outlier regions, we explore gradient clipping, masking, and forward-KL estimation to reduce the adverse effects of unreliable supervision. 3) Off-Policy Guidance: The student continues generation from teacher prefixes and uses forward KL to imitate off-policy guidance, encouraging on-policy exploration toward reliable regions. Experiments show that TrOPD consistently outperforms SoTA OPD baselines, including OPD, EOPD, and REOPOLD, across mathematical reasoning, code generation, and general-domain benchmarks.",
+          "authors": [
+            "Xingrun Xing",
+            "Haoqing Wang",
+            "Boyan Gao",
+            "Ziheng Li",
+            "Yehui Tang"
+          ],
+          "primary_category": "cs.LG",
+          "categories": [
+            "cs.LG",
+            "cs.CL"
+          ],
+          "published": "2026-05-31T14:04:51+00:00",
+          "link": "https://arxiv.org/pdf/2606.01249v1",
+          "tags": [
+            "keyword:ml-llm",
+            "query:ml-llm"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "on-policy distillation for LLM post-training",
+          "llm_evidence_cn": "LLM后训练中的策略蒸馏",
+          "llm_evidence": "LLM后训练中的策略蒸馏",
+          "canonical_evidence": "LLM后训练中的策略蒸馏",
+          "llm_tldr_en": "Proposes Trust Region On-Policy Distillation (TrOPD) to stabilize LLM distillation by performing OPD only where teacher supervision is reliable.",
+          "llm_tldr_cn": "在线策略蒸馏（OPD）是LLM后训练的重要技术，但师生分布差异大时训练不稳定。本文提出信任区域在线策略蒸馏（TrOPD），仅在教师提供可靠监督的区域进行OPD，缓解优化困难。该方法适用于代理学习、多任务增强和模型压缩。实验验证了其稳定性。",
+          "llm_tldr": "在线策略蒸馏（OPD）是LLM后训练的重要技术，但师生分布差异大时训练不稳定。本文提出信任区域在线策略蒸馏（TrOPD），仅在教师提供可靠监督的区域进行OPD，缓解优化困难。该方法适用于代理学习、多任务增强和模型压缩。实验验证了其稳定性。",
+          "llm_tags": [
+            "query:ml-llm"
+          ],
+          "matched_query_tag": "query:ml-llm",
+          "matched_query_text": "how to train a large language model",
+          "matched_requirement_id": "req-8",
+          "selection_source": "carryover_cache",
+          "paper_id": "2606.01249v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2606.02857v1",
+          "source": "arxiv",
+          "title": "GRZO: Group-Relative Zeroth-Order Optimization for Large Language Model Fine-Tuning",
+          "abstract": "Zeroth-order (ZO) optimization is a memory-efficient alternative to backpropagation for fine-tuning large language models, but its deployment is limited by the high variance of gradient estimation. We propose GRZO, a Group-Relative Zeroth-Order optimizer that draws one pseudo-independent perturbation per mini-batch example and aggregates the per-example losses through group-relative normalization, raising the effective gradient-direction count from one to the batch size at no additional forward cost while preserving inference-level memory. We prove that GRZO is directionally unbiased with variance shrinking proportionally to the batch size, yielding a tighter nonconvex convergence bound than MeZO. Across RoBERTa-large, Llama3-8B, and OPT-13B over multiple tasks, GRZO improves average accuracy on Llama3-8B by $+3.0$ over MeZO at $23\\%$ lower peak GPU memory; as a drop-in replacement for the MeZO core, it lifts sparse, low-rank, and quantized ZO variants by $+6.0$ on average.",
+          "authors": [
+            "Liyan Tan",
+            "Yequan Zhao",
+            "Yifan Yang",
+            "Ruijie Zhang",
+            "Xinling Yu",
+            "Zheng Zhang"
+          ],
+          "primary_category": "cs.LG",
+          "categories": [
+            "cs.LG",
+            "cs.AI"
+          ],
+          "published": "2026-06-01T20:19:36+00:00",
+          "link": "https://arxiv.org/pdf/2606.02857v1",
+          "tags": [
+            "keyword:ml-llm",
+            "query:ml-llm"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "Group-relative zeroth-order optimization for LLM fine-tuning",
+          "llm_evidence_cn": "用于LLM微调的组相对零阶优化",
+          "llm_evidence": "用于LLM微调的组相对零阶优化",
+          "canonical_evidence": "用于LLM微调的组相对零阶优化",
+          "llm_tldr_en": "Proposes GRZO, a group-relative zeroth-order optimizer that reduces gradient variance in LLM fine-tuning, achieving faster convergence with memory efficiency.",
+          "llm_tldr_cn": "零阶优化是LLM微调中节省内存的替代方案，但梯度估计方差大。本文提出GRZO，一种组相对零阶优化器，利用批内样本的组相对归一化，使有效梯度方向数从1提升至批量大小，且不增加额外前向成本。理论证明其方向无偏且方差与批量大小成反比。在RoBERTa、Llama等模型上，GRZO收敛速度超过MeZO，并达到与一阶优化相当的性能，内存占用几乎不变。",
+          "llm_tldr": "零阶优化是LLM微调中节省内存的替代方案，但梯度估计方差大。本文提出GRZO，一种组相对零阶优化器，利用批内样本的组相对归一化，使有效梯度方向数从1提升至批量大小，且不增加额外前向成本。理论证明其方向无偏且方差与批量大小成反比。在RoBERTa、Llama等模型上，GRZO收敛速度超过MeZO，并达到与一阶优化相当的性能，内存占用几乎不变。",
+          "llm_tags": [
+            "query:ml-llm"
+          ],
+          "matched_query_tag": "query:ml-llm",
+          "matched_query_text": "how to train a large language model",
+          "matched_requirement_id": "req-8",
+          "selection_source": "carryover_cache",
+          "paper_id": "2606.02857v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2605.30274v1",
+          "source": "arxiv",
+          "title": "Loong: A Human-Like Long Document Translation Agent with Observe-and-Act Adaptive Context Selection",
+          "abstract": "Document-level translation remains one of the most challenging tasks for large language models, which are constrained by limited context windows that impede global cohesion, while simultaneously suffering from redundant contextual information that degrades translation quality. To address this, we propose a human-like long document translation agent called Loong, which leverages a 3E memory module (Essence-Exemplar-Entity) to store summaries, sentence pairs, and entity records as historical context. Instead of passively attending to all history, Loong performs deep reasoning to adaptively identify the optimal context for translation guidance. Loong optimizes its context policy through reinforcement learning, utilizing preference data derived from its own sampled observe-and-act reasoning trajectories. Empirical evaluations demonstrate that Loong achieves substantial translation quality improvements in English $\\Leftrightarrow$ Chinese, German, and French directions, with average gains of up to 13.0 points across the three evaluation metrics. Furthermore, Loong exhibits strong generalization across domains and robustness against contextual noise, while maintaining remarkable stability in ultra-long document translation. Our code is released at https://github.com/YutongWang1216/LoongDocMT.",
+          "authors": [
+            "Yutong Wang",
+            "Xuebo Liu",
+            "Derek F. Wong",
+            "Zhilin Li",
+            "Rongqing Jiang",
+            "Min Zhang",
+            "Shimin Tao",
+            "Daimeng Wei",
+            "Min Zhang"
+          ],
+          "primary_category": "cs.CL",
+          "categories": [
+            "cs.CL",
+            "cs.AI"
+          ],
+          "published": "2026-05-28T17:32:25+00:00",
+          "link": "https://arxiv.org/pdf/2605.30274v1",
+          "tags": [
+            "keyword:ml-llm",
+            "query:ml-llm"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "applies LLM with reinforcement learning for long document translation",
+          "llm_evidence_cn": "将LLM与强化学习结合应用于长文档翻译",
+          "llm_evidence": "将LLM与强化学习结合应用于长文档翻译",
+          "canonical_evidence": "将LLM与强化学习结合应用于长文档翻译",
+          "llm_tldr_en": "Loong is a human-like agent for long document translation that uses a 3E memory module and reinforcement learning to adaptively select optimal context, improving translation quality.",
+          "llm_tldr_cn": "长文档翻译面临上下文窗口限制和冗余信息问题。本文提出仿人代理Loong，采用精华-示例-实体（3E）记忆模块存储历史，并通过强化学习优化上下文选择策略，主动确定最优翻译指导信息。该方法提升了长文档翻译的连贯性和准确性。",
+          "llm_tldr": "长文档翻译面临上下文窗口限制和冗余信息问题。本文提出仿人代理Loong，采用精华-示例-实体（3E）记忆模块存储历史，并通过强化学习优化上下文选择策略，主动确定最优翻译指导信息。该方法提升了长文档翻译的连贯性和准确性。",
+          "llm_tags": [
+            "query:ml-llm"
+          ],
+          "matched_query_tag": "query:ml-llm",
+          "matched_query_text": "natural language processing",
+          "matched_requirement_id": "req-6",
+          "selection_source": "carryover_cache",
+          "paper_id": "2605.30274v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2606.02765v1",
+          "source": "arxiv",
+          "title": "Representational Capacity: Geometric Limits on Feature Representation in Transformer Language Models",
+          "abstract": "Model dimension ($d_{model}$) is a fundamental hyperparameter in transformer language models, yet its role in setting the geometric limits of feature representation remains under-explored. Grounded in the Linear Representation and Superposition Hypotheses - which propose that models encode features as near-orthogonal directions in latent space - we develop a framework for estimating how many such directions a model can support. We first establish the embedding matrix as a measurable proxy for near-orthogonality constraints across the latent space: the boundary between meaningful token relationships and incidental similarity in the pairwise cosine similarity distribution gives a concrete estimate of the model's accepted deviation $\\varepsilon$ from perfect orthogonality. Applying this metric across dozens of open-source models reveals two classes: models with high $\\varepsilon$ whose embeddings lack near-orthogonal structure, and models with low $\\varepsilon$ that maintain it. We then show that the standard Johnson-Lindenstrauss lemma greatly underestimates the packing efficiency of trained representations, and derive an adjusted capacity formula in which the number of near-orthogonal directions depends on the ratio of vectors to dimensions ($k/d$) rather than the raw count - a single modification that cuts prediction error by two orders of magnitude with no extra parameters. Combining these results, we define representational capacity as an upper bound on the number of distinguishable directions available for features and embeddings in a model's latent space. Capacity is exponentially sensitive to $\\varepsilon$, and larger models favor tighter orthogonality constraints over maximizing raw capacity - a pattern compatible with several explanations (a stability-capacity trade-off, a ceiling on usable concepts, or confounds with model scale) that we leave to future work.",
+          "authors": [
+            "Alexander Guha"
+          ],
+          "primary_category": "cs.LG",
+          "categories": [
+            "cs.LG",
+            "cs.AI"
+          ],
+          "published": "2026-06-01T18:28:56+00:00",
+          "link": "https://arxiv.org/pdf/2606.02765v1",
+          "tags": [
+            "keyword:ml-llm"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "analyzes geometric limits of feature representation in Transformer language models",
+          "llm_evidence_cn": "分析Transformer语言模型中特征表示的几何限制",
+          "llm_evidence": "分析Transformer语言模型中特征表示的几何限制",
+          "canonical_evidence": "分析Transformer语言模型中特征表示的几何限制",
+          "llm_tldr_en": "This paper develops a framework to estimate how many near-orthogonal features a Transformer language model can support, using embedding matrices and cosine similarity distributions.",
+          "llm_tldr_cn": "Transformer语言模型的模型维度是核心超参数，但其对特征表示几何限制的影响尚未充分探索。基于线性表示和叠加假设，本文建立框架通过嵌入矩阵和余弦相似度分布估计模型能支持的近正交方向数量。该工作揭示了表示容量与模型维度的关系，为模型设计提供理论指导。",
+          "llm_tldr": "Transformer语言模型的模型维度是核心超参数，但其对特征表示几何限制的影响尚未充分探索。基于线性表示和叠加假设，本文建立框架通过嵌入矩阵和余弦相似度分布估计模型能支持的近正交方向数量。该工作揭示了表示容量与模型维度的关系，为模型设计提供理论指导。",
+          "llm_tags": [
+            "query:ml-llm"
+          ],
+          "matched_query_tag": "query:ml-llm",
+          "matched_query_text": "transformer model",
+          "matched_requirement_id": "req-4",
+          "selection_source": "carryover_cache",
+          "paper_id": "2606.02765v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2606.04650v1",
+          "source": "arxiv",
+          "title": "Improving the Efficiency and Effectiveness of LLM Knowledge Distillation for Conversational Search",
+          "abstract": "Conversational Search (CS) considers retrieval of relevant documents based on conversational context. Large Language Models (LLMs) have significantly enhanced CS by enabling effective query rewriting. However, employing LLMs during inference poses efficiency challenges. A method to balance effectiveness and efficiency is the use of knowledge distillation from LLM-based query rewriting. Recent work applies the Kullback-Leibler Divergence (KLD) for distillation, relaxing the alignment with the teacher signal compared to previous methods.   Despite these gains, several aspects of KLD-based distillation for conversational search remain understudied, and we investigate them in this work. Prior work in related fields suggests that adding a contrastive loss to the KLD objective can improve performance; we confirm this and observe significant gains in precision-oriented ranking metrics. We also find that contrastive sampling strategies for the KLD loss have a non-trivial impact and must be chosen carefully. Although theory suggests that more samples improve the KLD estimate, experiments show diminishing returns on the number of used samples.   Finally, we address the phenomenon of decreased sparsity in longer conversations, which limits computational efficiency across sparse retrieval methods. We find that the representations from the model distilled with the KLD loss can be strongly regularized with a regularization loss, substantially improving sparsity and inference efficiency without significantly harming retrieval effectiveness. We achieve a $2\\times$ decrease in FLOPS on TopiOCQA with negligible loss in effectiveness, corresponding to a $\\leq 2%$ drop in Recall@100. Our results provide insights into distillation objectives for learned sparse conversational retrievers and offer practical guidelines for improving effectiveness and efficiency in first-stage retrieval.",
+          "authors": [
+            "Stan Fris",
+            "Jan Hutter",
+            "Jan Henrik Bertrand",
+            "Simon Lupart",
+            "Mohammad Aliannejadi"
+          ],
+          "primary_category": "cs.IR",
+          "categories": [
+            "cs.IR"
+          ],
+          "published": "2026-06-03T09:22:22+00:00",
+          "link": "https://arxiv.org/pdf/2606.04650v1",
+          "tags": [
+            "keyword:ml-llm",
+            "query:ml-llm"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "improves LLM knowledge distillation for conversational search",
+          "llm_evidence_cn": "改进LLM知识蒸馏以提升对话搜索的效率和效果",
+          "llm_evidence": "改进LLM知识蒸馏以提升对话搜索的效率和效果",
+          "canonical_evidence": "改进LLM知识蒸馏以提升对话搜索的效率和效果",
+          "llm_tldr_en": "Studies under-explored aspects of KLD-based knowledge distillation from LLMs for conversational search, aiming to improve both efficiency and effectiveness.",
+          "llm_tldr_cn": "对话搜索依赖LLM进行查询重写，但推理效率低。知识蒸馏是平衡效率与效果的手段，当前基于KL散度的蒸馏方法存在未充分研究的问题。本文系统研究了KL散度蒸馏在对话搜索中的多个方面，提出改进策略，在保持效果的同时提升了效率。",
+          "llm_tldr": "对话搜索依赖LLM进行查询重写，但推理效率低。知识蒸馏是平衡效率与效果的手段，当前基于KL散度的蒸馏方法存在未充分研究的问题。本文系统研究了KL散度蒸馏在对话搜索中的多个方面，提出改进策略，在保持效果的同时提升了效率。",
+          "llm_tags": [
+            "query:ml-llm"
+          ],
+          "matched_query_tag": "query:ml-llm",
+          "matched_query_text": "how to train a large language model",
+          "matched_requirement_id": "req-8",
+          "selection_source": "carryover_cache",
+          "paper_id": "2606.04650v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2606.01075v1",
+          "source": "arxiv",
+          "title": "On the Generalization Gap in Self-Evolving Language Model Reasoning",
+          "abstract": "Recent work suggests that large language models (LLMs) can improve through self-evolution (SE), using supervision signals generated by the model itself. In this work, we ask: under a strict closed-loop setup, where the self-evolution algorithm has access only to an unlabeled prompt set and a base model, how close can internally generated supervision come to oracle-supervised training? We analyze four representative strategies in a unified offline self-evolution framework: single-round verification, multi-turn revision with feedback, iterative training, and curriculum learning. Our primary experiments use Knights and Knaves (KK) logical reasoning tasks, which provide deterministic solutions, controlled difficulty levels, and a clean testbed for easy-to-hard generalization. We first show that self-evolution consistently improves over the base model, but plateaus after excessive training compute is invested, and eventually still leaves a non-trivial gap to oracle supervision. We find that multi-turn critic-revision with large models can reach strong self-evolution performance, with Gemma 12B nearly matching oracle-supervised training. Beyond Knights and Knaves, we also evaluate self-evolution on real-world reasoning benchmarks, where gains are also modest. Overall, our results characterize when closed-loop self-evolution can help and show how internally generated supervision remains insufficient under this minimal formulation.",
+          "authors": [
+            "Zhenting Qi",
+            "Susanna Maria Baby",
+            "Stefanie Anna Baby",
+            "Kan Yuan",
+            "Andrew Tomkins",
+            "Tu Vu",
+            "Da-Cheng Juan",
+            "Cyrus Rashtchian"
+          ],
+          "primary_category": "cs.CL",
+          "categories": [
+            "cs.CL"
+          ],
+          "published": "2026-05-31T07:43:19+00:00",
+          "link": "https://arxiv.org/pdf/2606.01075v1",
+          "tags": [
+            "keyword:ml-llm",
+            "query:ml-llm"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "studies self-evolution of LLMs using self-generated supervision",
+          "llm_evidence_cn": "研究使用自生成监督信号的大语言模型自进化",
+          "llm_evidence": "研究使用自生成监督信号的大语言模型自进化",
+          "canonical_evidence": "研究使用自生成监督信号的大语言模型自进化",
+          "llm_tldr_en": "This paper analyzes the generalization gap in self-evolving LLMs, comparing four strategies under a closed-loop setup using logical reasoning tasks.",
+          "llm_tldr_cn": "大语言模型可以通过自进化改善性能，但自生成监督与真实监督之间仍存在差距。本文在封闭循环设定下分析了单轮验证、多轮修正等四种策略。在逻辑推理任务上，发现自进化泛化差距显著，且受任务难度影响。该研究为理解自进化局限性提供了基准。",
+          "llm_tldr": "大语言模型可以通过自进化改善性能，但自生成监督与真实监督之间仍存在差距。本文在封闭循环设定下分析了单轮验证、多轮修正等四种策略。在逻辑推理任务上，发现自进化泛化差距显著，且受任务难度影响。该研究为理解自进化局限性提供了基准。",
+          "llm_tags": [
+            "query:ml-llm"
+          ],
+          "matched_query_tag": "query:ml-llm",
+          "matched_query_text": "large language model",
+          "matched_requirement_id": "req-2",
+          "selection_source": "carryover_cache",
+          "paper_id": "2606.01075v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2606.00888v1",
+          "source": "arxiv",
+          "title": "Memory-Efficient LLM Training with Dynamic Sparsity: From Stability to Practical Scaling",
+          "abstract": "Dynamic Sparse Training (DST) offers a promising paradigm for improving the training and inference efficiency of deep neural networks; however, we find that in large language model training, DST can suffer from optimization instability, manifested as loss spikes after topology updates. In this work, we show that the naive use of standard Adam-based optimizers leads to a cold-start issue for newly regrown parameters, resulting in excessively large updates and disrupted training dynamics. To address this issue, we propose Sparse Memory-Efficient Training (SMET), which stabilizes DST with optimizer warm-up and improves training progress through density-aware learning-rate scaling. SMET further reduces memory consumption by storing gradients and optimizer states only for active parameters. We provide a theoretical analysis of the update behaviors under SMET, showing improved optimization stability. Extensive experiments demonstrate that SMET enables stable, scalable, and memory-efficient sparse pre-training of LLMs, paving the way for sparse training as a practical alternative to dense training. Our code is publicly available at: https://github.com/QiaoXiao7282/SMET.",
+          "authors": [
+            "Qiao Xiao",
+            "Boqian Wu",
+            "Patrik Okanovic",
+            "Tomasz Sternal",
+            "Maurice van Keulen",
+            "Elena Mocanu",
+            "Mykola Pechenizkiy",
+            "Decebal Constantin Mocanu",
+            "Torsten Hoefler"
+          ],
+          "primary_category": "cs.LG",
+          "categories": [
+            "cs.LG",
+            "cs.AI"
+          ],
+          "published": "2026-05-30T20:47:45+00:00",
+          "link": "https://arxiv.org/pdf/2606.00888v1",
+          "tags": [
+            "keyword:ml-llm",
+            "query:ml-llm"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "improves memory efficiency and stability in LLM training with dynamic sparsity",
+          "llm_evidence_cn": "使用动态稀疏性提升大语言模型训练的内存效率和稳定性",
+          "llm_evidence": "使用动态稀疏性提升大语言模型训练的内存效率和稳定性",
+          "canonical_evidence": "使用动态稀疏性提升大语言模型训练的内存效率和稳定性",
+          "llm_tldr_en": "SMET stabilizes dynamic sparse training for LLMs with optimizer warm-up and density-aware scaling, reducing memory consumption.",
+          "llm_tldr_cn": "动态稀疏训练可提升深度神经网络效率，但在LLM训练中常出现优化不稳定性。本文分析发现新生长参数导致冷启动问题。提出SMET，通过优化器热身和密度意识的学习率缩放稳定训练，并通过稀疏梯度存储减少内存。实验证明SMET在LLM训练中实现稳定收敛和内存节省。",
+          "llm_tldr": "动态稀疏训练可提升深度神经网络效率，但在LLM训练中常出现优化不稳定性。本文分析发现新生长参数导致冷启动问题。提出SMET，通过优化器热身和密度意识的学习率缩放稳定训练，并通过稀疏梯度存储减少内存。实验证明SMET在LLM训练中实现稳定收敛和内存节省。",
+          "llm_tags": [
+            "query:ml-llm"
+          ],
+          "matched_query_tag": "query:ml-llm",
+          "matched_query_text": "how to train a large language model",
+          "matched_requirement_id": "req-8",
+          "selection_source": "carryover_cache",
+          "paper_id": "2606.00888v1",
           "carry_days": 1
         }
       ]

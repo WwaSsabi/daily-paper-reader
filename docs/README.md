@@ -6,79 +6,77 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-05-26 ~ 2026-06-04
-- 运行时间：2026-06-04 03:01:39 UTC
+- 最新运行日期：2026-06-04
+- 运行时间：2026-06-04 21:31:43 UTC
 - 运行状态：成功
 - 本次总论文数：19
 - 精读区：8
 - 速读区：11
 
 ### 今日简报（AI）
-1）本期重点精读两篇满分论文，分别揭示LLM预训练效率突破与数据混合诊断新方法。  
-2）最值得关注：截断SVD层让预训练更快、内存更省；LLMSurgeon帮助自动调配最佳数据配比。  
-3）建议优先精读这两篇10分论文，再速读速读列表中Token-自适应激活混合与规模向量的隐藏效应。
-- 详情：[/20260526-20260604/README](/20260526-20260604/README)
+今日19篇论文聚焦语义流正则化与低比特量化，精读两篇高分工作。强烈推荐《Semantic Flow Regularization》（9.0分）与《LFQ》（9.0分），分别解决生成多样性与量化质量提升问题。普通读者可优先阅读这两篇，作为理解LLM控制生成与压缩部署的入门材料。
+- 详情：[/202606/04/README](/202606/04/README)
 
 ### 精读区论文标签
-1. [Efficient Pre-Training of LLMs through Truncated SVD Layers](/20260526-20260604/2605.28573v1-efficient-pre-training-of-llms-through-truncated-svd-layers)  
-   标签：评分：10.0/10、query:ml-llm
-   evidence：通过截断SVD高效预训练大语言模型
-2. [LLMSurgeon: Diagnosing Data Mixture of Large Language Models](/20260526-20260604/2605.30348v1-llmsurgeon-diagnosing-data-mixture-of-large-language-models)  
-   标签：评分：10.0/10、query:ml-llm
-   evidence：诊断大语言模型的数据混合
-3. [UNIQUE: Universal Top-k Sparse Attention for Training-free Inference and Sparsity-aware Training](/20260526-20260604/2605.27740v1-unique-universal-top-k-sparse-attention-for-training-free-inference-and-sparsity-aware-training)  
+1. [Semantic Flow Regularization: Teaching LLMs to Generate Diverse Yet Coherent Responses](/202606/04/2605.27971v1-semantic-flow-regularization-teaching-llms-to-generate-diverse-yet-coherent-responses)  
    标签：评分：9.0/10、query:ml-llm
-   evidence：提出UNIQUE框架，实现LLM中的通用top-k稀疏注意力
-4. [Latent Performance Profiling of Large Language Models](/20260526-20260604/2605.30018v2-latent-performance-profiling-of-large-language-models)  
+   evidence：提出语义流正则化方法提升大语言模型微调时的多样性
+2. [LFQ: Logit-aware Final-block Quantization for Boosting the Generation Quality of Low-Bit Quantized LLMs](/202606/04/2605.29756v1-lfq-logit-aware-final-block-quantization-for-boosting-the-generation-quality-of-low-bit-quantized-llms)  
    标签：评分：9.0/10、query:ml-llm
-   evidence：大语言模型的内在性能剖析
-5. [Unlocking the Working Memory of Large Language Models for Latent Reasoning](/20260526-20260604/2605.30343v1-unlocking-the-working-memory-of-large-language-models-for-latent-reasoning)  
+   evidence：提升低比特量化大语言模型的生成质量
+3. [From "Weak" Signals to Strong Models: Preference Delta Aggregation with LoRA Merging](/202606/04/2606.00357v1-from-weak-signals-to-strong-models-preference-delta-aggregation-with-lora-merging)  
    标签：评分：9.0/10、query:ml-llm
-   evidence：提出RiM方法，使用记忆块在LLM内部进行潜在推理
-6. [Representation Collapse in Sequential Post-Training of Large Language Models](/20260526-20260604/2605.30524v1-representation-collapse-in-sequential-post-training-of-large-language-models)  
+   evidence：提出偏好增量聚合（PDA）框架，通过LoRA合并从弱信号训练LLM
+4. [GNMR: Runtime Stability Control for Low-Precision Large Language Model Training](/202606/04/2606.00539v1-gnmr-runtime-stability-control-for-low-precision-large-language-model-training)  
    标签：评分：9.0/10、query:ml-llm
-   evidence：研究LLM序列后训练中的表示坍缩
-7. [Parameter Alignment Mitigates Catastrophic Forgetting in Multilingual Expert Language Models](/20260526-20260604/2606.00284v1-parameter-alignment-mitigates-catastrophic-forgetting-in-multilingual-expert-language-models)  
+   evidence：解决低精度大语言模型训练中的稳定性问题
+5. [Trust Region On-Policy Distillation](/202606/04/2606.01249v2-trust-region-on-policy-distillation)  
    标签：评分：9.0/10、query:ml-llm
-   evidence：提出参数对齐策略缓解多语言LLM持续预训练中的灾难性遗忘
-8. [Mitigating Hallucinations in Large Language Models Via Decoder Layer Skipping](/20260526-20260604/2606.00819v1-mitigating-hallucinations-in-large-language-models-via-decoder-layer-skipping)  
+   evidence：提出信任区域在线蒸馏（TrOPD）以实现稳定的LLM后训练
+6. [Learning from Saturated Data: Signals Beyond Correctness for LLM Training](/202606/04/2606.01436v1-learning-from-saturated-data-signals-beyond-correctness-for-llm-training)  
    标签：评分：9.0/10、query:ml-llm
-   evidence：提出DeLask，通过动态跳过解码器层缓解LLM幻觉
+   evidence：LLM训练细粒度质量信号
+7. [Dynamic Short Convolutions Improve Transformers](/202606/04/2606.03825v1-dynamic-short-convolutions-improve-transformers)  
+   标签：评分：9.0/10、query:ml-llm
+   evidence：动态短卷积改进Transformer
+8. [Data Attribution in Large Language Models via Bidirectional Gradient Optimization](/202606/04/2606.04928v1-data-attribution-in-large-language-models-via-bidirectional-gradient-optimization)  
+   标签：评分：9.0/10、query:ml-llm
+   evidence：提出双向梯度优化方法用于大语言模型训练数据归因
 
 ### 速读区论文标签
-1. [More Expressive Feedforward Layers: Part I. Token-Adaptive Mixing of Activations](/20260526-20260604/2605.26647v1-more-expressive-feedforward-layers-part-i-token-adaptive-mixing-of-activations)  
+1. [Gradient Transformer: Learning to Generate Updates for LLMs](/202606/04/2605.27591v1-gradient-transformer-learning-to-generate-updates-for-llms)  
    标签：评分：8.0/10、query:ml-llm
-   evidence：Transformer前馈层中的词元自适应激活混合
-2. [Negligible in Size, Significant in Effect: On Scale Vectors in Large Language Models](/20260526-20260604/2605.26895v1-negligible-in-size-significant-in-effect-on-scale-vectors-in-large-language-models)  
+   evidence：通过Gradient Transformer实现LLM的无数据知识蒸馏
+2. [Heterogeneous Parallelism for Multimodal Large Language Model Training](/202606/04/2605.27678v1-heterogeneous-parallelism-for-multimodal-large-language-model-training)  
    标签：评分：8.0/10、query:ml-llm
-   evidence：研究LLM归一化层中的可学习比例向量
-3. [Tracing Computation Density in LLMs](/20260526-20260604/2605.27033v1-tracing-computation-density-in-llms)  
+   evidence：多模态大语言模型训练的异构并行方法
+3. [Fine-Tuning Dynamics of In-Context Factual Recall in Transformers](/202606/04/2605.27774v1-fine-tuning-dynamics-of-in-context-factual-recall-in-transformers)  
    标签：评分：8.0/10、query:ml-llm
-   evidence：分析基于transformer的LLM中的计算分布
-4. [Guiding LLM Post-training Data Engineering with Model Internals from Sparse Autoencoders](/20260526-20260604/2605.27354v1-guiding-llm-post-training-data-engineering-with-model-internals-from-sparse-autoencoders)  
+   evidence：研究Transformer微调中上下文事实回忆的动态过程
+4. [PromptEmbedder:: Efficient and Transferable Text Embedding via Dual-LLM Soft Prompting](/202606/04/2605.28066v1-promptembedder-efficient-and-transferable-text-embedding-via-dual-llm-soft-prompting)  
    标签：评分：8.0/10、query:ml-llm
-   evidence：利用模型内部指导LLM后训练数据工程
-5. [Learning to Adapt SFT Data for Better Reasoning Generalization](/20260526-20260604/2605.26924v1-learning-to-adapt-sft-data-for-better-reasoning-generalization)  
+   evidence：使用双LLM和软提示进行文本嵌入
+5. [Where LLM Annotators Fail: Label-Free Learning on Graphs with LLMs](/202606/04/2605.27913v1-where-llm-annotators-fail-label-free-learning-on-graphs-with-llms)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：针对LLM推理的监督微调数据适配方法
-6. [Large Language Model-Powered Query-Driven Event Timeline Summarization in Industrial Search](/20260526-20260604/2605.27066v1-large-language-model-powered-query-driven-event-timeline-summarization-in-industrial-search)  
+   evidence：使用大语言模型作为图节点分类的标注器并处理噪声
+6. [Prompting Is All You Need: Multi-view Prompting Large Language Models for Aspect-Based Sentiment Analysis](/202606/04/2605.28058v1-prompting-is-all-you-need-multi-view-prompting-large-language-models-for-aspect-based-sentiment-analysis)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：将LLM应用于搜索中的事件时间线摘要
-7. [LRanker: LLM Ranker for Massive Candidates](/20260526-20260604/2605.27810v1-lranker-llm-ranker-for-massive-candidates)  
+   evidence：使用LLM的多视角提示进行方面级情感分析
+7. [Leveraging Routing Dynamics in Mixture-of-Experts Models for Efficient Language Adaptation](/202606/04/2605.29714v1-leveraging-routing-dynamics-in-mixture-of-experts-models-for-efficient-language-adaptation)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：将LLM应用于排序并改进可扩展性
-8. [Extracting Small Translation Specialists from LLMs by Aggressively Pruning Experts](/20260526-20260604/2605.28042v1-extracting-small-translation-specialists-from-llms-by-aggressively-pruning-experts)  
+   evidence：分析并适应多语言LLM预训练中的MoE路由
+8. [Semantic Triplet Restoration: A Novel Protocol for Hierarchical Table Understanding in Large Language Models](/202606/04/2605.31550v1-semantic-triplet-restoration-a-novel-protocol-for-hierarchical-table-understanding-in-large-language-models)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：剪枝MoE LLM以创建高效翻译模型
-9. [Are Diffusion Language Models Good Database Analysts?](/20260526-20260604/2605.27791v1-are-diffusion-language-models-good-database-analysts)  
+   evidence：通过语义三元组恢复提升LLM对层次化表格的理解
+9. [LLMBridge: An LLM Pipeline for End-to-end Referential Bridging Resolution in English](/202606/04/2605.29048v1-llmbridge-an-llm-pipeline-for-end-to-end-referential-bridging-resolution-in-english)  
    标签：评分：6.0/10、query:ml-llm
-   evidence：评估扩散语言模型在NL2SQL任务上的表现
-10. [Towards Reliable Multilingual LLMs-as-a-Judge: An Empirical Study](/20260526-20260604/2605.28710v1-towards-reliable-multilingual-llms-as-a-judge-an-empirical-study)  
+   evidence：用于端到端指代搭桥消解的LLM流水线
+10. [GrepSeek: Training Search Agents for Direct Corpus Interaction](/202606/04/2605.29307v1-grepseek-training-search-agents-for-direct-corpus-interaction)  
    标签：评分：6.0/10、query:ml-llm
-   evidence：多语言大语言模型作为评估者的研究
-11. [Comparative Evaluation of Machine Translation Systems on Images with Text](/20260526-20260604/2605.29476v1-comparative-evaluation-of-machine-translation-systems-on-images-with-text)  
+   evidence：利用shell命令与语料库直接交互的LLM搜索智能体
+11. [DySem: Uncovering Dynamic Semantic Components of Large Language Models for Calculating Semantic Textual Similarity](/202606/04/2605.29751v2-dysem-uncovering-dynamic-semantic-components-of-large-language-models-for-calculating-semantic-textual-similarity)  
    标签：评分：6.0/10、query:ml-llm
-   evidence：对比评估包含文本图像的机器翻译系统，涉及LLM和自然语言处理
+   evidence：发现LLM中的动态语义成分用于语义文本相似度计算
 
 
 <div class="dpr-home-promo-card">
