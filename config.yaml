@@ -25,3 +25,55 @@ subscriptions:
     stage: A
     diff_threshold_pct: 15
   keyword_recall_mode: or
+  intent_profiles:
+    - tag: ml-llm
+      description: 帮我查找和机器学习，LLM大模型相关
+      enabled: true
+      paper_sources:
+        - arxiv
+      keywords:
+        - keyword: machine learning
+          keyword_cn: 机器学习
+          query: machine learning
+        - keyword: large language model
+          keyword_cn: 大语言模型
+          query: large language model
+        - keyword: supervised learning
+          keyword_cn: 监督学习
+          query: supervised learning
+        - keyword: transformer model
+          keyword_cn: Transformer模型
+          query: transformer model
+        - keyword: neural network
+          keyword_cn: 神经网络
+          query: neural network
+        - keyword: natural language processing
+          keyword_cn: 自然语言处理
+          query: natural language processing
+      intent_queries:
+        - query: introduction to machine learning and large language models
+          query_cn: 机器学习和大型语言模型介绍
+          enabled: true
+          source: manual
+          note: ''
+        - query: how to train a large language model
+          query_cn: 如何训练大型语言模型
+          enabled: true
+          source: manual
+          note: ''
+      updated_at: '2026-06-04T02:45:22.311Z'
+source_backends:
+  arxiv:
+    papers_table: arxiv_papers
+    use_vector_rpc: true
+    vector_rpc: match_arxiv_papers
+    vector_rpc_exact: match_arxiv_papers_exact
+    use_bm25_rpc: true
+    bm25_rpc: match_arxiv_papers_bm25
+    sync_table: arxiv_sync_status
+    sync_success_value: success
+    schema: public
+    kind: supabase
+    enabled: true
+    url: https://lyucdwgefyfbmaiopjbk.supabase.co
+    anon_key: sb_publishable_lX-oi64Uxyd7SIVv3_w2Uw_MTOojeKq
