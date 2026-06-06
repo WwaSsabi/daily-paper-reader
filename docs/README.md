@@ -6,77 +6,71 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-05
-- 运行时间：2026-06-05 20:54:38 UTC
+- 最新运行日期：2026-06-06
+- 运行时间：2026-06-06 20:53:25 UTC
 - 运行状态：成功
-- 本次总论文数：19
-- 精读区：8
+- 本次总论文数：17
+- 精读区：6
 - 速读区：11
 
 ### 今日简报（AI）
-今日共精读8篇、速读11篇，重点推荐数据过滤与动态稀疏训练两项技术。最值得关注的是《Data filtering methods for training language models》与《Memory-Efficient LLM Training with Dynamic Sparsity: From Stability to Practical Scaling》，分别聚焦数据质量和训练效率。普通读者可重点关注LLM训练中的效率优化思路，如动态稀疏化方法。
-- 详情：[/202606/05/README](/202606/05/README)
+今日精读2篇高分论文，聚焦长文本融合与多语言微调；速读中推理泛化差距与基准效率优化值得深究。建议重点关注Soft-NBCE和梯度冲突解决机制，对模型鲁棒性有启发。下一步可尝试将博弈论引入训练策略，并探索少样本下的相似图选择。
+- 详情：[/202606/06/README](/202606/06/README)
 
 ### 精读区论文标签
-1. [Data filtering methods for training language models](/202606/05/2605.29807v1-data-filtering-methods-for-training-language-models)  
+1. [Soft-NBCE: Entropy-Weighted Chunk Fusion for Long-Context](/202606/06/2606.01101v1-soft-nbce-entropy-weighted-chunk-fusion-for-long-context)  
    标签：评分：9.0/10、query:ml-llm
-   evidence：训练语言模型的数据过滤方法
-2. [Memory-Efficient LLM Training with Dynamic Sparsity: From Stability to Practical Scaling](/202606/05/2606.00888v1-memory-efficient-llm-training-with-dynamic-sparsity-from-stability-to-practical-scaling)  
+   evidence：软NBCE长上下文大语言模型推理方法
+2. [Multilingual Fine-Tuning via Localized Gradient Conflict Resolution](/202606/06/2606.05613v1-multilingual-fine-tuning-via-localized-gradient-conflict-resolution)  
    标签：评分：9.0/10、query:ml-llm
-   evidence：基于动态稀疏性的高效LLM训练
-3. [GRZO: Group-Relative Zeroth-Order Optimization for Large Language Model Fine-Tuning](/202606/05/2606.02857v1-grzo-group-relative-zeroth-order-optimization-for-large-language-model-fine-tuning)  
-   标签：评分：9.0/10、query:ml-llm
-   evidence：零阶优化用于大语言模型微调
-4. [Improving the Efficiency and Effectiveness of LLM Knowledge Distillation for Conversational Search](/202606/05/2606.04650v1-improving-the-efficiency-and-effectiveness-of-llm-knowledge-distillation-for-conversational-search)  
-   标签：评分：9.0/10、query:ml-llm
-   evidence：LLM知识蒸馏用于对话搜索
-5. [Minimizing the Hidden Cost of Scales: Graph-Guided Ultra-Low-Bit Quantization for Large Language Models](/202606/05/2606.05429v1-minimizing-the-hidden-cost-of-scales-graph-guided-ultra-low-bit-quantization-for-large-language-models)  
-   标签：评分：9.0/10、query:ml-llm
-   evidence：面向大语言模型的图引导超低比特量化框架
-6. [IR3DE: A Linear Router for Large Language Models](/202606/05/2606.06098v1-ir3de-a-linear-router-for-large-language-models)  
-   标签：评分：9.0/10、query:ml-llm
-   evidence：基于岭回归的大语言模型路由选择器
-7. [Improving Answer Extraction in Context-based Question Answering Systems Using LLMs](/202606/05/2606.06197v1-improving-answer-extraction-in-context-based-question-answering-systems-using-llms)  
-   标签：评分：9.0/10、query:ml-llm
-   evidence：基于大语言模型的问答系统
-8. [MLEvolve: A Self-Evolving Framework for Automated Machine Learning Algorithm Discovery](/202606/05/2606.06473v1-mlevolve-a-self-evolving-framework-for-automated-machine-learning-algorithm-discovery)  
-   标签：评分：9.0/10、query:ml-llm
-   evidence：基于LLM的自动机器学习算法发现框架
+   evidence：通过多目标优化解决多语言LLM微调中的负迁移问题
+3. [Divergence Decoding: Inference-Time Unlearning via Auxiliary Models](/202606/06/2605.31293v1-divergence-decoding-inference-time-unlearning-via-auxiliary-models)  
+   标签：评分：8.0/10、query:ml-llm
+   evidence：通过辅助模型在推理时实现大语言模型遗忘
+4. [ProjQ: Project-and-Quantize for Adapter-Aware LLM Compression](/202606/06/2606.00494v1-projq-project-and-quantize-for-adapter-aware-llm-compression)  
+   标签：评分：8.0/10、query:ml-llm
+   evidence：通过量化和LoRA进行大语言模型压缩
+5. [DAG-MoE: From Simple Mixture to Structural Aggregation in Mixture-of-Experts](/202606/06/2606.01062v1-dag-moe-from-simple-mixture-to-structural-aggregation-in-mixture-of-experts)  
+   标签：评分：8.0/10、query:ml-llm
+   evidence：混合专家模型中的结构聚合方法
+6. [Representational Capacity: Geometric Limits on Feature Representation in Transformer Language Models](/202606/06/2606.02765v1-representational-capacity-geometric-limits-on-feature-representation-in-transformer-language-models)  
+   标签：评分：8.0/10、query:ml-llm
+   evidence：分析Transformer语言模型中特征表示的几何限制
 
 ### 速读区论文标签
-1. [Multi-Mixer Models: Flexible Sequence Modeling with Shared Representations](/202606/05/2605.28769v1-multi-mixer-models-flexible-sequence-modeling-with-shared-representations)  
+1. [On the Generalization Gap in Self-Evolving Language Model Reasoning](/202606/06/2606.01075v1-on-the-generalization-gap-in-self-evolving-language-model-reasoning)  
    标签：评分：8.0/10、query:ml-llm
-   evidence：作为transformer注意力的替代架构
-2. [Reasoning-preserved Efficient Distillation of Large Language Models via Activation-aware Initialization](/202606/05/2605.29327v1-reasoning-preserved-efficient-distillation-of-large-language-models-via-activation-aware-initialization)  
+   evidence：研究使用内部生成监督信号的LLM推理自演化
+2. [On the Generalization Gap in Self-Evolving Language Model Reasoning](/202606/06/2606.01075v2-on-the-generalization-gap-in-self-evolving-language-model-reasoning)  
    标签：评分：8.0/10、query:ml-llm
-   evidence：保持LLM推理能力的高效蒸馏
-3. [DySem: Uncovering Dynamic Semantic Components via Multilingual Consensus for Calculating Semantic Textual Similarity](/202606/05/2605.29751v1-dysem-uncovering-dynamic-semantic-components-via-multilingual-consensus-for-calculating-semantic-textual-similarity)  
+   evidence：研究使用内部生成监督信号的LLM推理自演化
+3. [Consistent and Distinctive: LLM Benchmark Efficiency via Maximum Independent Set Prompt Selection on Similarity Graphs](/202606/06/2606.01400v1-consistent-and-distinctive-llm-benchmark-efficiency-via-maximum-independent-set-prompt-selection-on-similarity-graphs)  
    标签：评分：8.0/10、query:ml-llm
-   evidence：利用LLM进行自然语言处理的语义文本相似度计算
-4. [Harnessing non-adversarial robustness in large language models](/202606/05/2605.29816v1-harnessing-non-adversarial-robustness-in-large-language-models)  
+   evidence：通过相似性图上的提示选择提高大语言模型基准测试效率
+4. [FOLD: Fuzzy Online Deduplication for Very Large Evolving Datasets via Approximate Nearest Neighbor Search](/202606/06/2606.03001v1-fold-fuzzy-online-deduplication-for-very-large-evolving-datasets-via-approximate-nearest-neighbor-search)  
    标签：评分：8.0/10、query:ml-llm
-   evidence：无需全重训练增强LLM对提示变化的鲁棒性
-5. [Demystifying Data Organization for Enhanced LLM Training](/202606/05/2605.30334v1-demystifying-data-organization-for-enhanced-llm-training)  
-   标签：评分：8.0/10、query:ml-llm
-   evidence：LLM训练数据组织策略
-6. [Efficient Test-Time Finetuning of LLMs via Convex Reconstruction and Gradient Caching](/202606/05/2605.30337v1-efficient-test-time-finetuning-of-llms-via-convex-reconstruction-and-gradient-caching)  
-   标签：评分：8.0/10、query:ml-llm
-   evidence：高效的LLM测试时微调
-7. [The Long-Term Effects of Data Selection in LLM Fine-Tuning](/202606/05/2605.30537v1-the-long-term-effects-of-data-selection-in-llm-fine-tuning)  
-   标签：评分：8.0/10、query:ml-llm
-   evidence：LLM微调数据选择长期影响
-8. [Loong: A Human-Like Long Document Translation Agent with Observe-and-Act Adaptive Context Selection](/202606/05/2605.30274v1-loong-a-human-like-long-document-translation-agent-with-observe-and-act-adaptive-context-selection)  
+   evidence：LLM训练数据的在线模糊去重
+5. [Scaling Multi-Hop Training Data via Graph-Constrained Path Selection](/202606/06/2605.31238v1-scaling-multi-hop-training-data-via-graph-constrained-path-selection)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：基于LLM的适应性上下文选择长文档翻译
-9. [KG-Guard: Graph-Based Hallucination Detection for Knowledge Base Question Answering](/202606/05/2606.00328v1-kg-guard-graph-based-hallucination-detection-for-knowledge-base-question-answering)  
+   evidence：扩展LLM多跳训练数据
+6. [From Talking Words to Sharing Thoughts: Scalable Multi-LLM Aggregation via Structured Message Passing](/202606/06/2606.00405v1-from-talking-words-to-sharing-thoughts-scalable-multi-llm-aggregation-via-structured-message-passing)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：大语言模型在知识库问答中的幻觉检测
-10. [LaSR: Context-Aware Speech Recognition via Latent Reasoning](/202606/05/2606.00507v1-lasr-context-aware-speech-recognition-via-latent-reasoning)  
+   evidence：基于结构化消息传递的多LLM聚合
+7. [ProjQ: Project-and-Quantize for Adapter-Aware LLM Compression](/202606/06/2606.00494v2-projq-project-and-quantize-for-adapter-aware-llm-compression)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：基于潜在推理的上下文感知语音识别训练范式
-11. [MLLM-Microscope: Unlocking Hidden Structure Within Multimodal Large Language Models](/202606/05/2606.00909v1-mllm-microscope-unlocking-hidden-structure-within-multimodal-large-language-models)  
+   evidence：结合量化和LoRA的LLM压缩框架，使用正交子空间投影
+8. [ProactiveLLM: Learning Active Interaction for Streaming Large Language Models](/202606/06/2606.00523v1-proactivellm-learning-active-interaction-for-streaming-large-language-models)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：分析多模态大语言模型的隐藏表示
+   evidence：利用内源状态学习流式LLM的主动交互决策
+9. [PortBERT: Navigating the Depths of Portuguese Language Models](/202606/06/2606.02100v1-portbert-navigating-the-depths-of-portuguese-language-models)  
+   标签：评分：6.0/10、query:ml-llm
+   evidence：针对葡萄牙语NLP的Transformer模型
+10. [Position: Prioritize Identifying Structure, Not Complex Models, for Scientific Discovery](/202606/06/2606.02632v1-position-prioritize-identifying-structure-not-complex-models-for-scientific-discovery)  
+   标签：评分：6.0/10、query:ml-llm
+   evidence：讨论机器学习和大语言模型在科学发现中的局限性
+11. [LLM-Guided ANN Index Optimization for Human-Object Interaction Retrieval](/202606/06/2606.05489v1-llm-guided-ann-index-optimization-for-human-object-interaction-retrieval)  
+   标签：评分：6.0/10、query:ml-llm
+   evidence：使用LLM代理指导ANN索引优化以提升检索性能
 
 
 <div class="dpr-home-promo-card">

@@ -1,54 +1,12 @@
 {
-  "generated_at": "2026-06-05T20:42:34.175532+00:00",
-  "updated_date": "20260605",
+  "generated_at": "2026-06-06T20:42:26.720850+00:00",
+  "updated_date": "20260606",
   "carryover_days": 9,
   "tag_states": {
     "ml-llm": {
-      "updated_date": "20260605",
+      "updated_date": "20260606",
       "carryover_days": 9,
       "items": [
-        {
-          "id": "2605.31238v1",
-          "source": "arxiv",
-          "title": "Scaling Multi-Hop Training Data via Graph-Constrained Path Selection",
-          "abstract": "Endowing large language models with compositional reasoning over specialized documents requires multi-hop training data at scale, where such data rarely exists outside of curated benchmarks built on structured sources. To construct it directly from plain, unannotated text, existing methods ask a single teacher model to jointly discover an evidence path through a document and verbalize it as a question-answer pair. However, these methods degrade sharply when documents are structured around repetitive templates and densely cross-referencing clauses, conditions that characterize most real-world specialized corpora. In this work, we decouple the two operations: reasoning paths are enumerated offline over a graph of contextual keyword centroids, and the teacher is invoked only to verbalize pre-validated paths. The graph enforces five geometric admissibility constraints, for which we provide Gram-matrix arguments establishing that local similarity bounds alone admit endpoint drift up to ${\\sim}91^{\\circ}$, and that an upper similarity bound is necessary to exit dense embedding cliques formed by boilerplate text. A matched-size ablation isolates the mechanism: at equal training scale, constrained and unconstrained chains yield indistinguishable downstream performance, and the gain at full scale comes from a 4.4$\\times$ expansion of the usable corpus rather than from higher per-chain quality -- reframing the role of graph constraints, in this setting, as raising teacher synthesizability rather than improving chain content. Fine-tuning Qwen3-32B on 80K examples constructed from the CUAD legal contract corpus improves closed-book Token F1 from 21.66% to 38.58%. We have released our codes at https://github.com/hkgai-official/GCSCS.",
-          "authors": [
-            "Pengyu Chen",
-            "Yonggang Zhang",
-            "Mingming Chen",
-            "Jun Song",
-            "Wei Xue",
-            "Yike Guo"
-          ],
-          "primary_category": "cs.CL",
-          "categories": [
-            "cs.CL",
-            "cs.LG"
-          ],
-          "published": "2026-05-29T12:39:03+00:00",
-          "link": "https://arxiv.org/pdf/2605.31238v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "Scaling multi-hop training data for LLMs via graph-constrained path selection",
-          "llm_evidence_cn": "通过图约束路径选择扩展LLM的多跳训练数据",
-          "llm_evidence": "通过图约束路径选择扩展LLM的多跳训练数据",
-          "canonical_evidence": "通过图约束路径选择扩展LLM的多跳训练数据",
-          "llm_tldr_en": "Graph-constrained path selection generates multi-hop training data for LLM compositional reasoning over specialized documents.",
-          "llm_tldr_cn": "多跳训练数据对LLM的合成推理至关重要，但现有方法在结构化文档中表现不佳。本文提出离线枚举推理路径的方法，基于上下文关键字质心图选择路径，并让教师模型口头化。该方法在专业文档上生成高质量多跳数据，提升LLM推理能力。",
-          "llm_tldr": "多跳训练数据对LLM的合成推理至关重要，但现有方法在结构化文档中表现不佳。本文提出离线枚举推理路径的方法，基于上下文关键字质心图选择路径，并让教师模型口头化。该方法在专业文档上生成高质量多跳数据，提升LLM推理能力。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "how to train a large language model",
-          "matched_requirement_id": "req-8",
-          "selection_source": "carryover_cache",
-          "paper_id": "2605.31238v1",
-          "carry_days": 1
-        },
         {
           "id": "2606.03773v1",
           "source": "arxiv",
@@ -89,448 +47,7 @@
           "matched_requirement_id": "req-8",
           "selection_source": "carryover_cache",
           "paper_id": "2606.03773v1",
-          "carry_days": 2
-        },
-        {
-          "id": "2606.01249v1",
-          "source": "arxiv",
-          "title": "Trust Region On-Policy Distillation",
-          "abstract": "On-Policy Distillation (OPD) is a fundamental technique for efficient post-training of large language models (LLMs), with broad applications in agent learning, multi-task enhancement, and model compression. However, OPD training becomes unstable when the teacher and student distributions differ substantially, as teacher supervision on student-generated tokens may yield unreliable policy gradients and even cause optimization failure. This work addresses reliable on-policy token-level supervision through credit assignment strategies, and proposes Trust Region On-Policy Distillation, TrOPD. It features the following characteristics: 1) Trust-Region On-Policy Learning: TrOPD performs OPD only in regions where the teacher provides reliable supervision, mitigating the optimization difficulty of the K1 reverse-KL estimator under distribution mismatch. 2) Outlier Estimation: For outlier regions, we explore gradient clipping, masking, and forward-KL estimation to reduce the adverse effects of unreliable supervision. 3) Off-Policy Guidance: The student continues generation from teacher prefixes and uses forward KL to imitate off-policy guidance, encouraging on-policy exploration toward reliable regions. Experiments show that TrOPD consistently outperforms SoTA OPD baselines, including OPD, EOPD, and REOPOLD, across mathematical reasoning, code generation, and general-domain benchmarks.",
-          "authors": [
-            "Xingrun Xing",
-            "Haoqing Wang",
-            "Boyan Gao",
-            "Ziheng Li",
-            "Yehui Tang"
-          ],
-          "primary_category": "cs.LG",
-          "categories": [
-            "cs.LG",
-            "cs.CL"
-          ],
-          "published": "2026-05-31T14:04:51+00:00",
-          "link": "https://arxiv.org/pdf/2606.01249v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "on-policy distillation for LLM post-training",
-          "llm_evidence_cn": "LLM后训练的在线策略蒸馏",
-          "llm_evidence": "LLM后训练的在线策略蒸馏",
-          "canonical_evidence": "LLM后训练的在线策略蒸馏",
-          "llm_tldr_en": "TrOPD introduces trust-region on-policy distillation to stabilize LLM distillation when teacher and student distributions differ, improving reliability.",
-          "llm_tldr_cn": "在线策略蒸馏中师生分布差异大时训练不稳定，导致优化失败。本文提出信任区域在线策略蒸馏，仅在教师提供可靠监督的区域进行蒸馏，缓解优化困难。实验表明该机制有效提高LLM蒸馏的稳定性，适用于代理学习、多任务增强和模型压缩等场景。",
-          "llm_tldr": "在线策略蒸馏中师生分布差异大时训练不稳定，导致优化失败。本文提出信任区域在线策略蒸馏，仅在教师提供可靠监督的区域进行蒸馏，缓解优化困难。实验表明该机制有效提高LLM蒸馏的稳定性，适用于代理学习、多任务增强和模型压缩等场景。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "how to train a large language model",
-          "matched_requirement_id": "req-8",
-          "selection_source": "carryover_cache",
-          "paper_id": "2606.01249v1",
-          "carry_days": 1
-        },
-        {
-          "id": "2606.02765v1",
-          "source": "arxiv",
-          "title": "Representational Capacity: Geometric Limits on Feature Representation in Transformer Language Models",
-          "abstract": "Model dimension ($d_{model}$) is a fundamental hyperparameter in transformer language models, yet its role in setting the geometric limits of feature representation remains under-explored. Grounded in the Linear Representation and Superposition Hypotheses - which propose that models encode features as near-orthogonal directions in latent space - we develop a framework for estimating how many such directions a model can support. We first establish the embedding matrix as a measurable proxy for near-orthogonality constraints across the latent space: the boundary between meaningful token relationships and incidental similarity in the pairwise cosine similarity distribution gives a concrete estimate of the model's accepted deviation $\\varepsilon$ from perfect orthogonality. Applying this metric across dozens of open-source models reveals two classes: models with high $\\varepsilon$ whose embeddings lack near-orthogonal structure, and models with low $\\varepsilon$ that maintain it. We then show that the standard Johnson-Lindenstrauss lemma greatly underestimates the packing efficiency of trained representations, and derive an adjusted capacity formula in which the number of near-orthogonal directions depends on the ratio of vectors to dimensions ($k/d$) rather than the raw count - a single modification that cuts prediction error by two orders of magnitude with no extra parameters. Combining these results, we define representational capacity as an upper bound on the number of distinguishable directions available for features and embeddings in a model's latent space. Capacity is exponentially sensitive to $\\varepsilon$, and larger models favor tighter orthogonality constraints over maximizing raw capacity - a pattern compatible with several explanations (a stability-capacity trade-off, a ceiling on usable concepts, or confounds with model scale) that we leave to future work.",
-          "authors": [
-            "Alexander Guha"
-          ],
-          "primary_category": "cs.LG",
-          "categories": [
-            "cs.LG",
-            "cs.AI"
-          ],
-          "published": "2026-06-01T18:28:56+00:00",
-          "link": "https://arxiv.org/pdf/2606.02765v1",
-          "tags": [
-            "keyword:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "analyzes geometric limits of feature representation in Transformer language models",
-          "llm_evidence_cn": "分析Transformer语言模型中特征表示的几何限制",
-          "llm_evidence": "分析Transformer语言模型中特征表示的几何限制",
-          "canonical_evidence": "分析Transformer语言模型中特征表示的几何限制",
-          "llm_tldr_en": "This paper develops a framework to estimate how many near-orthogonal features a Transformer language model can support, using embedding matrices and cosine similarity distributions.",
-          "llm_tldr_cn": "Transformer语言模型的模型维度是核心超参数，但其对特征表示几何限制的影响尚未充分探索。基于线性表示和叠加假设，本文建立框架通过嵌入矩阵和余弦相似度分布估计模型能支持的近正交方向数量。该工作揭示了表示容量与模型维度的关系，为模型设计提供理论指导。",
-          "llm_tldr": "Transformer语言模型的模型维度是核心超参数，但其对特征表示几何限制的影响尚未充分探索。基于线性表示和叠加假设，本文建立框架通过嵌入矩阵和余弦相似度分布估计模型能支持的近正交方向数量。该工作揭示了表示容量与模型维度的关系，为模型设计提供理论指导。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "transformer model",
-          "matched_requirement_id": "req-4",
-          "selection_source": "carryover_cache",
-          "paper_id": "2606.02765v1",
-          "carry_days": 2
-        },
-        {
-          "id": "2606.01062v1",
-          "source": "arxiv",
-          "title": "DAG-MoE: From Simple Mixture to Structural Aggregation in Mixture-of-Experts",
-          "abstract": "Mixture-of-Experts (MoE) models have become a leading approach for decoupling parameter count from computational cost in large language models, yet effectively scaling MoE performance remains a challenge. Prior work shows that fine-grained experts enlarge the space of expert combinations and improve flexibility, but they also impose substantial routing overhead, creating a new scalability bottleneck. In this paper, we explore a complementary axis for scaling -- how expert outputs are aggregated. We theoretically show that replacing the standard weighted-summation aggregation with structural aggregation expands the expert-combination space without altering the experts or router, and enables possible multi-step reasoning within a single MoE layer. To this end, we propose DAG-MoE, a sparse MoE framework that employs a lightweight module to automatically learn the optimal aggregation structure among the selected experts. Extensive experiments under standard language modeling settings show that DAG-MoE consistently improves performance in both pretraining and fine-tuning, surpassing traditional MoE baselines.",
-          "authors": [
-            "Jiarui Feng",
-            "Hanqing Zeng",
-            "Karish Grover",
-            "Ruizhong Qiu",
-            "Yinglong Xia",
-            "Qiang Zhang",
-            "Qifan Wang",
-            "Ren Chen",
-            "Dongqi Fu",
-            "Jiayi Liu",
-            "Zhoukai Zhao",
-            "Xiangjun Fan",
-            "Benyu Zhang",
-            "Yixin Chen"
-          ],
-          "primary_category": "cs.AI",
-          "categories": [
-            "cs.AI"
-          ],
-          "published": "2026-05-31T07:08:16+00:00",
-          "link": "https://arxiv.org/pdf/2606.01062v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "Structural aggregation in Mixture-of-Experts transformer models",
-          "llm_evidence_cn": "混合专家模型中的结构聚合方法",
-          "llm_evidence": "混合专家模型中的结构聚合方法",
-          "canonical_evidence": "混合专家模型中的结构聚合方法",
-          "llm_tldr_en": "Proposes DAG-MoE, replacing standard weighted-sum with structural aggregation in MoE layers to expand expert combinations and enable multi-step reasoning within a single layer.",
-          "llm_tldr_cn": "混合专家（MoE）模型虽已成功扩展大语言模型，但标准加权求和聚合限制了专家组合空间。本文提出DAG-MoE，用结构聚合替代加权求和，在不改变专家和路由器的情况下扩大了组合空间，并支持单层内的多步推理。理论分析和实验表明，该方法提升了MoE模型的性能和推理能力。",
-          "llm_tldr": "混合专家（MoE）模型虽已成功扩展大语言模型，但标准加权求和聚合限制了专家组合空间。本文提出DAG-MoE，用结构聚合替代加权求和，在不改变专家和路由器的情况下扩大了组合空间，并支持单层内的多步推理。理论分析和实验表明，该方法提升了MoE模型的性能和推理能力。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "transformer model",
-          "matched_requirement_id": "req-4",
-          "selection_source": "carryover_cache",
-          "paper_id": "2606.01062v1",
-          "carry_days": 1
-        },
-        {
-          "id": "2606.00494v2",
-          "source": "arxiv",
-          "title": "ProjQ: Project-and-Quantize for Adapter-Aware LLM Compression",
-          "abstract": "Post-Training Quantization (PTQ) and Low-Rank Adaptation (LoRA) constitute the standard pipeline for efficient Large Language Model (LLM) deployment. However, applying them sequentially poses a problem: PTQ often leaves behind random noise that is spread out (across the model's weights) in a way LoRA can't easily fix, meaning that LoRA ends up wasting its limited capacity trying to fix uncorrectable noise instead of improving task performance. In this paper, we propose \\textbf{ProjQ}, a novel framework for constraining quantization noise to the low-rank manifold via orthogonal subspace projection. We derive an efficient alternating algorithm that shapes the quantization noise into a low-rank structure, effectively offloading dominant error components to the subsequent adapter while minimizing the residual error in the orthogonal \"uncorrectable\" subspace. Our theoretical analysis demonstrates that ProjQ preserves strictly greater model plasticity for downstream tasks compared to standard PTQ. Extensive experiments on LLaMA-2, Qwen2.5 and Qwen3 confirm that ProjQ consistently outperforms existing methods in both quantization error compensation and downstream task fine-tuning, achieving up to $2\\times$ lower evaluation loss for compensation and matching the performance of standard 4-bit baselines on language modeling tasks with only 3 bits. The code is available on https://github.com/yy9301/ProjQ .",
-          "authors": [
-            "Wenya Yu",
-            "Chao Zhang",
-            "Li Wang",
-            "Samson Lasaulce",
-            "Merouane Debbah"
-          ],
-          "primary_category": "cs.LG",
-          "categories": [
-            "cs.LG"
-          ],
-          "published": "2026-05-30T02:54:40+00:00",
-          "link": "https://arxiv.org/pdf/2606.00494v2",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "LLM compression with quantization and LoRA",
-          "llm_evidence_cn": "基于量化和LoRA的大语言模型压缩",
-          "llm_evidence": "基于量化和LoRA的大语言模型压缩",
-          "canonical_evidence": "基于量化和LoRA的大语言模型压缩",
-          "llm_tldr_en": "ProjQ constrains quantization noise to low-rank manifold via orthogonal projection, improving LLM compression for adapter-aware deployment.",
-          "llm_tldr_cn": "后训练量化和低秩适配是LLM高效部署的标准流程，但顺序应用会导致量化噪声难以修复。ProjQ通过正交子空间投影将量化噪声约束到低秩流形，提出交替算法优化噪声结构。实验表明ProjQ能有效将误差主导成分转移至适配器可处理部分，提升压缩后模型性能。该方法为LLM压缩提供了新思路。",
-          "llm_tldr": "后训练量化和低秩适配是LLM高效部署的标准流程，但顺序应用会导致量化噪声难以修复。ProjQ通过正交子空间投影将量化噪声约束到低秩流形，提出交替算法优化噪声结构。实验表明ProjQ能有效将误差主导成分转移至适配器可处理部分，提升压缩后模型性能。该方法为LLM压缩提供了新思路。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "large language model",
-          "matched_requirement_id": "req-2",
-          "selection_source": "carryover_cache",
-          "paper_id": "2606.00494v2",
-          "carry_days": 1
-        },
-        {
-          "id": "2606.00494v1",
-          "source": "arxiv",
-          "title": "ProjQ: Project-and-Quantize for Adapter-Aware LLM Compression",
-          "abstract": "Post-Training Quantization (PTQ) and Low-Rank Adaptation (LoRA) constitute the standard pipeline for efficient Large Language Model (LLM) deployment. However, applying them sequentially poses a problem: PTQ often leaves behind random noise that is spread out (across the model's weights) in a way LoRA can't easily fix, meaning that LoRA ends up wasting its limited capacity trying to fix uncorrectable noise instead of improving task performance. In this paper, we propose \\textbf{ProjQ}, a novel framework for constraining quantization noise to the low-rank manifold via orthogonal subspace projection. We derive an efficient alternating algorithm that shapes the quantization noise into a low-rank structure, effectively offloading dominant error components to the subsequent adapter while minimizing the residual error in the orthogonal \"uncorrectable\" subspace. Our theoretical analysis demonstrates that ProjQ preserves strictly greater model plasticity for downstream tasks compared to standard PTQ. Extensive experiments on LLaMA-2, Qwen2.5 and Qwen3 confirm that ProjQ consistently outperforms existing methods in both quantization error compensation and downstream task fine-tuning, achieving up to $2\\times$ lower evaluation loss for compensation and matching the performance of standard 4-bit baselines on language modeling tasks with only 3 bits. The code is available on https://github.com/yy9301/ProjQ .",
-          "authors": [
-            "Wneya Yu",
-            "Chao Zhang",
-            "Li Wang",
-            "Samson Lasaulce",
-            "Merouane Debbah"
-          ],
-          "primary_category": "cs.LG",
-          "categories": [
-            "cs.LG"
-          ],
-          "published": "2026-05-30T02:54:40+00:00",
-          "link": "https://arxiv.org/pdf/2606.00494v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "LLM compression with quantization and LoRA",
-          "llm_evidence_cn": "基于量化和LoRA的大语言模型压缩",
-          "llm_evidence": "基于量化和LoRA的大语言模型压缩",
-          "canonical_evidence": "基于量化和LoRA的大语言模型压缩",
-          "llm_tldr_en": "ProjQ constrains quantization noise to low-rank manifold via orthogonal projection, improving LLM compression for adapter-aware deployment.",
-          "llm_tldr_cn": "后训练量化和低秩适配是LLM高效部署的标准流程，但顺序应用会导致量化噪声难以修复。ProjQ通过正交子空间投影将量化噪声约束到低秩流形，提出交替算法优化噪声结构。实验表明ProjQ能有效将误差主导成分转移至适配器可处理部分，提升压缩后模型性能。该方法为LLM压缩提供了新思路。",
-          "llm_tldr": "后训练量化和低秩适配是LLM高效部署的标准流程，但顺序应用会导致量化噪声难以修复。ProjQ通过正交子空间投影将量化噪声约束到低秩流形，提出交替算法优化噪声结构。实验表明ProjQ能有效将误差主导成分转移至适配器可处理部分，提升压缩后模型性能。该方法为LLM压缩提供了新思路。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "large language model",
-          "matched_requirement_id": "req-2",
-          "selection_source": "carryover_cache",
-          "paper_id": "2606.00494v1",
-          "carry_days": 1
-        },
-        {
-          "id": "2606.03001v1",
-          "source": "arxiv",
-          "title": "FOLD: Fuzzy Online Deduplication for Very Large Evolving Datasets via Approximate Nearest Neighbor Search",
-          "abstract": "Fuzzy deduplication is key to constructing large language model training corpora. However, classic Locality-Sensitive Hashing pipelines scale poorly as corpora grow and are ill-suited to continuous ingestion. We present FOLD (Fuzzy Online Deduplication), an online fuzzy deduplication system that delivers high recall and throughput for evolving datasets. FOLD maintains an incrementally updated HNSW index over admitted documents, retrieving a small, high-quality candidate neighborhood for each incoming document instead of repeatedly rebuilding global buckets or rescanning the accumulated corpus. To our knowledge, FOLD is the first online fuzzy deduplication system to use HNSW. However, applying Jaccard similarity out of the box causes score crowding, making graph traversal unreliable within a small number of steps. FOLD addresses this with a bitmap representation that provides a more discriminative, Jaccard-aligned signal during HNSW search. Across four LLM-scale datasets (LM1B, C4, RealNews, and Common Crawl), FOLD stays fast and accurate as the corpus grows: at the largest evaluated scales, it maintains 93-97% recall and achieves up to 2.09x higher throughput than competing alternatives, whose best recall reaches only 76%.",
-          "authors": [
-            "Nelson Bore",
-            "Pritish Mishra",
-            "Constantin Adam",
-            "Eyal de Lara",
-            "Oana Balmau"
-          ],
-          "primary_category": "cs.DC",
-          "categories": [
-            "cs.DC"
-          ],
-          "published": "2026-06-02T01:16:26+00:00",
-          "link": "https://arxiv.org/pdf/2606.03001v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "fuzzy deduplication for LLM training corpora",
-          "llm_evidence_cn": "用于LLM训练语料的模糊去重",
-          "llm_evidence": "用于LLM训练语料的模糊去重",
-          "canonical_evidence": "用于LLM训练语料的模糊去重",
-          "llm_tldr_en": "FOLD is an online fuzzy deduplication system using HNSW index for large evolving LLM training datasets, achieving high recall and throughput.",
-          "llm_tldr_cn": "大规模LLM训练语料去重面临扩展性和持续摄入挑战，传统局部敏感哈希方法效率低。本文提出FOLD系统，利用增量更新的HNSW索引进行在线模糊去重，避免全局重建。实验表明在召回率和吞吐量上表现优异，是首个使用HNSW的在线去重方案，为LLM数据准备提供了高效工具。",
-          "llm_tldr": "大规模LLM训练语料去重面临扩展性和持续摄入挑战，传统局部敏感哈希方法效率低。本文提出FOLD系统，利用增量更新的HNSW索引进行在线模糊去重，避免全局重建。实验表明在召回率和吞吐量上表现优异，是首个使用HNSW的在线去重方案，为LLM数据准备提供了高效工具。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "how to train a large language model",
-          "matched_requirement_id": "req-8",
-          "selection_source": "carryover_cache",
-          "paper_id": "2606.03001v1",
-          "carry_days": 1
-        },
-        {
-          "id": "2606.02100v1",
-          "source": "arxiv",
-          "title": "PortBERT: Navigating the Depths of Portuguese Language Models",
-          "abstract": "Transformer models dominate modern NLP, but efficient, language-specific models remain scarce. In Portuguese, most focus on scale or accuracy, often neglecting training and deployment efficiency. In the present work, we introduce PortBERT, a family of RoBERTa-based language models for Portuguese, designed to balance performance and efficiency. Trained from scratch on over 450 GB of deduplicated and filtered mC4 and OSCAR23 from CulturaX using fairseq, PortBERT leverages byte-level BPE tokenization and stable pre-training routines across both GPU and TPU processors. We release two variants, PortBERT base and PortBERT large, and evaluate them on ExtraGLUE, a suite of translated GLUE and SuperGLUE tasks. Both models perform competitively, matching or surpassing existing monolingual and multilingual models. Beyond accuracy, we report training and inference times as well as fine-tuning throughput, providing practical insights into model efficiency. PortBERT thus complements prior work by addressing the underexplored dimension of compute-performance tradeoffs in Portuguese NLP. We release all models on Huggingface and provide fairseq checkpoints to support further research and applications.",
-          "authors": [
-            "Raphael Scheible-Schmitt",
-            "Henry He",
-            "Armando B. Mendes"
-          ],
-          "primary_category": "cs.CL",
-          "categories": [
-            "cs.CL"
-          ],
-          "published": "2026-06-01T11:32:02+00:00",
-          "link": "https://arxiv.org/pdf/2606.02100v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "Transformer-based language model for Portuguese",
-          "llm_evidence_cn": "基于Transformer的葡萄牙语语言模型",
-          "llm_evidence": "基于Transformer的葡萄牙语语言模型",
-          "canonical_evidence": "基于Transformer的葡萄牙语语言模型",
-          "llm_tldr_en": "PortBERT is a family of RoBERTa-based Transformer language models for Portuguese, balancing performance and efficiency, trained from scratch on 450GB of data.",
-          "llm_tldr_cn": "葡萄牙语NLP缺乏高效的语言模型，现有模型忽视效率。本文提出PortBERT系列，基于RoBERTa架构从零训练，使用byte-level BPE分词和稳定预训练，在ExtraGLUE上表现竞争力。该工作为葡萄牙语提供了兼顾性能与效率的选择，展示了Transformer在低资源语言上的应用。",
-          "llm_tldr": "葡萄牙语NLP缺乏高效的语言模型，现有模型忽视效率。本文提出PortBERT系列，基于RoBERTa架构从零训练，使用byte-level BPE分词和稳定预训练，在ExtraGLUE上表现竞争力。该工作为葡萄牙语提供了兼顾性能与效率的选择，展示了Transformer在低资源语言上的应用。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "transformer model",
-          "matched_requirement_id": "req-4",
-          "selection_source": "carryover_cache",
-          "paper_id": "2606.02100v1",
-          "carry_days": 1
-        },
-        {
-          "id": "2606.01101v1",
-          "source": "arxiv",
-          "title": "Soft-NBCE: Entropy-Weighted Chunk Fusion for Long-Context",
-          "abstract": "The quadratic complexity of self-attention remains a bottleneck for Large Language Models (LLMs) processing ultra-long contexts. The Naive Bayes Cognitive Engine (NBCE) parallelizes long-context inference by chunking documents and routing to the lowest-entropy chunk at each decoding step. This hard-selection strategy causes semantic fragmentation during cross-chunk reasoning, as abrupt routing changes between adjacent tokens disrupt the model's contextual grounding.   We present Soft-NBCE, a lightweight extension that replaces discrete chunk selection with soft entropy-weighted chunk fusion. A temperature-scaled Softmax over predictive entropies assigns continuous weights to all chunks, enabling log-space aggregation across chunk-conditioned distributions. To partially compensate for the conditional independence assumption introduced by chunking, we propose Consistency Distillation, a LoRA-based self-distillation that constrains the chunked logit distribution toward a full-context teacher via KL-divergence. On LongBench multi-hop benchmarks, Soft-NBCE with Consistency Distillation improves consistently over NBCE-style baselines (MuSiQue F1: 0.310 vs.\\ 0.275 for Vanilla NBCE; HotpotQA F1: 0.479 vs.\\ 0.427) while maintaining retrieval accuracy (NIAH-32K: 0.909) at O(L^2/n) peak memory.",
-          "authors": [
-            "Shihao Ji",
-            "Mingyu Li",
-            "Zihui Song"
-          ],
-          "primary_category": "cs.LG",
-          "categories": [
-            "cs.LG",
-            "cs.AI"
-          ],
-          "published": "2026-05-31T08:43:47+00:00",
-          "link": "https://arxiv.org/pdf/2606.01101v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "soft entropy-weighted chunk fusion for LLM long-context inference",
-          "llm_evidence_cn": "软熵加权块融合用于LLM长上下文推理",
-          "llm_evidence": "软熵加权块融合用于LLM长上下文推理",
-          "canonical_evidence": "软熵加权块融合用于LLM长上下文推理",
-          "llm_tldr_en": "Soft-NBCE replaces hard chunk selection with soft fusion to improve long-context reasoning in LLMs, mitigating semantic fragmentation.",
-          "llm_tldr_cn": "LLM自注意力的二次复杂度限制长上下文处理，现有NBCE硬选择导致语义碎片。本文提出软熵加权块融合，用连续权重替代离散选择进行对数空间聚合。实验表明在推理基准上提升了跨块推理的语义连贯性，为LLM长上下文推理提供了轻量有效方案。",
-          "llm_tldr": "LLM自注意力的二次复杂度限制长上下文处理，现有NBCE硬选择导致语义碎片。本文提出软熵加权块融合，用连续权重替代离散选择进行对数空间聚合。实验表明在推理基准上提升了跨块推理的语义连贯性，为LLM长上下文推理提供了轻量有效方案。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "large language model",
-          "matched_requirement_id": "req-2",
-          "selection_source": "carryover_cache",
-          "paper_id": "2606.01101v1",
-          "carry_days": 1
-        },
-        {
-          "id": "2606.05781v1",
-          "source": "arxiv",
-          "title": "Domain-Adapted Small Language Models with Hybrid Post-Processing: Achieving Cost-Efficient, Low-Latency Multi-Label Structured Prediction via LoRA Fine-Tuning on Scarce Data",
-          "abstract": "Deploying frontier large language models (LLMs) for domain-specific structured evaluation tasks often incurs substantial latency, cost, and data privacy overhead. We present a hybrid framework that combines a fine-tuned small language model (LLaMA 3.1 8B, with only 2.05% trainable parameters via LoRA) and a deterministic rule-based post-processing layer. Trained on just 219 curated examples, the system is applied to multi-label compliance evaluation of conversational transcripts spanning 18 heterogeneous output fields. In blind evaluation on 53 previously unseen production transcripts, it achieves 100% JSON structural validity, 83.0% human-validated overall accuracy, and 100% accuracy on the most critical classification field. The proposed approach formalizes a hybrid neural-symbolic decomposition and introduces targeted hard-negative augmentation to improve performance on critical decision boundaries. Running on a single NVIDIA A100 GPU, inference completes in approximately 2 seconds, which is 2-5x faster than frontier-model APIs. The system costs only $0.013 per evaluation compared with $0.025-$0.055 for proprietary alternatives, resulting in 46-76% cost savings. These results demonstrate that domain-adapted small language models, when combined with deterministic post-processing, can match frontier-model accuracy for structured compliance evaluation while substantially reducing operational cost, latency, and privacy risk.   Keywords: small language models, parameter-efficient fine-tuning, LoRA, domain adaptation, hybrid inference, compliance evaluation, structured output.",
-          "authors": [
-            "Srinivasan Manoharan",
-            "Dilipkumar Nallusamy",
-            "Sachin Kumar",
-            "Haifeng Wu"
-          ],
-          "primary_category": "cs.LG",
-          "categories": [
-            "cs.LG"
-          ],
-          "published": "2026-06-04T07:09:37+00:00",
-          "link": "https://arxiv.org/pdf/2606.05781v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "cost-efficient LLM domain adaptation via LoRA",
-          "llm_evidence_cn": "通过LoRA实现成本高效的LLM领域适应",
-          "llm_evidence": "通过LoRA实现成本高效的LLM领域适应",
-          "canonical_evidence": "通过LoRA实现成本高效的LLM领域适应",
-          "llm_tldr_en": "Hybrid framework using LoRA fine-tuned small LLM plus rule-based post-processing for multi-label compliance evaluation on scarce data.",
-          "llm_tldr_cn": "部署前沿LLM用于领域任务成本高延迟大且有隐私问题。本文提出混合框架，结合LoRA微调的小LLM（仅2.05%参数）和确定性规则后处理，在219个样本上训练。盲测53个未见样本达到100% JSON结构有效性和83.0%准确率，证明小LLM加后处理在稀缺数据场景下是有效的替代方案。",
-          "llm_tldr": "部署前沿LLM用于领域任务成本高延迟大且有隐私问题。本文提出混合框架，结合LoRA微调的小LLM（仅2.05%参数）和确定性规则后处理，在219个样本上训练。盲测53个未见样本达到100% JSON结构有效性和83.0%准确率，证明小LLM加后处理在稀缺数据场景下是有效的替代方案。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "large language model",
-          "matched_requirement_id": "req-2",
-          "selection_source": "carryover_cache",
-          "paper_id": "2606.05781v1",
-          "carry_days": 1
-        },
-        {
-          "id": "2606.04535v1",
-          "source": "arxiv",
-          "title": "Dynamic Infilling Anchors for Format-Constrained Generation in Diffusion Large Language Models",
-          "abstract": "Diffusion large language models (dLLMs) offer bidirectional attention and parallel generation, enabling them to exploit global context and naturally support format-constrained tasks like parseable JSON or reasoning templates. While straightforward fixed anchors can enforce such constraints, they often impose rigid spans, leading to truncated reasoning or redundant content. To overcome this, we propose Dynamic Infilling Anchors (DIA), a training-free method that dynamically estimates end-anchor positions to adjust generation length before iterative infilling. This flexible mechanism ensures structural correctness and semantic coherence, avoiding the inefficiencies of fixed-span methods. Experiments on reasoning benchmarks demonstrate that DIA substantially improves format compliance and answer accuracy, achieving significant zero-shot gains on GSM8K and MATH. These results establish DIA as a robust pathway toward reliable, structure-aware generation.",
-          "authors": [
-            "Boyan Han",
-            "Yiwei Wang",
-            "Yi Song",
-            "Yujun Cai",
-            "Chi Zhang"
-          ],
-          "primary_category": "cs.CL",
-          "categories": [
-            "cs.CL",
-            "cs.AI"
-          ],
-          "published": "2026-06-03T07:18:23+00:00",
-          "link": "https://arxiv.org/pdf/2606.04535v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "format-constrained generation in diffusion LLMs",
-          "llm_evidence_cn": "扩散LLM中的格式约束生成",
-          "llm_evidence": "扩散LLM中的格式约束生成",
-          "canonical_evidence": "扩散LLM中的格式约束生成",
-          "llm_tldr_en": "DIA dynamically estimates anchor positions for format-constrained generation in diffusion LLMs, ensuring structural correctness and semantic coherence.",
-          "llm_tldr_cn": "扩散LLM中固定锚点导致推理截断或内容冗余，影响格式约束生成。本文提出训练无关的动态填充锚点方法，动态估计结束锚点位置调整生成长度。实验在推理基准上保证结构正确性和语义连贯性，避免了固定跨度方法的低效，提升了格式约束生成质量。",
-          "llm_tldr": "扩散LLM中固定锚点导致推理截断或内容冗余，影响格式约束生成。本文提出训练无关的动态填充锚点方法，动态估计结束锚点位置调整生成长度。实验在推理基准上保证结构正确性和语义连贯性，避免了固定跨度方法的低效，提升了格式约束生成质量。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "large language model",
-          "matched_requirement_id": "req-2",
-          "selection_source": "carryover_cache",
-          "paper_id": "2606.04535v1",
-          "carry_days": 1
-        },
-        {
-          "id": "2606.05799v1",
-          "source": "arxiv",
-          "title": "CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction",
-          "abstract": "Existing calibration methods for Large Language Models (LLMs) often overlook a critical dimension of trustworthiness: a model's {\\em behavioral robustness} to irrelevant or misleading information. In this paper, we argue that a model's true confidence should reflect its stability under cognitive pressure. We introduce \\textsc{CaliDist}, a novel post-hoc calibration approach that directly measures and penalizes a model's susceptibility to distraction. \\textsc{CaliDist} quantifies how an LLM's predictions and uncertainty change when its input prompt is perturbed with semantic \\textit{distractors}. This stability (or lack thereof) signal is then used to adaptively scale the model's initial confidence score. Our extensive experiments on seven Natural Language Understanding classification benchmarks using six distinct LLMs show that \\textsc{CaliDist} consistently achieves lower Expected Calibration Error (ECE) and Brier Score compared with strong baselines. Remarkably, our method reduces the ECE from 23\\% to 7\\% on average--a relative improvement of 70\\%--demonstrating that behavioral stability is a powerful signal for calibration. We make our code and datasets available at github.com/m-anas-j/CaliDist.",
-          "authors": [
-            "Mohammad Anas Jawad",
-            "Cornelia Caragea"
-          ],
-          "primary_category": "cs.LG",
-          "categories": [
-            "cs.LG",
-            "cs.CL"
-          ],
-          "published": "2026-06-04T07:27:53+00:00",
-          "link": "https://arxiv.org/pdf/2606.05799v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "LLM calibration via distraction robustness",
-          "llm_evidence_cn": "通过分散注意力的鲁棒性校准大语言模型",
-          "llm_evidence": "通过分散注意力的鲁棒性校准大语言模型",
-          "canonical_evidence": "通过分散注意力的鲁棒性校准大语言模型",
-          "llm_tldr_en": "CaliDist calibrates LLMs by measuring prediction stability under semantic distractions, adaptively scaling confidence scores. Experiments on multiple LLMs show improved calibration and robustness.",
-          "llm_tldr_cn": "现有LLM校准方法忽视了模型对误导信息的鲁棒性。本文提出CaliDist方法，通过量化输入提示中语义干扰下LLM预测和不确定性的变化来评估其分散注意力脆弱性，并据此自适应调整置信度分数。在多个LLM上的实验表明，该方法显著提升了校准质量和鲁棒性，为可信赖LLM提供了新视角。",
-          "llm_tldr": "现有LLM校准方法忽视了模型对误导信息的鲁棒性。本文提出CaliDist方法，通过量化输入提示中语义干扰下LLM预测和不确定性的变化来评估其分散注意力脆弱性，并据此自适应调整置信度分数。在多个LLM上的实验表明，该方法显著提升了校准质量和鲁棒性，为可信赖LLM提供了新视角。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "large language model",
-          "matched_requirement_id": "req-2",
-          "selection_source": "carryover_cache",
-          "paper_id": "2606.05799v1",
-          "carry_days": 1
+          "carry_days": 3
         },
         {
           "id": "2606.04063v1",
@@ -556,12 +73,12 @@
           ],
           "llm_score": 8.0,
           "llm_evidence_en": "LLM compression via NAS and quantization",
-          "llm_evidence_cn": "通过神经架构搜索和量化进行大语言模型压缩",
-          "llm_evidence": "通过神经架构搜索和量化进行大语言模型压缩",
-          "canonical_evidence": "通过神经架构搜索和量化进行大语言模型压缩",
-          "llm_tldr_en": "This work introduces a differentiable NAS framework for LLM compression that jointly optimizes architecture and mixed-precision quantization, achieving superior performance on edge deployment.",
-          "llm_tldr_cn": "部署大语言模型到边缘设备面临内存和计算挑战。本文提出可微神经架构搜索框架，联合优化线性层的架构配置和混合精度量化，而非分离处理。实验证明该方法在压缩率与性能平衡上优于传统剪枝量化方法，为LLM边缘部署提供有效方案。",
-          "llm_tldr": "部署大语言模型到边缘设备面临内存和计算挑战。本文提出可微神经架构搜索框架，联合优化线性层的架构配置和混合精度量化，而非分离处理。实验证明该方法在压缩率与性能平衡上优于传统剪枝量化方法，为LLM边缘部署提供有效方案。",
+          "llm_evidence_cn": "通过NAS和量化的LLM压缩",
+          "llm_evidence": "通过NAS和量化的LLM压缩",
+          "canonical_evidence": "通过NAS和量化的LLM压缩",
+          "llm_tldr_en": "A differentiable NAS framework jointly optimizes architecture and mixed-precision quantization for LLM compression, achieving superior efficiency.",
+          "llm_tldr_cn": "部署大型语言模型（LLM）面临高内存和计算需求。现有神经架构搜索（NAS）方法常将架构和量化搜索分离。本文提出可微NAS框架，联合优化LLM线性层的架构与混合精度量化，实验证明在压缩率与性能上优于解耦方法。",
+          "llm_tldr": "部署大型语言模型（LLM）面临高内存和计算需求。现有神经架构搜索（NAS）方法常将架构和量化搜索分离。本文提出可微NAS框架，联合优化LLM线性层的架构与混合精度量化，实验证明在压缩率与性能上优于解耦方法。",
           "llm_tags": [
             "query:ml-llm"
           ],
@@ -570,82 +87,6 @@
           "matched_requirement_id": "req-2",
           "selection_source": "carryover_cache",
           "paper_id": "2606.04063v1",
-          "carry_days": 1
-        },
-        {
-          "id": "2606.05613v1",
-          "source": "arxiv",
-          "title": "Multilingual Fine-Tuning via Localized Gradient Conflict Resolution",
-          "abstract": "The rapid evolution of Large Language Models (LLMs) has established cross-lingual versatility as a defining feature of modern systems. However, fine-tuning these models frequently induces negative interference across languages. To address this, we reformulate multilingual fine-tuning as a multi-objective optimization (MOO) problem. Specifically, we introduce Bucket-Level MOO, a scalable distributed framework that applies gradient-based MOO algorithms locally on parameter buckets. This enables conflict-aware updates without the prohibitive communication overhead of reconstructing full gradient vectors. Theoretically, we prove this localized resolution natively enforces Refined Pareto Stationarity, a strictly tighter necessary condition for Pareto optimality. Empirically, Bucket-Level MOO mitigates interference by driving LLMs to construct distinct language-specific dimensions, improving representational separability. Extensive experiments across four base LLMs demonstrate that our method significantly improves both seen and unseen multilingual performance over standard fine-tuning paradigms.",
-          "authors": [
-            "Long P. Hoang",
-            "Yiran Zhao",
-            "Wei Lu",
-            "Wenxuan Zhang"
-          ],
-          "primary_category": "cs.AI",
-          "categories": [
-            "cs.AI"
-          ],
-          "published": "2026-06-04T02:36:30+00:00",
-          "link": "https://arxiv.org/pdf/2606.05613v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "LLM multilingual fine-tuning with gradient conflict resolution",
-          "llm_evidence_cn": "LLM多语言微调中的梯度冲突解决",
-          "llm_evidence": "LLM多语言微调中的梯度冲突解决",
-          "canonical_evidence": "LLM多语言微调中的梯度冲突解决",
-          "llm_tldr_en": "Reformulates multilingual LLM fine-tuning as multi-objective optimization; proposes Bucket-Level MOO for conflict-aware updates without full gradient reconstruction; proves tighter Pareto stationarity.",
-          "llm_tldr_cn": "针对大语言模型多语言微调中不同语言间的负向干扰问题，本文将多语言微调重新建模为多目标优化问题，并提出Bucket-Level MOO框架。该框架在参数桶级别局部应用梯度向量优化算法，实现冲突感知的模型更新，同时避免了重建完整梯度向量的巨大通信开销。理论分析表明，这种局部解决策略能够天然满足更严格的帕累托最优条件。实验验证了该方法在多种语言上有效减少干扰，提升了微调效果。",
-          "llm_tldr": "针对大语言模型多语言微调中不同语言间的负向干扰问题，本文将多语言微调重新建模为多目标优化问题，并提出Bucket-Level MOO框架。该框架在参数桶级别局部应用梯度向量优化算法，实现冲突感知的模型更新，同时避免了重建完整梯度向量的巨大通信开销。理论分析表明，这种局部解决策略能够天然满足更严格的帕累托最优条件。实验验证了该方法在多种语言上有效减少干扰，提升了微调效果。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "large language model",
-          "matched_requirement_id": "req-2",
-          "selection_source": "carryover_cache",
-          "paper_id": "2606.05613v1",
-          "carry_days": 1
-        },
-        {
-          "id": "2605.31293v1",
-          "source": "arxiv",
-          "title": "Divergence Decoding: Inference-Time Unlearning via Auxiliary Models",
-          "abstract": "Large Language Models (LLMs) frequently memorize sensitive training data thereby creating significant privacy and copyright risks. Addressing these risks, i.e., removing such knowledge from an existing model checkpoint, has proven challenging as many unlearning methods lead to catastrophic utility loss or are ineffective for complex queries. We introduce Divergence Decoding (DD), a mechanism that uses small auxiliary models to steer the logits of the LLM away from specific data during inference. Training these models is straight forward, i.e., we use standard pre-training and fine-tuning setups. We find the method decisively outperforms state-of-the-art (SOTA) baselines on unlearning benchmarks across a variety of model and training dataset scales consistent with DD being an effective and inexpensive solution to unlearning. We then demonstrate that this steered distribution can be trivially distilled back into the base model. Since the method is generally applicable to any probabilistic model, we explore its efficacy outside of text generation and find evidence of generalization to the domain of images.",
-          "authors": [
-            "Humzah Merchant",
-            "Bradford Levy"
-          ],
-          "primary_category": "cs.CL",
-          "categories": [
-            "cs.CL"
-          ],
-          "published": "2026-05-29T13:29:01+00:00",
-          "link": "https://arxiv.org/pdf/2605.31293v1",
-          "tags": [
-            "keyword:ml-llm",
-            "query:ml-llm"
-          ],
-          "llm_score": 8.0,
-          "llm_evidence_en": "LLM unlearning via inference-time auxiliary models",
-          "llm_evidence_cn": "通过推理时辅助模型实现LLM遗忘",
-          "llm_evidence": "通过推理时辅助模型实现LLM遗忘",
-          "canonical_evidence": "通过推理时辅助模型实现LLM遗忘",
-          "llm_tldr_en": "Introduces Divergence Decoding, a mechanism using small auxiliary models to steer LLM logits away from specific data at inference time; outperforms SOTA on unlearning benchmarks across scales.",
-          "llm_tldr_cn": "针对大语言模型记忆敏感数据带来的隐私风险，本文提出发散解码（Divergence Decoding），一种在推理时利用小型辅助模型引导LLM逻辑输出远离特定数据的遗忘机制。辅助模型的训练采用标准预训练和微调设置，简单易行。在多种模型大小和数据集上的实验表明，该方法在遗忘基准上显著超越现有最先进方法，同时避免了灾难性的效用损失。推理时遗忘为LLM隐私保护提供了高效且实用的新途径。",
-          "llm_tldr": "针对大语言模型记忆敏感数据带来的隐私风险，本文提出发散解码（Divergence Decoding），一种在推理时利用小型辅助模型引导LLM逻辑输出远离特定数据的遗忘机制。辅助模型的训练采用标准预训练和微调设置，简单易行。在多种模型大小和数据集上的实验表明，该方法在遗忘基准上显著超越现有最先进方法，同时避免了灾难性的效用损失。推理时遗忘为LLM隐私保护提供了高效且实用的新途径。",
-          "llm_tags": [
-            "query:ml-llm"
-          ],
-          "matched_query_tag": "query:ml-llm",
-          "matched_query_text": "large language model",
-          "matched_requirement_id": "req-2",
-          "selection_source": "carryover_cache",
-          "paper_id": "2605.31293v1",
           "carry_days": 1
         },
         {
@@ -671,13 +112,13 @@
             "query:ml-llm"
           ],
           "llm_score": 8.0,
-          "llm_evidence_en": "Graph-based RAG to reduce hallucinations in LLM QA",
-          "llm_evidence_cn": "基于图的检索增强生成减少大语言模型幻觉",
-          "llm_evidence": "基于图的检索增强生成减少大语言模型幻觉",
-          "canonical_evidence": "基于图的检索增强生成减少大语言模型幻觉",
-          "llm_tldr_en": "Proposes a simple graph-based RAG system to reduce hallucinations in LLM-based complex question answering.",
-          "llm_tldr_cn": "本文针对大语言模型在复杂问答中的幻觉问题，提出一种轻量级图结构的检索增强生成系统，通过构建简单的图模式支持检索，无需昂贵微调，有效降低幻觉并提升推理能力，实验证明在多个数据集上优于传统RAG方法。",
-          "llm_tldr": "本文针对大语言模型在复杂问答中的幻觉问题，提出一种轻量级图结构的检索增强生成系统，通过构建简单的图模式支持检索，无需昂贵微调，有效降低幻觉并提升推理能力，实验证明在多个数据集上优于传统RAG方法。",
+          "llm_evidence_en": "Graph-based RAG for LLM hallucination reduction",
+          "llm_evidence_cn": "基于图的RAG减少LLM幻觉",
+          "llm_evidence": "基于图的RAG减少LLM幻觉",
+          "canonical_evidence": "基于图的RAG减少LLM幻觉",
+          "llm_tldr_en": "A lightweight graph structure enhances RAG to reduce LLM hallucinations in complex question answering without fine-tuning.",
+          "llm_tldr_cn": "大型语言模型在问答中容易产生幻觉。检索增强生成（RAG）可缓解该问题，但现有方法复杂。本文提出使用轻量级图结构支持RAG子系统，通过简单图模式存储信息，实验表明该方法能有效减少LLM在复杂问答中的幻觉，无需昂贵的模型微调。",
+          "llm_tldr": "大型语言模型在问答中容易产生幻觉。检索增强生成（RAG）可缓解该问题，但现有方法复杂。本文提出使用轻量级图结构支持RAG子系统，通过简单图模式存储信息，实验表明该方法能有效减少LLM在复杂问答中的幻觉，无需昂贵的模型微调。",
           "llm_tags": [
             "query:ml-llm"
           ],
@@ -712,13 +153,13 @@
             "query:ml-llm"
           ],
           "llm_score": 8.0,
-          "llm_evidence_en": "Training-free LLM-based multi-agent framework for summarization with knowledge graphs",
-          "llm_evidence_cn": "基于LLM和知识图谱的无训练多智能体摘要框架",
-          "llm_evidence": "基于LLM和知识图谱的无训练多智能体摘要框架",
-          "canonical_evidence": "基于LLM和知识图谱的无训练多智能体摘要框架",
-          "llm_tldr_en": "Proposes a training-free mixture-of-agents framework combining LLMs and knowledge graphs for multi-document summarization, avoiding supervised fine-tuning.",
-          "llm_tldr_cn": "针对多文档摘要中需大量标注数据和泛化性差的问题，本文提出一个无需训练的智能体混合框架，利用大语言模型和知识图谱的互补优势，通过抽取、知识感知抽象和迭代精炼等专用任务协作，在多个数据集上达到可与微调方法媲美的性能。",
-          "llm_tldr": "针对多文档摘要中需大量标注数据和泛化性差的问题，本文提出一个无需训练的智能体混合框架，利用大语言模型和知识图谱的互补优势，通过抽取、知识感知抽象和迭代精炼等专用任务协作，在多个数据集上达到可与微调方法媲美的性能。",
+          "llm_evidence_en": "Leverages LLMs in a training-free mixture-of-agents framework for multi-document summarization",
+          "llm_evidence_cn": "在训练无关的混合代理框架中利用LLM进行多文档摘要",
+          "llm_evidence": "在训练无关的混合代理框架中利用LLM进行多文档摘要",
+          "canonical_evidence": "在训练无关的混合代理框架中利用LLM进行多文档摘要",
+          "llm_tldr_en": "Presents a training-free mixture-of-agents framework for multi-document summarization combining LLMs and knowledge graphs, decomposing summarization into extractive selection, knowledge-aware abstraction, and iterative refinement without task-specific fine-tuning.",
+          "llm_tldr_cn": "针对多文档摘要中监督数据依赖性强、跨领域泛化差的问题，本文提出一种无需训练的混合代理框架，结合大型语言模型和知识图谱。框架将摘要分解为抽取选择、知识感知抽象和迭代优化三个子任务，各代理独立运行。在多种数据集上评估表明，该方法无需标注数据即可获得优异性能，具有良好的跨领域迁移能力。",
+          "llm_tldr": "针对多文档摘要中监督数据依赖性强、跨领域泛化差的问题，本文提出一种无需训练的混合代理框架，结合大型语言模型和知识图谱。框架将摘要分解为抽取选择、知识感知抽象和迭代优化三个子任务，各代理独立运行。在多种数据集上评估表明，该方法无需标注数据即可获得优异性能，具有良好的跨领域迁移能力。",
           "llm_tags": [
             "query:ml-llm"
           ],
@@ -730,36 +171,35 @@
           "carry_days": 1
         },
         {
-          "id": "2606.00523v1",
+          "id": "2606.06178v1",
           "source": "arxiv",
-          "title": "ProactiveLLM: Learning Active Interaction for Streaming Large Language Models",
-          "abstract": "Standard Large Language Models (LLMs) follow a read-then-generate paradigm, causing unnecessary latency and computation. Streaming LLMs alleviate this issue by generating while receiving inputs, but still struggle to decide when to interact with the stream. Existing methods either hard-code interaction timing or rely on costly external alignment signals, such as timing labels, reasoning trajectories, or stronger teachers. In this paper, we propose ProactiveLLM, which achieves active interaction by leveraging the model's endogenous states to guide interaction decisions. The model first learns to perceive semantic sufficiency from partial inputs through two complementary training mechanisms: mask-based streaming modeling and synchronized privileged self-distillation (SPSD). The former applies monotonic random masking to the input during training, simulating progressively revealed streaming inputs and enabling the model to learn local semantic dependencies from partial-input views. The latter aligns the partial-context student view with a full-context teacher view generated by the same evolving model, allowing privileged full-context evidence to guide the student's understanding under incomplete observations. Together, these mechanisms induce endogenous sufficiency cues without requiring external teachers or annotations, providing a versatile foundation for the plug-and-play integration of diverse decision heads. Extensive evaluation across text and speech streaming tasks confirms that ProactiveLLM significantly reduces interaction latency while maintaining quality, validating its capacity for dynamic and active interaction. Code is publicly available at https://github.com/EIT-NLP/StreamingLLM/tree/main/ProactiveLLM.",
+          "title": "Learning to Route LLMs from Implicit Cost-Performance Preferences via Meta-Learning",
+          "abstract": "Large language models (LLMs) present a trade-off between performance and cost, where more powerful models incur greater expense. LLM routing aims to mitigate expenses while maintaining performance by sending queries to the most suitable model. However, existing methods cannot perform well for different user cost-performance preferences. To address this gap, we introduce a novel perceptive LLM routing paradigm for personalized and user-centric cost-performance optimization, which efficiently learns users' implicit preferences through little interaction. To handle the challenge of heterogeneous user needs, we formulate preference profiles as a set of distinct tasks in contextual bandit and propose MetaRouter, a meta-learning framework designed for preference-aware LLM routing. Experimental results show that MetaRouter outperforms strong baselines on both in-distribution and out-of-distribution tasks. Furthermore, it exhibits high efficiency in learning user preferences, robustness to changes in the routable LLMs, and scalability to multi-model routing.",
           "authors": [
-            "Junlong Tong",
-            "Yao Zhang",
-            "Anhao Zhao",
-            "Yingqi Fan",
-            "Yunpu Ma",
-            "Xiaoyu Shen"
+            "Jiahao Zeng",
+            "Ming Tang",
+            "Ningning Ding"
           ],
-          "primary_category": "cs.CL",
+          "primary_category": "cs.LG",
           "categories": [
+            "cs.LG",
+            "cs.AI",
             "cs.CL"
           ],
-          "published": "2026-05-30T04:31:29+00:00",
-          "link": "https://arxiv.org/pdf/2606.00523v1",
+          "published": "2026-06-04T13:53:03+00:00",
+          "link": "https://arxiv.org/pdf/2606.06178v1",
           "tags": [
             "keyword:ml-llm",
             "query:ml-llm"
           ],
           "llm_score": 8.0,
-          "llm_evidence_en": "Learning active interaction for streaming LLMs using endogenous states",
-          "llm_evidence_cn": "学习流式大语言模型中的主动交互",
-          "llm_evidence": "学习流式大语言模型中的主动交互",
-          "canonical_evidence": "学习流式大语言模型中的主动交互",
-          "llm_tldr_en": "Proposes ProactiveLLM, which learns when to interact with the stream using mask-based streaming modeling and synchronized privilege training.",
-          "llm_tldr_cn": "针对流式大语言模型难以自主决定交互时机的问题，本文提出ProactiveLLM，通过掩码流式建模和同步特权训练两种机制，使模型从部分输入感知语义充分性，实现主动交互，提升流式处理效率且无需外部对齐信号。",
-          "llm_tldr": "针对流式大语言模型难以自主决定交互时机的问题，本文提出ProactiveLLM，通过掩码流式建模和同步特权训练两种机制，使模型从部分输入感知语义充分性，实现主动交互，提升流式处理效率且无需外部对齐信号。",
+          "llm_evidence_en": "LLM routing with meta-learning",
+          "llm_evidence_cn": "基于元学习的LLM路由",
+          "llm_evidence": "基于元学习的LLM路由",
+          "canonical_evidence": "基于元学习的LLM路由",
+          "llm_tldr_en": "MetaRouter uses meta-learning to learn user cost-performance preferences for LLM routing with minimal interaction.",
+          "llm_tldr_cn": "现有LLM路由方法无法适应不同用户的成本-性能偏好。本文提出MetaRouter，一种基于元学习的个性化路由框架，通过少量交互隐式学习用户偏好，将偏好建模为上下文赌博机中的任务，实验表明能高效优化成本与性能的平衡。",
+          "llm_tldr": "现有LLM路由方法无法适应不同用户的成本-性能偏好。本文提出MetaRouter，一种基于元学习的个性化路由框架，通过少量交互隐式学习用户偏好，将偏好建模为上下文赌博机中的任务，实验表明能高效优化成本与性能的平衡。",
           "llm_tags": [
             "query:ml-llm"
           ],
@@ -767,7 +207,135 @@
           "matched_query_text": "large language model",
           "matched_requirement_id": "req-2",
           "selection_source": "carryover_cache",
-          "paper_id": "2606.00523v1",
+          "paper_id": "2606.06178v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2606.04302v1",
+          "source": "arxiv",
+          "title": "LazyAttention: Efficient Retrieval-Augmented Generation with Deferred Positional Encoding",
+          "abstract": "Key-value (KV) caching accelerates inference of large language models (LLMs) by reusing past computations for generated tokens. Its importance becomes even greater in long-context applications such as retrieval-augmented generation (RAG) and in-context learning (ICL). However, conventional KV caching embeds positional information directly into the cache, limiting its reusability. Existing solutions either restrict reuse to prefixes or require expensive memory materialization for positional re-encoding. We introduce LazyAttention, a novel attention mechanism that kernelizes deferred positional encoding to enable zero-copy, position-agnostic KV reuse. By adjusting positional encoding within attention kernels on-the-fly, LazyAttention resolves the materialization bottleneck, allowing a single physical KV copy to serve multiple logical requests at arbitrary positions. Leveraging attention kernels tailored for prefilling and decoding, our system achieves significant efficiency improvements: under skewed document distributions, it reduces time-to-first-token (TTFT) by 1.37$\\times$ and increases inference throughput by 1.40$\\times$ compared to the state-of-the-art Block-Attention, while maintaining comparable output quality.",
+          "authors": [
+            "Haocheng Xia",
+            "Mihir Pamnani",
+            "Hanxi Fang",
+            "Supawit Chockchowwat",
+            "Yongjoo Park"
+          ],
+          "primary_category": "cs.CL",
+          "categories": [
+            "cs.CL",
+            "cs.LG"
+          ],
+          "published": "2026-06-03T00:12:22+00:00",
+          "link": "https://arxiv.org/pdf/2606.04302v1",
+          "tags": [
+            "keyword:ml-llm",
+            "query:ml-llm"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "efficient retrieval-augmented generation with deferred positional encoding for LLMs",
+          "llm_evidence_cn": "针对LLM推理的高效检索增强生成，延迟位置编码",
+          "llm_evidence": "针对LLM推理的高效检索增强生成，延迟位置编码",
+          "canonical_evidence": "针对LLM推理的高效检索增强生成，延迟位置编码",
+          "llm_tldr_en": "Introduces LazyAttention, a novel attention mechanism that enables zero-copy, position-agnostic KV reuse for efficient LLM inference in RAG and ICL.",
+          "llm_tldr_cn": "针对LLM推理中KV缓存重用受限的问题，提出LazyAttention机制，通过内核化延迟位置编码实现零拷贝、位置无关的KV重用，显著提升长上下文场景（如RAG和ICL）的效率。实验表明该方法在保持性能的同时大幅降低内存开销。",
+          "llm_tldr": "针对LLM推理中KV缓存重用受限的问题，提出LazyAttention机制，通过内核化延迟位置编码实现零拷贝、位置无关的KV重用，显著提升长上下文场景（如RAG和ICL）的效率。实验表明该方法在保持性能的同时大幅降低内存开销。",
+          "llm_tags": [
+            "query:ml-llm"
+          ],
+          "matched_query_tag": "query:ml-llm",
+          "matched_query_text": "large language model",
+          "matched_requirement_id": "req-2",
+          "selection_source": "carryover_cache",
+          "paper_id": "2606.04302v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2606.03782v1",
+          "source": "arxiv",
+          "title": "Reasoning over Grammar: Can Synthetic Linguistic Reasoning Traces Enhance Low-Resource Machine Translation?",
+          "abstract": "Large language models (LLMs) offer a promising approach to machine translation (MT) for extremely low-resource languages by incorporating linguistic resources through in-context learning. However, LLMs often struggle to apply grammatical information effectively during translation. Inspired by recent progress in chain-of-thought reasoning, we investigate whether low-resource MT can benefit from structured intermediate steps of linguistic analysis and grammatical reasoning. We propose a pipeline for automatically generating step-by-step linguistic reasoning traces from Universal Dependencies treebanks, dictionaries, and grammar-rule banks. We evaluate these traces in three settings: in-context learning (ICL), supervised fine-tuning (SFT), and reinforcement fine-tuning (RFT), on Xibe and Chintang as test cases. Our results show that linguistic reasoning traces are most effective as inference-time guidance: in ICL, reliable sentence-specific traces substantially improve translation performance across most models, languages, and metrics. In contrast, using the linguistic reasoning traces as training data yields smaller and less consistent gains, as models learn the trace format but often generate erroneous content. These findings suggest that LLMs can leverage grammatical information for low-resource MT when given reliable linguistic analyses, while learning to generate such analyses remains a major bottleneck.",
+          "authors": [
+            "Renhao Pei",
+            "Yihong Liu",
+            "Sampo Pyysalo",
+            "Hinrich Schütze",
+            "Shaoxiong Ji"
+          ],
+          "primary_category": "cs.CL",
+          "categories": [
+            "cs.CL"
+          ],
+          "published": "2026-06-02T15:36:12+00:00",
+          "link": "https://arxiv.org/pdf/2606.03782v1",
+          "tags": [
+            "keyword:ml-llm",
+            "query:ml-llm"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "Uses LLMs for low-resource machine translation with linguistic reasoning traces",
+          "llm_evidence_cn": "使用大型语言模型进行低资源机器翻译，结合语言推理轨迹",
+          "llm_evidence": "使用大型语言模型进行低资源机器翻译，结合语言推理轨迹",
+          "canonical_evidence": "使用大型语言模型进行低资源机器翻译，结合语言推理轨迹",
+          "llm_tldr_en": "Proposes a pipeline to generate linguistic reasoning traces from Universal Dependencies treebanks, dictionaries, and grammar-rule banks to improve LLM-based low-resource machine translation. Evaluated in in-context learning and supervised settings, showing benefits.",
+          "llm_tldr_cn": "针对大型语言模型在低资源机器翻译中难以有效应用语法信息的问题，本文提出自动从通用依存树库、词典和语法规则库生成结构化语言推理轨迹的流水线，引导LLM逐步推理。在上下文学习和监督学习两种设置下评估，实验表明该方法能显著提升翻译质量，为低资源语言翻译提供了结合语言学知识的新范式。",
+          "llm_tldr": "针对大型语言模型在低资源机器翻译中难以有效应用语法信息的问题，本文提出自动从通用依存树库、词典和语法规则库生成结构化语言推理轨迹的流水线，引导LLM逐步推理。在上下文学习和监督学习两种设置下评估，实验表明该方法能显著提升翻译质量，为低资源语言翻译提供了结合语言学知识的新范式。",
+          "llm_tags": [
+            "query:ml-llm"
+          ],
+          "matched_query_tag": "query:ml-llm",
+          "matched_query_text": "large language model",
+          "matched_requirement_id": "req-2",
+          "selection_source": "carryover_cache",
+          "paper_id": "2606.03782v1",
+          "carry_days": 1
+        },
+        {
+          "id": "2606.04547v1",
+          "source": "arxiv",
+          "title": "Beyond Retrieval: Learning Compact User Representations for Scalable LLM Personalization",
+          "abstract": "Personalizing large language models requires adapting model behavior to individual users while preserving robustness and deployment-scale efficiency. Existing approaches typically personalize LLMs either at the input level, by retrieving user histories or constructing profile prompts, or at the parameter level, by maintaining user-specific parameter-efficient modules. The former makes personalization sensitive to retrieval quality and prompt design, whereas the latter incurs storage and maintenance costs that grow with the user population. To address these limitations, we propose TAP-PER (Temporal Attentive Prefix for PERsonalization), a prefix-based framework that encodes user preferences as learnable representations, eliminating explicit prompt construction and replacing heavy per-user adapters with lightweight user-state prefix embeddings. Inspired by personalized recommendation systems, TAP-PER decomposes user modeling into user-state and query-conditioned components, and incorporates temporal signals to capture the evolving nature of user interests. Experiments on six LaMP tasks show that TAP-PER consistently outperforms prompt-based and model-based baselines across classification, rating, and generation settings. Moreover, TAP-PER uses 130x fewer per-user parameters than OPPU and roughly half the total parameter footprint of PER-PCS at the 1,000-user scale, demonstrating that scalable LLM personalization can be achieved without explicit prompt construction or heavy per-user adapters.",
+          "authors": [
+            "Heng Cao",
+            "Fan Zhang",
+            "Jian Yao",
+            "Yujie Zheng",
+            "Changlin Zhao",
+            "Lu Hao",
+            "Yuxuan Wei",
+            "Wangze Ni",
+            "Huaiyu Fu",
+            "Yuqian Sun",
+            "Xuyan Mo"
+          ],
+          "primary_category": "cs.IR",
+          "categories": [
+            "cs.IR",
+            "cs.CL"
+          ],
+          "published": "2026-06-03T07:32:18+00:00",
+          "link": "https://arxiv.org/pdf/2606.04547v1",
+          "tags": [
+            "keyword:ml-llm",
+            "query:ml-llm"
+          ],
+          "llm_score": 8.0,
+          "llm_evidence_en": "Proposes a prefix-based framework for scalable LLM personalization",
+          "llm_evidence_cn": "提出基于前缀的可扩展LLM个性化框架",
+          "llm_evidence": "提出基于前缀的可扩展LLM个性化框架",
+          "canonical_evidence": "提出基于前缀的可扩展LLM个性化框架",
+          "llm_tldr_en": "Proposes TAP-PER, a prefix-based framework that encodes user preferences as learnable representations for scalable LLM personalization, avoiding retrieval sensitivity and storage costs of previous methods.",
+          "llm_tldr_cn": "针对现有LLM个性化方法对检索质量敏感或存储成本高的问题，本文提出TAP-PER框架，通过可学习前缀编码用户偏好，避免显式检索和参数级存储。该框架在多个个性化任务上表现优异，且用户数量扩展时开销线性增长，为大规模LLM个性化提供了实用解决方案。",
+          "llm_tldr": "针对现有LLM个性化方法对检索质量敏感或存储成本高的问题，本文提出TAP-PER框架，通过可学习前缀编码用户偏好，避免显式检索和参数级存储。该框架在多个个性化任务上表现优异，且用户数量扩展时开销线性增长，为大规模LLM个性化提供了实用解决方案。",
+          "llm_tags": [
+            "query:ml-llm"
+          ],
+          "matched_query_tag": "query:ml-llm",
+          "matched_query_text": "large language model",
+          "matched_requirement_id": "req-2",
+          "selection_source": "carryover_cache",
+          "paper_id": "2606.04547v1",
           "carry_days": 1
         }
       ]
