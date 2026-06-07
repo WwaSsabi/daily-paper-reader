@@ -1,0 +1,1310 @@
+Title: BenchEvolver: Frontier Task Synthesis via Solution-Centric Evolution
+
+URL Source: https://arxiv.org/pdf/2606.01286v1
+
+Published Time: Tue, 02 Jun 2026 02:35:11 GMT
+
+Number of Pages: 30
+
+Markdown Content:
+# BenchEvolver: Frontier Task Synthesis via Solution-Centric Evolution 
+
+Yangzhen Wu ∗,1 Aaron J. Li ∗,1 Wenjie Ma 1 Li Cao 2 Ziheng Zhou 2
+
+Mert Cemri 1 Shu Liu 1 Yuran Xiu 2 Chenxiao Yan 2 Haikun Zhao 2
+
+Bin Yu 1 Ion Stoica †,1 Dawn Song †,11University of California, Berkeley 
+
+> 2
+
+Institute for Interdisciplinary Information Sciences, Tsinghua University yangzhen_wu@berkeley.edu aaronjli@berkeley.edu     
+
+> Project Page |Code |Dataset
+
+Abstract 
+
+The rapid progress of frontier large language models has led to widespread bench-mark saturation, limiting the ability of existing datasets to differentiate model capabilities or provide useful training signal. For instance, on LiveCodeBench, frontier models achieve over 99% Pass@1 on easy splits and exceed 90% Pass@1 on average across difficulty levels [ 1–3]. Constructing new, sufficiently challeng-ing datasets typically requires substantial human effort, creating a bottleneck for continued progress. We introduce BenchEvolver, a solution-centric evolutionary framework that automatically transforms existing coding problems into substan-tially harder variants. Rather than generating problems from scratch, BenchEvolver evolves reference solutions through structured transformations and derives corre-sponding problem statements and tests from the evolved solutions. This solution-centric design grounds generation in executable semantics, enabling scalable con-struction of high-quality, diverse, and difficult tasks with verifiable correctness. Applying BenchEvolver to LiveCodeBench (LCB) and SciCode, we obtain evolved tasks that are substantially more difficult while preserving validity, reference cor-rectness, and diversity. We further curate L IVE CODE BENCH -P LUS , a 91-problem benchmark combining evolved and difficult original LCB-v6 tasks, where frontier-model Pass@1 ranges from 27 .5% to 62 .6% , restoring clear discrimination among strong coding models. Importantly, evolved tasks remain challenging even for the model that generates them, enabling self-improvement. We further show that RL on evolved LCB tasks improves held-out coding performance: for gpt-oss-20b, seed+evolved training achieves +8.7 and +8.3 Pass@1 gains on LCB v6 Hard and LCB-Pro Easy, exceeding seed-only gains by 70.7% and 34.8%, respectively. This closes the loop from self-generated challenges to capability improvement. Our results demonstrate that BenchEvolver can convert saturated benchmarks into frontier-level evaluation suites and reusable training signal. 
+
+1 Introduction 
+
+Recent advances in frontier large language models (LLMs) have led to rapid saturation of widely used evaluation benchmarks, limiting their ability to meaningfully measure progress or guide further improvement. On competitive coding benchmarks such as LiveCodeBench [ 1], state-of-the-art models 
+
+> ∗Equal contribution.
+> †Equal advising. Preprint.
+> arXiv:2606.01286v1 [cs.SE] 31 May 2026
+
+now achieve over 99% pass rate on the newest easy split and exceed 90% on average across difficulty levels. As a result, these benchmarks provide diminishing discriminative power between models and offer little gradient for training or analysis. This phenomenon is not unique to coding: even when absolute saturation levels differ, static evaluations across reasoning [ 4, 5], scientific problem solving [ 6, 7 ], and agentic tasks [ 8 , 9] increasingly lose discriminative power as frontier models improve. Consequently, continued progress increasingly depends on the availability of new, more challenging, and reliably verifiable datasets that co-evolve with frontier models. Human construction of new benchmarks and datasets is expensive and difficult to scale, creating a bottleneck for continuous model improvement. A natural alternative is synthetic data generation, where LLMs are used to curate new tasks for evaluation and training. Existing methods have made substantial progress in generating synthetic questions from seed data [ 10 – 16 ]. However, many of these pipelines follow an asymmetric teacher–student paradigm: a strong model synthesizes, filters, or verifies data that is then used to train or evaluate weaker models. In addition, much of the synthesis operates at the instruction level, improving prompt diversity and surface complexity without necessarily changing the underlying solution structure or providing explicit control over task difficulty. Moving from synthetic instructions to reusable benchmarks therefore requires generating complete executable tasks, where the statement, reference solution, and tests are jointly valid. Recent work has begun to address this setting, but correctness and test validity are often ensured through stronger models, external validation, or human verification [ 17 ]. Consequently, existing pipelines do not directly address the self-challenging setting required for open-ended improvement: generating tasks that are valid, verifiable, difficulty-controlled, and hard for the generator itself. Without this property, synthetic data generation remains primarily a way to distill stronger models into weaker ones, rather than a mechanism by which frontier models can expose their own weaknesses and improve through training on self-generated challenges. Toward this end, we propose BenchEvolver, a solution-centric evolutionary framework for transform-ing saturated coding tasks into harder yet verifiable problems. Rather than generating a new problem statement first, BenchEvolver evolves the reference solution itself, using the evolved solution as an executable oracle from which the statement, examples, and tests are derived. Each accepted mutation must change the solution structure enough to make the parent algorithm insufficient, and candidates are accepted only after independent consistency checks and empirical difficulty evaluation against a target model panel. This design measures task difficulty empirically rather than heuristically, and enables frontier models to generate challenges that expose their own weaknesses without relying on a strictly stronger teacher. We apply our framework to LiveCodeBench (LCB) [ 1 ], a competitive-programming benchmark, and SciCode [ 7 ], a research-oriented scientific coding benchmark. Across both domains, BenchEvolver generates valid evolved tasks at scale and substantially reduces target-model pass rates. We also construct L IVE CODE BENCH -P LUS , a difficulty-upgraded coding benchmark that combines validated evolved tasks with challenging original LiveCodeBench problems to provide a harder and more discriminative evaluation set. We further show that the solution-centric design outperforms a problem-centric generation baseline, that memory-guided evolution improves over independent one-step mutations, and that the evolved tasks can support closed-loop self-improvement through reinforcement learning. In particular, using gpt-oss-20b as both the evolver and the target model, we find that training on evolved problems improves held-out coding performance more than training on the original seed problems alone, and that the combined seed+evolved mixture performs best. Across the two informative held-out evaluation settings we study, the combined mixture yields a 70 .7% and 
+
+34 .8% larger improvement over the seed-only RL baseline, respectively. These results suggest that evolved tasks are not merely harder evaluation items, but can also provide useful training signal for improving the same model family that generated them. Our contributions are summarized as follows: • We introduce BenchEvolver, a solution-centric framework that upgrades saturated coding tasks into harder variants grounded in executable reference solutions and verifiable tests. • We show that BenchEvolver works across competitive-programming and scientific-coding domains, producing valid, diverse, and substantially harder tasks on LiveCodeBench and SciCode; we further use it to construct L IVE CODE BENCH -P LUS , a difficulty-upgraded benchmark that better discriminates among frontier models. 2Given an array ..., count the number of     
+
+> arrays copy whose adjacent differences
+> match those of original and whose
+> entries satisfy ...
+> 1. Represent every valid copied array
+> using one free variable: the shared
+> additive shift.
+> 2. Apply all element-wise bounds to
+> that free variable:
+> intersect the induced shift intervals.
+> 3. Count the number of valid values of
+> the free variable.
+> In: [1, 2, 3, 4]\n[[1, 2], [2, 3], [3, 4], [4, 5]]
+> Out: 2
+> In: [1, 2, 3, 4]\n [[1, 10], [2, 9], [3, 8], [4, 7]]
+> Out: 4
+> Test Cases
+> Solution
+> Problem Statement
+> Given an array ... count the number of
+> arrays copy whose adjacent XORs
+> match those of original and whose
+> entries satisfy ...
+> 1. Represent every valid copied array
+> using one free variable: the first
+> copied value under XOR masks .
+> 2. Apply all element-wise bounds to
+> that free variable:
+> use bitwise digit DP to enforce the
+> induced XOR-bound constraints .
+> 3. Count the number of valid values of
+> the free variable.
+> Solution
+> Problem Statement
+> Mutator
+> Statement
+> Writer
+> Test
+> Generator
+
+Proposer Seed Task  Evaluator 
+
+> Saturated?
+
+Consistency 
+
+> Solution passes all tests?
+> Tests aligned with statement?
+> Statement aligned with solution?
+> Yes
+
+Meaningfulness 
+
+> Requires algorithmic upgrade?
+> Problem is meaningful?
+> Sufficiently diverse?
+
+Difficulty  
+
+> No Reject
+> No more repair budget
+> Use repair budget
+> Hard enough for target models?
+> Success
+
+Lessons Learned 
+
+Decision and Reason 
+
+Mutation Approach 
+
+Repair History 
+
+Judge Feedback 
+
+Target Pass@1 
+
+Error Patterns 
+
+Failed Tests 
+
+> Update Memory
+
+Local Memory 
+
+(Per Seed) 
+
+Global Memory 
+
+(Shared by all Seeds)      
+
+> Accepted Lineage
+> Rejection/Repair History
+> Difficulty History
+> Target Model Failure
+> Recent Success
+> Diversity Across Seeds
+> Frequent Target Failures
+> Pass Rate: 8/8
+> Level 1
+> Pass Rate: 8/8
+> Level 1
+> Pass Rate: 4/8
+> Level 3
+> Iter 0: Seed Eval Iter 1: Reject Iter 2: Accept
+> Surface Rewrite Digit-DP
+> Logged in Memory
+> In: [1, 2]\n[[1, 2], [2, 3]]
+> Out: 1
+> In: [1, 2, 3]\n [[1, 10], [1, 10], [1, 10]]
+> Out: 6
+> Test Cases
+> Yes
+> Yes
+> Reject
+> No
+> Reject
+> No
+> Accept
+
+Figure 1: Overview of BenchEvolver. Starting from a saturated seed task, the proposer first mutates the reference solution and derives a new statement and tests; then the evaluator filters candidates for validity, diversity, and difficulty; memory is updated to include evolution outcomes with reasons, and accepted candidates become new parents. • We provide initial evidence that self-challenging task evolution can support model improve-ment. For gpt-oss-20b , training on seed+evolved tasks or evolved tasks alone improves held-out coding performance more than training on the original seed set, indicating that evolved tasks can serve as reusable RL signal rather than only as harder benchmark items. 
+
+2 Related Work 
+
+Our work connects synthetic coding data, self-play, and evolutionary search; we provide a more comprehensive related work discussion in Appendix A. Prior work synthesizes code instructions, reasoning traces, repository-level bug-fix tasks, competitive-programming problems, and RL curricula to improve code models [ 10 , 11 , 13 –18 ]. A complementary line of work uses model-in-the-loop data generation for self-improvement, including self-challenging tool-use agents, solver–conjecturer self-play, code-centric data synthesis, and adversarial co-evolution between code and test generators [ 19 –23 ]. Finally, LLM-based evolutionary methods have been used for prompt optimization, program discovery, algorithm search, and self-evolving agents [ 24 – 30 ]. BenchEvolver differs in the object being evolved: rather than generating auxiliary supervision or optimizing solutions for a fixed task, it evolves complete executable benchmark items—statements, reference solutions, and tests—selected by empirical target-model failure. This turns inference-time search [ 31 ] into reusable benchmark and training data for closed-loop self-improvement. 
+
+3 Method 
+
+We introduce BenchEvolver, a closed-loop framework for evolving saturated programming bench-marks into harder, verifiable tasks. The framework follows three principles: generate in solution space , verify by independent consistency checks , and select by empirical model failure . Given seed tasks, a Proposer constructs candidate evolutions, an Evaluator validates them and measures target-model difficulty, and a Memory module feeds past successes and failures back into search. Figure 1 provides an overview. 33.1 Self-Challenging Problem Evolution 
+
+We consider a benchmark D = {Ii} of executable programming tasks. Each task is represented as 
+
+I = ( S, C, T, E ),
+
+where S is the natural-language statement, C is a reference implementation, T is a hidden test suite, and E is an execution harness. The harness is the only domain-specific component: for competitive-programming tasks, E runs code on stdin and checks stdout; for scientific coding tasks, 
+
+E executes function-level submissions against assertion tests and domain-specific oracle artifacts when available. The rest of the framework—mutation, writing, verification, difficulty measurement, and memory-guided search—is shared across domains. Our goal is to construct an evolved benchmark D′ whose tasks are well-posed, verifiable, empirically harder than their seeds, and topically and algorithmically diverse. Crucially, this construction should not require a model stronger than the target panel; otherwise, the setting reduces to teacher–student distillation rather than self-challenging generation. We define difficulty behaviorally: each target model receives multiple attempts, and an attempt succeeds only if the generated program passes all hidden tests. The average success rate across models and attempts is the empirical pass rate, with lower pass rate indicating higher difficulty. Thus, hardness is measured by executable model failure rather than assigned by the generator or an LLM judge. 
+
+3.2 Proposer: Solution-Centric Task Generation 
+
+The Proposer constructs candidate tasks by evolving solutions rather than statements. Conventional synthetic problem generation often begins with a new statement, after which the system must infer or verify whether a correct solution and tests exist. This statement-first direction is fragile in the self-challenging setting: when the same model proposes and verifies a task, ambiguous specifications, hidden assumptions, and superficial complexity can pass undetected. BenchEvolver instead follows a solution-first pipeline: 
+
+C −→ C′ −→ I′ = ( S′, C ′, T ′, E ),
+
+where the parent reference solution C is first mutated into an evolved solution C′, and the statement 
+
+S′ and tests T ′ are then derived around this evolved solution under the benchmark’s fixed execution harness E.This design makes difficulty a property of the task’s computation rather than its surface form. The Proposer is instructed to introduce a dominant algorithmic lift : a substantive change to the solution structure that makes the parent approach insufficient. Intuitively, such lift often arises when the evolved task requires a stronger asymptotic strategy, a richer data structure or state-maintenance mechanism, a new structural or mathematical reformulation, or natural constraints that invalidate the parent task’s simple shortcut. These intuitions guide solution-space mutation toward meaningful computational changes, while accepted tasks are still judged by executable consistency and empirical target-model failure rather than by surface complexity, longer statements, adversarial formats, or obscure edge cases. Each proposal is produced by first mutating the parent reference implementation into an evolved solution C′, together with a concise explanation of the new algorithmic idea and why the parent solution fails. The Proposer then derives a natural-language statement S′, public examples, and hidden tests around C′. Public examples and expected test outputs are materialized by executing the evolved reference solution, anchoring the task in executable behavior. For stdin–stdout tasks, tests are organized into small, medium, large, and stress regimes; for scientific function-level tasks, they are assertion-style tests executed by the domain harness. The Proposer is conditioned on feedback from previous attempts, including parent difficulty, accepted mutations, rejection reasons, target-model error patterns, and global diversity signals. It does not decide whether a candidate is valid or difficult; its role is to propose a complete executable task, while acceptance is left to the Evaluator. 43.3 Evaluator: Verification and Empirical Selection 
+
+The Evaluator ensures that a candidate is both valid and genuinely challenging. Validity means that the statement, reference solution, tests, and execution harness define the same task; difficulty is measured only after this consistency is established. For validation, BenchEvolver uses benchmark-specific checks rather than relying on a single judge. In competitive programming, it triangulates among the evolved reference solution, a statement-only brute-force solver, and a statement-only public-output oracle. Since these witnesses observe different information, their disagreements help identify whether the issue lies in the reference, the brute-force solver, the public outputs, or the specification. For scientific coding, where brute-force solvers are less applicable, BenchEvolver uses a statement-faithfulness check: an independently generated solution from the statement is run against the candidate tests to assess whether the written task sufficiently determines the intended computation. Full validation and repair details are given in Appendix C. After validation, each target model receives multiple attempts, and an attempt succeeds only if it passes all hidden tests. The resulting pass rate is mapped to the same difficulty scale used for seed tasks. A candidate is accepted only if it improves over the seed difficulty, and optionally over the parent difficulty, making selection empirical rather than judge-assigned. Finally, the Evaluator filters out false difficulty: ambiguous wording, misleading I/O, underspecified constraints, unnatural edge cases, or near-duplicate reskins. Localized failures are routed to bounded repair; candidates that cannot be made consistent within the repair budget are rejected. Thus, accepted tasks must be both executable and empirically hard. 
+
+3.4 Memory-Guided Evolution 
+
+Memory turns BenchEvolver from repeated sampling into adaptive search. Each seed maintains a local memory of its lineage, including accepted mutations, failed attempts, validation issues, target-model pass rates, and observed error patterns. This history is summarized and fed back to the Proposer, helping later mutations avoid repeated failures and focus on directions that have exposed model weaknesses. BenchEvolver also maintains a global memory across seeds. This memory records accepted and attempted mutation families throughout the run, encouraging different lineages to explore distinct algorithmic directions rather than rediscovering the same lift under different surface forms. It is also used in selection: when a mutation family has already succeeded elsewhere, a new candidate from that family must provide a larger difficulty gain to be accepted. Diversity is therefore enforced both through generation context and through the acceptance rule. Together, local and global memory give BenchEvolver a lightweight evolutionary structure. Mutation comes from solution-centric proposal; selection comes from validation and empirical target-model failure; inheritance comes from accepted lineages; and diversity is maintained through memory. The resulting tasks form a hard, verified distribution that can serve both as an evolved benchmark and as reinforcement-learning data, enabling a closed loop in which models generate challenges, train on executable rewards, and return to generate harder tasks. The full pseudocode of BenchEvolver is provided in Appendix B. 
+
+4 Experiments 
+
+We evaluate BenchEvolver along three dimensions. First, we study whether it can generate valid, diverse, and empirically harder tasks across two executable coding domains: competitive program-ming and scientific coding. Second, we describe L IVE CODE BENCH -P LUS , a benchmark artifact constructed to provide challenging evaluation for frontier coding models. Third, we test whether evolved tasks provide useful reinforcement-learning signal for improving the same model family that generates them. 
+
+4.1 Task-Evolution Evaluation across Executable Coding Domains 
+
+For task-evolution evaluation, we consider two target tiers. The lightweight tier consists of GPT-5.4-mini and Gemini-3-Flash, while the frontier tier consists of GPT-5.4 and Gemini-3.1-Pro. We 5Method Target Tier Evolver Model Evolved Seed Fraction Validity Easy Medium Hard Avg. Problem-Centric Lightweight GPT-5.4-mini 12/22 (54.5%) 11/23 (47.8%) 6/20 (30.0%) 79.3% Memory-Free Lightweight GPT-5.4-mini 13/22 (59.1%) 15/23 (65.2%) 9/20 (45.0%) 86.2% BenchEvolver Lightweight GPT-5.4-mini 17/22 (77.3%) 16/23 (69.6%) 12/20 (60.0%) 97.7% BenchEvolver Lightweight Gemini-3-Flash 18/22 (81.9%) 14/23 (60.9%) 16/20 (80.0%) 89.9% BenchEvolver Lightweight Claude-Sonnet-4.6 14/22 (63.6%) 15/23 (65.2%) 7/20 (35.0%) 93.4% BenchEvolver Frontier Gemini-3.1-Pro 8/10 (80.0%) 9/10 (90.0%) 6/10 (60.0%) 96.7% 
+
+Table 1: LiveCodeBench-v6 evolution yield and validity by seed difficulty. Easy, Medium, and Hard report the fraction of completed seeds for which at least one accepted evolved problem is generated. Validity is the mean post-hoc validity rate of accepted evolved problems judged by Claude Code Opus 4.7. Problem-Centric and Memory-Free are ablations using GPT-5.4-mini as the evolver. 0.00            
+
+> 0.25
+> 0.50
+> 0.75
+> 1.00
+> GPT-5.4 mini
+> avg Δ=-0.265
+> Δ=-0.378
+> Evolver:
+> Gemini 3 Flash
+> (n=99)
+> Δ=-0.230
+> Evolver:
+> GPT-5.4 mini
+> (n=87)
+> Δ=-0.187
+> Evolver:
+> Claude Sonnet 4.6
+> (n=61)
+> GPT-5.4
+> avg Δ=-0.282
+> Δ=-0.282
+> Evolver:
+> Gemini 3.1 Pro
+> (n=47)
+> 0.00
+> 0.25
+> 0.50
+> 0.75
+> 1.00
+> Gemini 3 Flash
+> avg Δ=-0.184
+> Δ=-0.197 Δ=-0.194 Δ=-0.159
+> Gemini 3.1 Pro
+> avg Δ=-0.159
+> Δ=-0.159
+> Easy Medium Hard
+> 0.00
+> 0.25
+> 0.50
+> 0.75
+> 1.00
+> Claude Opus 4.6
+> avg Δ=-0.500
+> Δ=-0.591
+> Easy Medium Hard
+> Δ=-0.517
+> Easy Medium Hard
+> Δ=-0.394
+> Easy Medium Hard
+> Claude Opus 4.6
+> avg Δ=-0.580
+> Δ=-0.580
+> Seed problems Evolved problems
+
+Figure 2: Pass@1 on original LiveCodeBench seed problems versus evolved problems. Each column group corresponds to an evolver model, and each row corresponds to a target model. Within each subfigure, bars show Easy, Medium, and Hard seeds from left to right. Evolved problems consistently reduce target-model pass rates across both lightweight and frontier models ( k = 4 attempts per model). exclude Claude models from the target pool because they perform slightly worse on both benchmarks; including them could cause evolution to target Claude-specific failure modes rather than difficulty representative of the intended target tier. Details of the evolution configurations and hyperparameter choices are provided in Appendix E. 
+
+4.1.1 Competitive programming: LiveCodeBench 
+
+For the controlled LiveCodeBench comparison, we randomly sample 65 seed problems spanning easy, medium, and hard difficulty levels from v6, balancing difficulty coverage against the substantial cost of multi-model evolution and target evaluation. We use GPT-5.4-mini, Gemini-3-Flash, and Claude-Sonnet-4.6 as evolvers in the lightweight-target setting. To test whether BenchEvolver can generate tasks that remain challenging for frontier targets, we additionally select 10 saturated problems from each difficulty level and use Gemini-3.1-Pro as the evolver. Before target-model evaluation, all candidates are validated using the LiveCodeBench-specific brute-force triangulation protocol described in Appendix C.1. 
+
+Synthesis yield, validity, and ablations. Table 1 shows that BenchEvolver reliably transforms saturated LiveCodeBench seeds into valid evolved tasks across difficulty levels and evolver models. Under the same GPT-5.4-mini evolver, the full method substantially improves both evolved-seed coverage and post-hoc validity over the problem-centric baseline. This supports the solution-centric design: evolving executable algorithmic logic before recovering a statement makes it easier to construct coherent problems and tests than generating statements first and validating them afterward. 60 10 20 30 40             
+
+> Share of tag mentions (%)
+> Segment tree
+> Heavy/HLD/LCT
+> AC automaton
+> Poly/Matrix/GF
+> DP (advanced)
+> Prefix-sum/diff
+> Mo's / offline
+> Greedy
+> Strings/hash
+> Sorting
+> Search/simulation
+> 3.6% 13.5%
+> 0.0% 5.4%
+> 0.0% 4.6%
+> 0.0% 4.6%
+> 3.6% 7.3%
+> 3.6% 7.0%
+> 0.0% 3.1%
+> 3.6% 0.8%
+> 7.3% 3.1%
+> 5.5% 0.4%
+> 32.7% 2.7%
+> Top algorithmic-category shifts (Seed Evolved)
+> Seed
+> Evolved
+
+Figure 3: Top eleven algorithm/data-structure categories ordered by absolute seed →evolved share shift. Numbers next to each bar pair show seed-share → evolved-share. Full category breakdown is in Appendix F. The memory-free ablation also underperforms BenchEvolver, indicating that accepted lineages and prior failures provide useful search guidance beyond independent one-step mutations. 
+
+Evolved tasks are empirically harder. Figure 2 shows that accepted evolved tasks substantially reduce target-model pass rates relative to their original seeds across both lightweight and frontier models. The effect is consistent across difficulty levels and evolver models, indicating that the tasks are not artifacts of a single generator or prompt configuration. Crucially, each evolver also experiences a clear accuracy drop on its own evolved tasks. Thus, BenchEvolver does not merely use a stronger model to generate data for weaker models; it constructs verified tasks that expose weaknesses of the model generating them. 
+
+Human evaluation: algorithmic diversity. We complement executable evaluation with a blind human study of LiveCodeBench evolutions produced in our broader method-evaluation pool, which includes additional lineages beyond the 65-seed controlled comparison above. Six competitive-programming experts (Codeforces master / IOI / ICPC level) reviewed 100 evolved seed lineages spanning 72 distinct LiveCodeBench seeds and 207 distinct evolved problems, identifying the algorithms and data structures required by each task. Full protocol details and additional ratings of clarity, novelty, difficulty, and validity are provided in Appendix F. As shown in Figure 3, the seed problems are dominated by a single algorithmic regime: Search/sim-ulation accounts for 32 .7% of seed-tag mentions. In contrast, evolved problems distribute mass across a broader range of advanced data structures and algorithmic regimes, including HLD/LCT, AC automata, and polynomial/matrix methods. The number of distinct algorithmic categories increases from 19 in the seeds to 30 in the evolved set; moreover, 95 .6% of reviewed lineages introduce at least one category absent from their seed, with 2.54 new categories per lineage on average. These results show that BenchEvolver does not merely increase difficulty through superficial modification: it broadens the algorithmic surface area on which target models are challenged. 
+
+4.1.2 Scientific coding: SciCode 
+
+We next evaluate whether the solution-centric principle extends beyond competition-style stdin–stdout programs. For SciCode, we select 30 self-contained subproblems spanning 15 main problems from the validation split. Among them, 27 are saturated by the lightweight target tier and 28 by the frontier target tier, serving as seeds for generating harder scientific-coding variants. Since SciCode does not naturally admit brute-force validation, we instead use the customized statement-faithfulness protocol described in Appendix C.2, together with assertion-based execution. Table 2 and Figure 4 show that BenchEvolver also generates valid and substantially harder scientific-coding tasks. Despite the smaller seed pool and the absence of brute-force oracles, the framework produces accepted evolved tasks with high validity across evolvers while consistently reducing 7Target Tier Evolver Model Evolved Seed Fraction Validity Lightweight GPT-5.4-mini 24/27 (88.9%) 91.0% Lightweight Gemini-3-Flash 26/27 (96.3%) 98.2% Lightweight Claude-Sonnet-4.6 8/27 (29.6%) 90.0% Frontier Gemini-3.1-Pro 17/28 (60.7%) 88.9% 
+
+Table 2: SciCode evolution yield and validity. Evolved Seed Fraction reports the fraction of saturated seeds for which at least one accepted evolved problem is generated; Validity reports the post-hoc validity rate of accepted evolved problems. 0.00        
+
+> 0.25
+> 0.50
+> 0.75
+> 1.00
+> GPT-5.4 mini
+> avg Δ=-0.200
+> Δ=-0.198
+> Evolver:
+> GPT-5.4 mini
+> (n=66)
+> Δ=-0.348
+> Evolver:
+> Gemini 3 Flash
+> (n=55)
+> Δ=-0.055
+> Evolver:
+> Claude Sonnet 4.6
+> (n=10)
+> GPT-5.4
+> avg Δ=-0.222
+> Δ=-0.222
+> Evolver:
+> Gemini 3.1 Pro
+> (n=27)
+> 0.00
+> 0.25
+> 0.50
+> 0.75
+> 1.00
+> Gemini 3 Flash
+> avg Δ=-0.306
+> Δ=-0.573 Δ=-0.308 Δ=-0.038
+> Gemini 3.1 Pro
+> avg Δ=-0.287
+> Δ=-0.287
+> Seed Evolved
+> 0.00
+> 0.25
+> 0.50
+> 0.75
+> 1.00
+> Claude Sonnet 4.6
+> avg Δ=-0.295
+> Δ=-0.542
+> Seed Evolved
+> Δ=-0.371
+> Seed Evolved
+> Δ=0.027
+> Seed Evolved
+> Claude Opus 4.6
+> avg Δ=-0.191
+> Δ=-0.191
+> Original seeds Evolved Problems
+
+Figure 4: Pass@1 on original SciCode seed problems versus evolved problems. Across both lightweight and frontier target models, evolved problems substantially reduce model pass rates ( k = 4 
+
+attempts per model). target-model pass rates relative to the original seeds. This indicates that solution-centric evolution is not specific to competitive programming: the same generation principle extends across executable coding domains when paired with a validation protocol appropriate to the benchmark harness. 
+
+4.2 LIVE CODE BENCH -P LUS : A Benchmark for Frontier Coding Models 
+
+In this section, we apply BenchEvolver to saturated problems from the medium and hard tasks in LiveCodeBench-v6, in order to construct a difficulty-upgraded benchmark useful for frontier model evaluation, which we call L IVE CODE BENCH -P LUS .
+
+Evolution and evaluation. We start by reusing the same seed saturation criteria in Section 4.1. Of the 52 medium problems evaluated against the lightweight tier, 31 are saturated; of these, 23 produce at least one accepted evolved problem. Of 80 v6-hard problems evaluated against the frontier tier, 57 are saturated; of these, 43 produce at least one accepted evolved problem. We evolve the medium split using Gemini-3-Flash and the Hard split using Gemini-3.1-Pro, while using the same lightweight 
+
+and frontier target tiers from Section 4.1. We keep all other evolution configurations the same in Appendix E. To ensure our benchmark remains challenging for the strongest frontier models, we expand the evaluation pool to eight models across multiple providers. 
+
+Validation and Filtering. In addition to the internal brute-force triangulation protocol described in Appendix C.1, each evolved problem is reviewed by human evaluators on correctness and meaningfulness. We only select problems that pass all of the following criteria to be included in L IVE CODE BENCH -P LUS :• Quality gate : Quality gate: the problem receives a comprehensive quality and novelty score of at least 3 on a 1–5 scale, following coding-olympiad standards, ensuring the evolved problem is also high-quality for human coding competitors. 8Medium (23 seeds / 35 evolved) Hard (43 seeds / 55 evolved) LCB-Plus Model Seed Evolved ∆ Seed Evolved ∆ (91 problems) GPT-5.5 100.0 80.0 -20.0 97.1 62.3 -34.8 62.6 GPT-5.4 98.9 74.3 -24.6 94.8 49.7 -45.1 54.1 GPT-5.4-mini 95.7 59.3 -36.4 79.7 21.7 -58.0 29.6 Gemini-3.1-Pro 100.0 78.6 -21.4 96.5 56.8 -39.7 59.1 Gemini-3.5-Flash 95.7 73.6 -22.1 87.8 50.5 -37.3 50.0 Gemini-3-Flash 88.0 67.1 -20.9 82.0 43.2 -38.8 40.1 DeepSeek-V4-Pro 95.7 57.1 -38.6 83.7 23.2 -60.5 27.5 Qwen-3.7-Max 97.8 67.1 -30.7 74.4 58.6 -15.8 47.5 
+
+Table 3: Pass@1 (%) on seed problems and their evolved variants across medium and hard difficulty tiers ( k=4 attempts per model), and on L IVE CODE BENCH -P LUS (91 problems combining evolved tasks and original hard LCB-v6 problems). Seed is the macro-average pass@1 over the original LiveCodeBench-v6 problems from which each evolved set derives; Evolved is the macro-average over the corresponding evolved problems. ∆ is the absolute drop. For cost and latency reasons, we evaluate GPT models with medium reasoning effort, Gemini models with adaptive reasoning, and DeepSeek-V4-Pro with high thinking mode; all API calls use a 600-second timeout. • Difficulty range : the combined model pass@1 across our evaluation suite is restricted from 
+
+0.05 to 0.75 , excluding problems that are potentially degenerate and meaningless, or are too easy to discriminate among strong models. After filtering, we retain 64 evolved problems (44 from the hard split, 20 from the Medium split). We supplement these with 27 problems drawn from the original LiveCodeBench-v6 subset that satisfy the same difficulty ceiling ( ≤ 0.75 ), yielding a final benchmark of 91 problems. 
+
+Resulting benchmark. In total, our evolution pipeline produces LiveCodeBench Evolved: 35 validated evolved tasks from 23 Medium seeds and 55 from 43 Hard seeds, all preserving the executable stdin–stdout interface of LiveCodeBench. After applying the quality and difficulty filters described above, we retain 20 Medium and 44 Hard evolved problems; combined with 27 difficult original LiveCodeBench-v6 problems, this yields L IVE CODE BENCH -P LUS , a benchmark of 91 problems spanning a wide range of advanced algorithmic topics. The 35-problem LiveCodeBench Evolved Medium is also used as an external held-out evaluation set in Section 4.3. We release the benchmarks and all problems in our Hugging Face repository. 
+
+Difficulty shift. Table 3 shows that evolution substantially increases difficulty relative to the source seeds. On the Hard split, average pass@1 across all evaluated models drops from 87 .0% on the source seeds to 45 .7% on the evolved tasks, an absolute reduction of 41 .3 points. The Medium split shows a consistent but smaller shift, from 96 .5% to 69 .6% , a 26 .8-point reduction. This decrease holds for every individual model: for example, GPT-5.4 drops from 94 .8% to 49 .7% on the Hard split, while DeepSeek-V4-Pro drops from 83 .7% to 23 .2% . On the full 91-problem L IVE CODE BENCH -P LUS 
+
+benchmark, pass@1 ranges from 27 .5% (DeepSeek-V4-Pro) to 62 .6% (GPT-5.5), confirming that the combined set remains challenging even for the strongest frontier models and provides clear discrimination across the evaluated models. 
+
+4.3 Self-Improvement through Reinforcement Learning 
+
+The results above establish that BenchEvolver can produce verified tasks that challenge current models. We next ask whether evolved tasks can also expose weaknesses that are useful for improving the same model through training. This is the central promise of self-challenging data generation: rather than relying on a stronger teacher, a model constructs executable challenges near its own capability boundary and then learns from the resulting reward signal. 
+
+Setup. To test this, we use gpt-oss-20b as both the evolver and the target model. We take 880 LiveCodeBench v1–v5 problems released before January 2025 as the seed pool and hold out LiveCodeBench v6 and LiveCodeBench-Pro as evaluation sets. We apply BenchEvolver only to 90 20 40 60 80 100 
+
+> Training step
+> 40
+> 45
+> 50
+> 55
+> Pass@1 (%)
+> LiveCodeBench v6 Hard
+> seeds
+> evolved
+> seeds and evolved
+
+(a) LCB v6 Hard 0 20 40 60 80 100  
+
+> Training step
+> 65.0
+> 67.5
+> 70.0
+> 72.5
+> 75.0
+> 77.5
+> Pass@1 (%)
+> LiveCodeBench-Pro Easy
+> seeds
+> evolved
+> seeds and evolved
+
+(b) LCB-Pro Easy 0 20 40 60 80 100  
+
+> Training step
+> 30
+> 35
+> 40
+> Pass@1 (%)
+> LiveCodeBench-Evolved Medium
+> seeds
+> evolved
+> seeds and evolved
+
+(c) LCB-E VOLVED Medium 
+
+Figure 5: Test accuracy across training steps for three RL data mixes (mean ± standard deviation over two random seeds). Step 0 shows the base model. Pass@1 is computed by averaging 16 samples per problem. LCB-E VOLVED Medium is constructed independently using Gemini-3-Flash as the evolver and is not used in RL training. baseline seeds evolved seeds and 
+
+> evolved
+> 36
+> 38
+> 40
+> 42
+> 44
+> 46
+> 48
+> 50
+> Pass@1 (%)
+> 40.0
+> +5.1
+> +7.6
+> +8.7
+> LCB v6 Hard
+
+(a) LCB v6 Hard baseline seeds evolved seeds and  
+
+> evolved
+> 60
+> 62
+> 64
+> 66
+> 68
+> 70
+> 72
+> 74
+> Pass@1 (%)
+> 64.6
+> +6.2
+> +7.2
+> +8.3
+> LCB-Pro Easy
+
+(b) LCB-Pro Easy baseline seeds evolved seeds and   
+
+> evolved
+> 28
+> 30
+> 32
+> 34
+> 36
+> 38
+> 40
+> Pass@1 (%)
+> 30.4
+> +3.2
+> +7.8 +6.9
+> LCB-Evolved Medium
+
+(c) LCB-E VOLVED Medium 
+
+Figure 6: Peak observed pass@1 during RL training for each data mixture, compared with the base model. For each evaluation set and data mixture, we report the checkpoint with the highest two-seed mean accuracy observed along the training trajectory; the number above each bar gives the absolute improvement in percentage points over the base model. The truncated y-axes are used only for readability. seeds that gpt-oss-20b solves correctly in all five initial attempts, i.e., problems saturated for the model. For each eligible seed, we allow up to 10 evolution iterations and accept at most two evolved problems; an accepted task must reduce the model’s empirical accuracy while remaining nonzero, ensuring that it is challenging but not degenerate. This procedure yields 586 evolved problems from 404 successfully evolved seeds. We construct three RL training sets: the original seed set with 880 problems, the evolved set with 586 problems, and their union with 1,466 problems. We train gpt-oss-20b with GRPO using Tinker, running two independent random seeds for each data condition under identical configurations: 64 problems per batch, 16 rollouts per problem, and maximum output lengths of 24K tokens during training and 30K tokens during evaluation. We report held-out performance on LiveCodeBench v6 Hard (80 problems) and LiveCodeBench-Pro Easy (96 problems), which lie in the informative difficulty range for gpt-oss-20b ; other splits are either nearly saturated or too difficult to support meaningful comparisons. In addition, we evaluate on LCB-E VOLVED Medium, an independently constructed evolved evaluation set generated with Gemini-3-Flash rather than gpt-oss-20b . This split is not used in RL training and has nonzero but far-from-saturated base-model accuracy, making it an informative external test of whether self-generated training signal transfers to harder evolved tasks. 
+
+Results on public held-out benchmarks. Figures 5 and 6 show that evolved tasks provide useful training signal beyond the original seed distribution. Figure 5 reports the full training trajectories, while Figure 6 summarizes the peak observed performance of each data mixture during training. On LCB v6 Hard, seed-only RL improves the base model from 40 .0% to 45 .1% , whereas evolved-only training reaches 47 .6% and the seed+evolved mixture reaches 48 .7% . Thus, incorporating evolved tasks yields an additional +2 .5 points for evolved-only training and +3 .6 points for the 10 combined mixture over seed-only RL. The same trend holds on LCB-Pro Easy: seed-only training improves from 64 .6% to 70 .8% , while evolved-only and seed+evolved training reach 71 .8% and 
+
+72 .9% , corresponding to additional gains of +1 .0 and +2 .1 points. In both public held-out settings, the seed+evolved mixture performs best, suggesting that evolved tasks complement the coverage of the original seed distribution while directing learning toward weaknesses not exposed by saturated seeds. 
+
+Transfer to an independently evolved benchmark. We further evaluate the same RL runs on LCB-EVOLVED Medium. This benchmark is generated independently by Gemini-3-Flash rather than by 
+
+gpt-oss-20b , and therefore tests whether self-generated training data transfers beyond the model’s own evolved task distribution. We use the Medium split because it remains within the informative difficulty range for gpt-oss-20b : the base model achieves nonzero but far-from-saturated accuracy. Specifically, the base model obtains 30 .45% Pass@1, and seed-only training improves performance modestly to 33 .66% . In contrast, training on problems evolved by gpt-oss-20b itself reaches 
+
+38 .22% , a +7 .77 -point gain over the base model and +4 .56 points beyond seed-only training; the seed+evolved mixture also improves performance to 37 .32% . Unlike the public held-out benchmarks, evolved-only training performs best on LCB-E VOLVED Medium, indicating that self-generated evolved tasks are especially effective for improving performance on harder evolved-style challenges. Since the evaluation set is produced by a different external evolver, the gains are not simply due to overlap with the training tasks or artifacts of the same evolver. 
+
+Closing the self-improvement loop. These results support a closed-loop self-improvement inter-pretation. Starting from seed problems that gpt-oss-20b already solves reliably, BenchEvolver uses inference-time computation to construct verified variants that expose new failures of the current policy. Reinforcement learning then amortizes these self-generated challenges into the model parameters. The evaluation pattern clarifies the role of evolved data: mixing seeds and evolved tasks gives the strongest transfer to future public benchmarks, while evolved-only training gives the largest gain on the independently constructed LCB-E VOLVED Medium split. Thus, evolved tasks are not only harder evaluation items; they serve as reusable training signal that helps the model improve on difficult coding regimes beyond its original saturated training distribution. We provide the training details in Appendix D. 
+
+5 Conclusion and Future Work 
+
+5.1 Conclusion 
+
+We presented BenchEvolver, a solution-centric framework for turning saturated executable coding tasks into harder, verified challenges. The key idea is to evolve the computation first—by mutating reference solutions—and then recover statements and tests around the evolved solution, keeping task generation grounded in executable semantics. Across LiveCodeBench and SciCode, BenchEvolver produces valid, diverse tasks that substantially reduce target-model pass rates, including for the models that generated them. Building on these results, we curate L IVE CODE BENCH -P LUS , a 91-problem benchmark that combines 64 evolved and 27 difficult original LiveCodeBench-v6 tasks and restores meaningful discrimination among frontier coding models. More importantly, evolved tasks are not only useful as harder benchmarks: they also provide actionable training signal. Our RL experiments show that training on evolved problems improves held-out coding performance beyond training on the original seeds alone. This suggests a broader role for benchmark evolution: instead of treating evaluation datasets as static artifacts that inevitably saturate, models can use inference-time computation to discover their own failures, convert those failures into verified training environments, and improve through closed-loop self-play. 
+
+5.2 Future Work Scaling closed-loop RL self-improvement. Our RL experiments instantiate one round of the self-improvement loop: a model evolves saturated problems into harder verified tasks, trains on them through executable rewards, and improves on held-out coding benchmarks. A natural next step is to scale this into a multi-round process, where the improved model becomes the next evolver and generates a new generation of challenges. Such a loop raises important questions about stability, 11 curriculum design, and diversity. If selection is too narrow, the system may overfit to recurring failure modes; if selection is too aggressive, it may generate tasks that are difficult but uninformative for learning. Developing principled mechanisms for controlling task difficulty, preserving algorithmic diversity, and balancing original, evolved, and newly evolved tasks will be essential for turning self-challenging generation into a scalable training paradigm. 
+
+Toward living benchmarks. Finally, our results suggest that benchmark construction should move beyond static datasets. Any fixed benchmark will eventually saturate as models improve, especially in executable domains where training signal can be extracted from public tasks. Instead of releasing a benchmark as a one-time artifact, future work could maintain a reproducible evolution pipeline that periodically generates, validates, audits, and calibrates new tasks against current frontier models. Such a living benchmark would make evaluation adaptive to model progress while preserving transparency through versioned releases, held-out tests, and documented validation protocols. More broadly, this would align evaluation and training: the same verified tasks that reveal current model failures can also become the environments used to improve future models. 12 References 
+
+[1] Naman Jain, King Han, Alex Gu, Wen-Ding Li, Fanjia Yan, Tianjun Zhang, Sida Wang, Ar-mando Solar-Lezama, Koushik Sen, and Ion Stoica. Livecodebench: Holistic and contamination free evaluation of large language models for code. arXiv preprint arXiv:2403.07974 , 2024. [2] OpenAI. Introducing gpt-5.5. https://openai.com/index/introducing-gpt-5-5/ ,2026. [3] DeepSeek-AI. Deepseek-v4: Towards highly efficient million-token context intelligence, 2026. [4] Dan Hendrycks, Collin Burns, Steven Basart, Andy Zou, Mantas Mazeika, Dawn Song, and Jacob Steinhardt. Measuring massive multitask language understanding. arXiv preprint arXiv:2009.03300 , 2020. [5] Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian, Mark Chen, Heewoo Jun, Lukasz Kaiser, Matthias Plappert, Jerry Tworek, Jacob Hilton, Reiichiro Nakano, et al. Training verifiers to solve math word problems. arXiv preprint arXiv:2110.14168 , 2021. [6] David Rein, Betty Li Hou, Asa Cooper Stickland, Jackson Petty, Richard Yuanzhe Pang, Julien Dirani, Julian Michael, and Samuel R Bowman. Gpqa: A graduate-level google-proof q&a benchmark. arXiv preprint arXiv:2311.12022 , 2023. [7] Minyang Tian, Luyu Gao, Shizhuo D Zhang, Xinan Chen, Cunwei Fan, Xuefei Guo, Roland Haas, Pan Ji, Kittithat Krongchon, Yao Li, et al. Scicode: A research coding benchmark curated by scientists. Advances in Neural Information Processing Systems , 37:30624–30650, 2024. [8] Carlos E Jimenez, John Yang, Alexander Wettig, Shunyu Yao, Kexin Pei, Ofir Press, and Karthik Narasimhan. Swe-bench: Can language models resolve real-world github issues? arXiv preprint arXiv:2310.06770 , 2023. [9] Mike A Merrill, Alexander G Shaw, Nicholas Carlini, Boxuan Li, Harsh Raj, Ivan Bercovich, Lin Shi, Jeong Yeon Shin, Thomas Walshe, E Kelly Buchanan, et al. Terminal-bench: Benchmarking agents on hard, realistic tasks in command line interfaces. arXiv preprint arXiv:2601.11868 ,2026. [10] Ziyang Luo, Can Xu, Pu Zhao, Qingfeng Sun, Xiubo Geng, Wenxiang Hu, Chongyang Tao, Jing Ma, Qingwei Lin, and Daxin Jiang. Wizardcoder: Empowering code large language models with evol-instruct. arXiv preprint arXiv:2306.08568 , 2023. [11] Can Xu, Qingfeng Sun, Kai Zheng, Xiubo Geng, Pu Zhao, Jiazhan Feng, Chongyang Tao, Qingwei Lin, and Daxin Jiang. Wizardlm: Empowering large pre-trained language models to follow complex instructions, 2025. URL https://arxiv.org/abs/2304.12244 .[12] Yuxiang Wei, Zhe Wang, Jiawei Liu, Yifeng Ding, and Lingming Zhang. Magicoder: Empow-ering code generation with oss-instruct, 2024. URL https://arxiv.org/abs/2312.02120 .[13] Yuxiang Wei, Federico Cassano, Jiawei Liu, Yifeng Ding, Naman Jain, Zachary Mueller, Harm de Vries, Leandro Von Werra, Arjun Guha, and Lingming Zhang. Selfcodealign: Self-alignment for code generation. Advances in Neural Information Processing Systems , 37:62787–62874, 2024. [14] Wasi Uddin Ahmad, Sean Narenthiran, Somshubra Majumdar, Aleksander Ficek, Siddhartha Jain, Jocelyn Huang, Vahid Noroozi, and Boris Ginsburg. Opencodereasoning: Advancing data distillation for competitive coding. arXiv preprint arXiv:2504.01943 , 2025. [15] Minh VT Pham, Huy N Phan, Hoang N Phan, Cuong Le Chi, Tien N Nguyen, and Nghi DQ Bui. Swe-synth: Synthesizing verifiable bug-fix data to enable large language models in resolving real-world bugs. arXiv preprint arXiv:2504.14757 , 2025. [16] Cansu Sancaktar, David Zhang, Gabriel Synnaeve, and Taco Cohen. A deep dive into scaling rl for code generation with synthetic data and curricula. arXiv preprint arXiv:2603.24202 , 2026. 13 [17] Shang Zhou, Zihan Zheng, Kaiyuan Liu, Zeyu Shen, Zerui Cheng, Zexing Chen, Hansen He, Jianzhu Yao, Huanzhi Mao, Qiuyang Mang, et al. Autocode: Llms as problem setters for competitive programming. arXiv preprint arXiv:2510.12803 , 2025. [18] Jie Wu, Haoling Li, Xin Zhang, Jiani Guo, Jane Luo, Steven Liu, Yangyu Huang, Ruihang Chu, Scarlett Li, and Yujiu Yang. X-coder: Advancing competitive programming with fully synthetic tasks, solutions, and tests. arXiv preprint arXiv:2601.06953 , 2026. [19] Yifei Zhou, Sergey Levine, Jason Weston, Xian Li, and Sainbayar Sukhbaatar. Self-challenging language model agents. arXiv preprint arXiv:2506.01716 , 2025. [20] Luke Bailey, Kaiyue Wen, Kefan Dong, Tatsunori Hashimoto, and Tengyu Ma. Scaling self-play with self-guidance. arXiv preprint arXiv:2604.20209 , 2026. [21] Qiushi Sun, Jinyang Gong, Lei Li, Qipeng Guo, and Fei Yuan. Codeevo: Interaction-driven synthesis of code-centric data through hybrid and iterative feedback. arXiv preprint arXiv:2507.22080 , 2025. [22] Ruixiang Zhang, Richard He Bai, Huangjie Zheng, Navdeep Jaitly, Ronan Collobert, and Yizhe Zhang. Embarrassingly simple self-distillation improves code generation. arXiv preprint arXiv:2604.01193 , 2026. [23] Aozhe Wang, Yuchen Yan, Nan Zhou, Zhengxi Lu, Weiming Lu, Jun Xiao, Yueting Zhuang, and Yongliang Shen. Code-a1: Adversarial evolving of code llm and test llm via reinforcement learning. arXiv preprint arXiv:2603.15611 , 2026. [24] Chrisantha Fernando, Dylan Banarse, Henryk Michalewski, Simon Osindero, and Tim Rock-täschel. Promptbreeder: Self-referential self-improvement via prompt evolution. arXiv preprint arXiv:2309.16797 , 2023. [25] Qingyan Guo, Rui Wang, Junliang Guo, Bei Li, Kaitao Song, Xu Tan, Guoqing Liu, Jiang Bian, and Yujiu Yang. Evoprompt: Connecting llms with evolutionary algorithms yields powerful prompt optimizers. arXiv e-prints , pages arXiv–2309, 2023. [26] Lakshya A Agrawal, Shangyin Tan, Dilara Soylu, Noah Ziems, Rishi Khare, Krista Opsahl-Ong, Arnav Singhvi, Herumb Shandilya, Michael J Ryan, Meng Jiang, et al. Gepa: Reflective prompt evolution can outperform reinforcement learning. arXiv preprint arXiv:2507.19457 , 2025. [27] Bernardino Romera-Paredes, Mohammadamin Barekatain, Alexander Novikov, Matej Balog, M Pawan Kumar, Emilien Dupont, Francisco JR Ruiz, Jordan S Ellenberg, Pengming Wang, Omar Fawzi, et al. Mathematical discoveries from program search with large language models. 
+
+Nature , 625(7995):468–475, 2024. [28] Alexander Novikov, Ngân V ˜u, Marvin Eisenberger, Emilien Dupont, Po-Sen Huang, Adam Zsolt Wagner, Sergey Shirobokov, Borislav Kozlovskii, Francisco JR Ruiz, Abbas Mehrabian, et al. Alphaevolve: A coding agent for scientific and algorithmic discovery. arXiv preprint arXiv:2506.13131 , 2025. [29] Shengran Hu, Cong Lu, and Jeff Clune. Automated design of agentic systems. arXiv preprint arXiv:2408.08435 , 2024. [30] Rong Wu, Xiaoman Wang, Jianbiao Mei, Pinlong Cai, Daocheng Fu, Cheng Yang, Licheng Wen, Xuemeng Yang, Yufan Shen, Yuxin Wang, et al. Evolver: Self-evolving llm agents through an experience-driven lifecycle. arXiv preprint arXiv:2510.16079 , 2025. [31] Yangzhen Wu, Zhiqing Sun, Shanda Li, Sean Welleck, and Yiming Yang. Inference scaling laws: An empirical analysis of compute-optimal inference for problem-solving with language models. arXiv preprint arXiv:2408.00724 , 2024. [32] Andrew Zhao, Yiran Wu, Tong Wu, Quentin Xu, Yang Yue, Matthieu Lin, Shenzhi Wang, Qingyun Wu, Zilong Zheng, and Gao Huang. Absolute zero: Reinforced self-play reasoning with zero data. Advances in Neural Information Processing Systems , 38:105816–105879, 2026. 14 [33] Chengsong Huang, Wenhao Yu, Xiaoyang Wang, Hongming Zhang, Zongxia Li, Ruosen Li, Jiaxin Huang, Haitao Mi, and Dong Yu. R-zero: Self-evolving reasoning llm from zero data, 2026. URL https://arxiv.org/abs/2508.05004 .[34] Qizheng Zhang, Changran Hu, Shubhangi Upasani, Boyuan Ma, Fenglu Hong, Vamsidhar Ka-manuru, Jay Rainton, Chen Wu, Mengmeng Ji, Hanchen Li, et al. Agentic context engineering: Evolving contexts for self-improving language models. arXiv preprint arXiv:2510.04618 , 2025. [35] Parshin Shojaee, Ngoc-Hieu Nguyen, Kazem Meidani, Amir Barati Farimani, Khoa D Doan, and Chandan K Reddy. Llm-srbench: A new benchmark for scientific equation discovery with large language models. arXiv preprint arXiv:2504.10415 , 2025. [36] Audrey Cheng, Shu Liu, Melissa Pan, Zhifei Li, Bowen Wang, Alex Krentsel, Tian Xia, Mert Cemri, Jongseok Park, Shuo Yang, et al. Barbarians at the gate: How ai is upending systems research. arXiv preprint arXiv:2510.06189 , 2025. [37] Robert Tjarko Lange, Yuki Imajuku, and Edoardo Cetin. Shinkaevolve: Towards open-ended and sample-efficient program evolution. arXiv preprint arXiv:2509.19349 , 2025. [38] Jiachen Jiang, Tianyu Ding, and Zhihui Zhu. Deltaevolve: Accelerating scientific discovery through momentum-driven evolution. arXiv preprint arXiv:2602.02919 , 2026. [39] Minghao Yan, Bo Peng, Benjamin Coleman, Ziqi Chen, Zhouhang Xie, Shuo Chen, Zhankui He, Noveen Sachdeva, Isabella Ye, Weili Wang, et al. Pacevolve: Enabling long-horizon progress-aware consistent evolution. arXiv preprint arXiv:2601.10657 , 2026. [40] Mert Cemri, Shubham Agrawal, Akshat Gupta, Shu Liu, Audrey Cheng, Qiuyang Mang, Ashwin Naren, Lutfi Eren Erdogan, Koushik Sen, Matei Zaharia, et al. Adaevolve: Adaptive llm driven zeroth-order optimization. arXiv preprint arXiv:2602.20133 , 2026. [41] Shu Liu, Shubham Agarwal, Monishwaran Maheswaran, Mert Cemri, Zhifei Li, Qiuyang Mang, Ashwin Naren, Ethan Boneh, Audrey Cheng, Melissa Z Pan, et al. Evox: Meta-evolution for automated discovery. arXiv preprint arXiv:2602.23413 , 2026. [42] Henrique Assumpção, Diego Ferreira, Leandro Campos, and Fabricio Murai. Codeevolve: an open source evolutionary coding agent for algorithmic discovery and optimization, 2026. URL 
+
+https://arxiv.org/abs/2510.14150 .[43] Thinking Machines Lab. Tinker, 2025. URL https://thinkingmachines.ai/tinker/ .15 A Additional Related Work 
+
+Synthetic coding tasks. Synthetic data generation has become a central approach for improving and evaluating LLMs’ coding capabilities, especially as human-written programming tasks are expensive to collect and curate at scale. Early work primarily synthesizes instruction-following data: WizardCoder and WizardLM evolve seed instructions into more complex variants [ 10 , 11 ], while SelfCodeAlign generates instruction data for code alignment [ 13 ]. Other work distills reasoning traces for competitive programming [ 14 ], synthesizes repository-level bug-fix tasks [ 15 ], or constructs synthetic curricula for RL-based code generation [ 16 ]. More recent systems move from instruction synthesis to complete executable tasks. AutoCode uses LLMs as competitive-programming problem setters, generating new statements together with reference solutions and tests [ 17 ]; X-Coder similarly studies fully synthetic competitive-programming data for training code reasoning models [ 18 ]. These methods demonstrate that synthetic coding data can improve scale and coverage. However, most of them are still organized as data-generation pipelines for downstream models: they generate instructions, tasks, solutions, or curricula, but do not explicitly require the generated tasks to challenge the generator itself. 
+
+Self-play and self-guided improvement. A complementary line of work studies model-in-the-loop data generation, where the model creates new supervision targeted to its evolving capabilities. Self-Challenging Agents instantiate this idea for tool-use agents, generating verifiable tasks and training an executor through RL feedback [ 19 ]. Self-Guided Self-Play studies a solver–conjecturer loop for formal theorem proving, introducing a guide role to avoid degenerate or uninformative conjectures [ 20 ]. More closely related in motivation, Absolute Zero trains a single model to propose and solve self-generated code-reasoning tasks, using execution both to construct valid tasks and to verify solver outputs [ 32 ]. R-Zero instead co-evolves separate Challenger and Solver models from zero external data: the Challenger generates mathematical questions near the Solver’s capability boundary, while Solver self-consistency provides pseudo-labels for subsequent training [ 33 ]. In code generation, related work studies iterative code-centric data synthesis through Coder–Reviewer feedback [ 21 ], self-improvement from model-generated solutions [ 22 ], and adversarial co-evolution between code-generation and test-generation models [ 23 ]. Together, these works show that models can generate renewable training signal by targeting their own current weaknesses. Our work shares this self-challenging motivation, but targets a different object: complete benchmark items evolved from existing coding problems. Rather than generating free-form training questions from scratch, BenchEvolver mutates an executable reference solution of a real seed task and derives a new statement and test suite around the evolved computation. Each accepted task is therefore required to be well specified, executable under the original benchmark harness, and empirically harder for a panel of target models, including the evolver itself. This design makes the output suitable not only as self-generated RL data, but also as an evolved benchmark for evaluating frontier coding models. 
+
+Self-evolving algorithms for LLM agents. Evolution-based algorithms have emerged as a general in-context strategy for solving difficult but verifiable optimization problems. They typically combine LLM-generated mutations with automatic evaluators, using feedback from candidate performance to guide subsequent generations. This paradigm has been applied to prompt and context optimiza-tion [ 24 – 26 , 34 ], program and algorithm discovery [ 27 , 28 , 35 , 36 ], and adaptive evolutionary search, including diversity-driven program evolution, meta-evolution, and long-horizon progress-aware opti-mization [ 37 –41 ]. Related work also studies automated or self-evolving agent systems [ 29 , 30 ] and open-source evolutionary coding agents [42]. Our framework adopts the same closed-loop search principle, but applies it to benchmark generation rather than solution optimization. Instead of evolving better prompts, programs, or agents for a fixed objective, BenchEvolver evolves the objective itself: harder executable coding tasks with reference solutions and tests. This shift is important for self-improvement. In conventional evolutionary optimization, the evaluator is fixed and the goal is to find a better solution; in BenchEvolver, the evaluator is used to discover new tasks that expose the model’s current weaknesses, turning inference-time search [31] into reusable benchmark and training data. 16 B Pseudocode for BenchEvolver 
+
+Notation for Algorithm 1. Each task is I = ( S, C, T, E ), consisting of a statement, reference code, hidden tests, and execution harness. The panel Π = {πj }Jj=1 contains the target solvers, and 
+
+ˆCj,k ∼ πj (S) is the k-th solution attempt from solver πj . The map ϕ converts lower empirical accuracy to higher difficulty level. The operators qθ , wθ , and gθ are the mutator, statement writer, and test generator. For seed Ii, Li is the accepted lineage, mi stores local history such as accepted/rejected mutations, repairs, scores, and target error patterns, and G stores accepted mutation ideas across seeds for diversity guidance. The context hi,b packages these memories and difficulty levels for proposal step b; r(I′) is the validation predicate; and A(I′) is the final acceptance predicate. 
+
+Algorithm 1 BenchEvolver: Solution-Centric Evolution 
+
+Require: Seed benchmark D = {Ii = ( Si, C i, T i, E i)}ni=1 , target solver panel Π = {πj }Jj=1 ,attempts per solver K, evolution budget B, minimum level gain ∆
+
+Ensure: Evolved benchmark D′
+
+VE ( ˆC, T ) = 1 iff ˆC passes all tests T under harness E.
+
+a(I; Π , K ) = 1
+
+> JK
+
+PJj=1 
+
+PKk=1 VE ( ˆCj,k , T ) and ℓ(I) = ϕ(a(I; Π , K )) .
+
+Li, m i, G, h i,b , r (I′), A (I′) are defined in Appendix B.  
+
+> 1:
+
+D′ ← ∅ , G ← ∅  
+
+> 2:
+
+for all Ii = ( Si, C i, T i, E i) ∈ D do  
+
+> 3:
+
+ai ← a(Ii; Π , K ), ℓi ← ϕ(ai), Li ← [ ] , mi ← ∅  
+
+> 4:
+
+for b = 1 , . . . , B do 
+
+PARENT /CONTEXT : latest accepted child, not sampled parent  
+
+> 5:
+
+Ip = ( Sp, C p, T p, E p) ← Last( Li) if Li̸ = ∅, else Ii; hi,b ← (mi, G, ℓ i, ℓ (Ip)) 
+
+PROPOSER : evolve solution, then derive statement/tests  
+
+> 6:
+
+C′ ∼ qθ (· | Cp, h i,b ); materialize examples by executing C′ 
+
+> 7:
+
+S′ ∼ wθ (· | C′), T ′ ∼ gθ (· | S′, C ′); set I′ = ( S′, C ′, T ′, E i)
+
+VALIDATION : executable consistency with bounded repair  
+
+> 8:
+
+r(I′) ← 1{Consistent( S′, C ′, T ′, E i)}; repair and recompute r(I′) if needed  
+
+> 9:
+
+if r(I′) = 0 then  
+
+> 10:
+
+record rejection in mi and continue  
+
+> 11:
+
+end if 
+
+DIFFICULTY /SELECTION : target-panel failure after validation  
+
+> 12:
+
+a′ ← 1
+
+> JK
+
+PJj=1 
+
+PKk=1 VEi ( ˆC′
+
+> j,k
+
+, T ′), ℓ′ ← ϕ(a′) 
+
+> 13:
+
+A(I′) ← r(I′) ∧ [ℓ′ ≥ ℓ(Ip)] ∧ [ℓ′ ≥ ℓi + ∆] ∧ ¬ Artificial( I′) 
+
+> 14:
+
+if A(I′) = 1 then  
+
+> 15:
+
+D′ ← D ′ ∪ { I′}; append I′ to Li; update mi and G 
+
+> 16:
+
+else  
+
+> 17:
+
+Record rejection reason and observed failures in mi 
+
+> 18:
+
+end if  
+
+> 19:
+
+end for  
+
+> 20:
+
+end for  
+
+> 21:
+
+return D′
+
+C Validation and Repair Details 
+
+C.1 LiveCodeBench brute-force triangulation 
+
+For LiveCodeBench, BenchEvolver applies a benchmark-specific self-validation stack before target-model evaluation. It synthesizes an independent brute-force solver from the statement alone and checks public examples using a three-way vote among the reference solution, the brute-force solver, and a natural-language oracle that sees only the problem statement. Agreement passes the candidate; disagreements trigger targeted repair of the brute-force solver, reference solution, or task specification. The vetted brute-force solver is then run on generated hidden tests where feasible, using concrete output disagreements as counterexamples for repair while treating large-case timeouts as brute-force infeasibility. Candidates are rejected if the validation stack cannot resolve the inconsistency within a 17 shared repair budget of three attempts, with each repair action, regardless of type, consuming one attempt. 
+
+C.2 SciCode statement-faithfulness validation 
+
+SciCode tasks do not naturally support brute-force validation because they are scientific function-level problems with assertion-based tests and domain-specific conventions. We therefore use a best-of-N
+
+statement-faithfulness check. After generating the statement, reference solution, and hidden assertion tests, the evaluator model solves the task from the statement alone. Each alternate solution is executed against the generated tests, and we keep the best pass rate over N attempts. We set a threshold of 0.5, and candidates below this threshold are treated as underspecified; the pipeline revises the statement and reruns the check against the same tests. If the revised task still fails within the shared repair budget, the candidate is rejected. This gate is intended to detect specification gaps rather than certify scientific correctness. Same-model self-play may share numerical blind spots with the reference solution, but if a capable solver cannot reproduce the expected behavior from the statement after several attempts, the task likely omits an important convention, assumption, or return-contract detail. 
+
+D Training Details 
+
+We fine-tune the open-weight openai/gpt-oss-20B model with on-policy reinforcement learning on LiveCodeBench-style coding problems. Training is performed through the Tinker RL service [ 43 ]with LoRA adapters on the policy; the reference policy and the sampler share the same base weights. All rollouts execute generated programs in an isolated cloud sandbox so that the reward signal is grounded in real test-case outcomes rather than a learned reward model. 
+
+D.1 Optimization and Model Configuration 
+
+The policy uses LoRA adapters of rank r=32 over the attention and MLP projections of the base model. We optimize with a constant learning rate of η=1 ×10 −5 and a single optimizer substep per batch ( K=1 ). We do not apply a KL penalty to the reference policy ( βKL =0 ) and instead rely on the LoRA bottleneck and the group-relative advantages (Sec. D.2) to keep the policy close to the base model. Conversations are formatted with the gpt_oss_medium_reasoning chat renderer, which preserves the model’s native thinking–answer structure.                                    
+
+> Component Hyperparameter Value
+> Base model model_name openai/gpt-oss-20B
+> LoRA lora_rank 32
+> Renderer renderer_name gpt_oss_medium_reasoning
+> Optimizer learning_rate 1×10 −5
+> kl_penalty_coef 0.0
+> num_substeps 1
+> Rollouts group_size (G)16
+> groups_per_batch (B)64
+> seed 42 and 43
+> Context (train) max_tokens 24 ,000
+> max_trajectory_tokens 26 ,500
+> Context (eval) test_max_tokens 30 ,000
+> test_max_trajectory_tokens 32 ,500
+> Environment sandbox_backend modal
+> per-test timeout 6sReward shaping format_coef (λ)0.1
+> context_overflow_reward −0.1
+
+Table 4: Training configuration used for all RL runs. Train/eval context caps differ because the policy needs more room at evaluation time to produce a valid final answer when reasoning chains are longest. 18 D.2 RL Objective and Batch Construction 
+
+For each task τ in a training batch, we sample G=16 independent trajectories {x(g)}Gg=1 from the current policy πθ at nucleus sampling temperature defaults. A batch consists of B=64 such groups, yielding B · G=1024 trajectories per gradient step. We use group-relative advantages: for each task, the scalar reward of every trajectory is centered against the mean reward of its own group, 
+
+A(g) 
+
+> τ
+
+= r(x(g) 
+
+> τ
+
+) − 1
+
+G
+
+> G
+
+X
+
+> g′=1
+
+r(x(g′) 
+
+> τ
+
+), (1) so that easy tasks (where most rollouts pass) and hard tasks (where most rollouts fail) contribute meaningful gradient signal without an additional value baseline. Trajectories are then trained against the policy-gradient loss with clipped importance weights, in the standard on-policy form used by Tinker’s RL trainer. 
+
+D.3 Reward Design 
+
+Rewards are computed once per trajectory, after the entire conversation has finished. The grader extracts the last fenced code block from the final assistant turn and submits it to the cloud sandbox along with the task’s LiveCodeBench-format tests. Let c ∈ { 0, 1} indicate whether the extracted program passes every test case under a per-test wall-clock limit of T =6 s, and let f ∈ { 0, 1} indicate whether the response contains at least one fenced code block. The episode reward is 
+
+r = c + λ (f − 1) , λ = 0 .1. (2) Equation 2 has three intended properties. (i) A fully correct solution receives r=1 . (ii) An incorrect but well-formatted attempt receives r=0 , so the policy is not punished for trying. (iii) A response without an extractable code block receives r= − 0.1, providing a small shaping signal that prevents the policy from collapsing into pure chain-of-thought without ever emitting code. We deliberately keep λ small so that format shaping never dominates the correctness signal. 
+
+Sandbox grading. Stdin/stdout problems are run as a real Python subprocess inside the sandbox, matching the LiveCodeBench harness; functional problems use the in-process call-based path. Output comparison applies, in order, exact-match (after stripping trailing whitespace), numeric match with relative tolerance 10 −6, and a set-of-tokens fallback for unordered outputs. Per-test failures (Wrong Answer, Time Limit Exceeded, Runtime Error) all count as c=0 , regardless of which test failed first. 
+
+Trajectory-level penalties. Trajectories whose token budget is exhausted before a final answer is produced receive roverflow = − 0.1, identical in magnitude to the format penalty. This prevents the policy from learning to stall indefinitely in the reasoning channel. 
+
+D.4 Training Dynamics 
+
+Figure 7 reports the on-policy training reward and average response length for the three RL data mixtures. The reward curves start at different levels because the datasets have different difficulty: seed problems are easier for the base policy and therefore begin with higher reward, while evolved problems are intentionally harder and start substantially lower. This gap is expected and reflects the construction of BenchEvolver: evolved tasks are selected to expose failures of the current model rather than to maximize initial reward. Across training, all mixtures improve, but with different dynamics. Seed-only training begins high and quickly saturates, suggesting limited remaining learning signal. Evolved-only training starts from the lowest reward but rises steadily throughout training, indicating that the evolved distribution provides nontrivial gradient signal over many updates. The combined seed+evolved mixture lies between the two at initialization and also improves consistently, balancing easier problems that stabilize training with harder evolved tasks that continue to drive learning. 19 0 20 40 60 80 100      
+
+> Training step
+> 0.55
+> 0.60
+> 0.65
+> 0.70
+> 0.75
+> 0.80
+> 0.85
+> Train reward
+> Training reward
+> seeds
+> evolved
+> seeds and evolved
+> 020 40 60 80 100
+> Training step
+> 4000
+> 6000
+> 8000
+> 10000
+> 12000
+> Avg response length (tokens)
+> Average response length
+> seeds
+> evolved
+> seeds and evolved
+
+Figure 7: Training reward (left) and average response length in tokens (right), for the three data conditions (seeds, evolved, seeds and evolved). Solid lines are the mean of two random seeds per condition; shaded bands are ±1 standard deviation across the two seeds. A boxcar smoother of width 
+
+5 is applied to both the mean and standard-deviation curves. The reward panel reflects Eq. 2; the maximum attainable per-trajectory reward is 1.0 and the minimum is −0.1.
+
+D.5 Compute and Reproducibility 
+
+Each RL run takes approximately 40 hours and costs about $800 in Tinker credits. All runs use the Tinker service for policy execution and gradient updates, while the client-side training loop runs on a single CPU host. Code execution is delegated to Modal-hosted sandboxes, so throughput is primarily determined by generated-program execution and test-case latency rather than local compute. We use two independent random seeds for each data mixture and keep the hyperparameters fixed across all runs. 
+
+E Evolution Configurations and Hyperparameters 
+
+The default configurations for our LiveCodeBench and SciCode experiments are summarized in Table 5. The table reports the model settings, acceptance criteria, repair and validation budgets, test-generation parameters, and memory mechanisms used by our evolution pipeline. 
+
+F Human Evaluation: Full Breakdown 
+
+This appendix provides the full human-evaluation breakdown for Section 4.1.1 and Figure 3, including distributional statistics (Figure 8) and the complete algorithm-category distribution (Figure 9). 
+
+Review protocol. We use a blinded expert-review protocol to reduce positional, model, and post-hoc filtering biases. Six competitive-programming experts (Codeforces grandmaster / IOI / ICPC level) review groups of 2 to 4 anonymized problems with opaque identifiers and are not told which problem is the seed, which are evolved variants, or which model generated them. Reviewers certify that they do not use generative AI during evaluation. For each problem, they rate clarity, novelty, and difficulty on a 1–5 scale, estimate a Codeforces rating, list required algorithms and data structures, and provide short written justifications. Groups are assigned to two reviewers when possible: 65% of problems receive two independent reviews. We aggregate numeric ratings by averaging per problem, and aggregate algorithm tags by taking the union after normalizing synonyms and variants into a controlled vocabulary. This protocol makes the reported statistics primarily reflect problem-level variation rather than a single reviewer or post-hoc selection. 
+
+Results. Figure 8 shows a consistent shift from the seed problems to the evolved problems. The evolved problems are rated substantially harder (panel c; 1.83 → 3.21 ), and the estimated Codeforces ratings (panel d) move from a concentrated pupil/specialist range around 1100 to a broader distribution centered near 2100 . They are also judged more novel (panel b; 2.21 → 3.10 ), with far fewer cases rated as close variants of the seed. Importantly, this increase in difficulty does not come from making the statements less clear: clarity improves from 4.45 to 4.83 , with most evolved problems rated 4 or 
+
+5. Finally, panels e–f and Figure 9 show that the evolved problems broaden the algorithmic coverage: 20 Config name Purpose LCB SciCode Model and evaluation 
+
+target_eval_k Attempts per target model for evolved problems. 4 4temperature Sampling temperature for generation. 0.8 0.8 timeout LLM request timeout in seconds. 600 600 
+
+Difficulty and acceptance 
+
+allowed_seed_levels Seed difficulty levels allowed as starting points. [1,2] [1,2] accept_min_level_gain Minimum difficulty-level gain over the seed. 1 1accept_target_level Stop once this accepted difficulty level is reached. 5 5max_iters_per_seed Maximum evolution iterations per seed. 10 10 max_accepted_per_seed Maximum accepted evolved items per seed. 3 3no_improve_patience Stop evolution after consecutive non-accepted iterations. 4 4
+
+Mutation and repair 
+
+max_candidate_repairs Shared repair budget per candidate. 3 3spec_retry_attempts Statement/spec revision attempts. 2 2enable_test_repair Allow regenerating weak or malformed tests. true true test_repair_attempts Test repair attempts. 2 2
+
+SciCode-specific faithfulness checks 
+
+faithfulness_check_N Alt-solver attempts for statement-faithfulness check. – 3faithfulness_min_pass_rate Best-of-N pass-rate floor for a faithful statement. – 0.5 faithfulness_max_repair Spec-revision retries on faithfulness failure. – 2
+
+Test generation and execution 
+
+program_gen_small_inputs Number of small generated inputs. 5 2program_gen_medium_inputs Number of medium generated inputs. 5 2program_gen_large_inputs Number of large generated inputs. 5 2program_gen_stress_inputs Number of stress generated inputs. 3 –
+
+execution_timeout Per-test reference/target execution timeout. 6.0 30.0 max_output_bytes Maximum captured stdout bytes. 1000000 1000000 
+
+Memory and diversity 
+
+memory_raw_window Raw recent iteration records retained in local memory. 10 5memory_digest_recent_k Recent raw records shown alongside digest. 3 3judge_near_duplicate_check Judge rejects near-duplicates within a seed lineage. true true global_memory_max_entries Max global accepted entries shown to mutator. 50 20 global_memory_max_chars Character cap for global memory block. 6000 6000 
+
+Table 5: Default evolution configurations for LCB and SciCode. 
+
+95 .6% of lineages introduce at least one new algorithmic category, with 2.54 new categories per group on average, and the total number of observed categories increases from 19 to 30 . Overall, the human study supports the main claim that BenchEvolver produces problems that are harder and diverse while remaining well specified. 21 1 2 3 4 5
+
+Rating (avg. across reviewers) 
+
+0.00 
+
+0.25 
+
+0.50 
+
+0.75 
+
+1.00 
+
+1.25 
+
+1.50 
+
+> Density
+
+Statement Clarity 
+
+Seed (n=72, mean=4.45) 
+
+Evolved (n=207, mean=4.83) (a) Clarity. 1 2 3 4 5
+
+Rating (avg. across reviewers) 
+
+0.0 
+
+0.1 
+
+0.2 
+
+0.3 
+
+0.4 
+
+0.5 
+
+0.6 
+
+> Density
+
+Novelty / Insight 
+
+Seed (n=72, mean=2.21) 
+
+Evolved (n=207, mean=3.10) (b) Novelty / insight. 1 2 3 4 5
+
+Rating (avg. across reviewers) 
+
+0.0 
+
+0.2 
+
+0.4 
+
+0.6 
+
+0.8 
+
+> Density
+
+Difficulty (1 5) 
+
+Seed (n=72, mean=1.83) 
+
+Evolved (n=207, mean=3.21) 
+
+(c) Difficulty. 500 1000 1500 2000 2500 3000 3500 
+
+> Estimated Codeforces rating
+> 0
+> 5
+> 10
+> 15
+> 20
+> 25
+> 30
+> 35
+> # problem reviews
+
+Reviewer-estimated Codeforces difficulty  
+
+> Seed (n=72, median=1125)
+> Evolved (n=206, median=2100)
+
+(d) Estimated Codeforces rating. 1 2 3 4 5
+
+Group diversity (1=monotone, 5=highly diverse; avg. across reviewers) 
+
+> 0
+> 5
+> 10
+> 15
+> 20
+> # seed groups
+
+Diversity of evolved problems within a seed lineage 
+
+(n=100 groups, mean=3.38, median=3.1) 
+
+(e) Group-level diversity. 0 2 4 6 8
+
+# algorithm categories introduced by evolution 
+
+(in evolved set but not in seed) 
+
+0
+
+5
+
+10 
+
+15 
+
+> # seed groups
+
+Per-group algorithmic novelty 
+
+(n=68, mean=2.54) (f) New categories per group. 
+
+Figure 8: Human-evaluation distributions. The evolved problems are rated as more novel and more difficult than their seeds, with median estimated Codeforces rating increasing from 1125 to 2100 . At the group level, evolved lineages have mean diversity 3.38 /5 and introduce an average of 2.54 new algorithm categories per group, with at least one new category in 95 .6% of groups. 22 0 5 10 15 20 25 30 
+
+Share of tag mentions (%) 
+
+Segment tree 
+
+DP (basic) 
+
+DP (advanced) 
+
+Prefix-sum/diff 
+
+Heavy/HLD/LCT 
+
+Combinatorics 
+
+AC automaton 
+
+Poly/Matrix/GF 
+
+Tree DP 
+
+Strings/hash 
+
+Binary search 
+
+Mo's / offline 
+
+Other 
+
+Search/simulation 
+
+Divide & conquer 
+
+Number theory 
+
+BIT 
+
+Trie/SAM 
+
+Random/MitM 
+
+Flow/matching 
+
+Balanced BST 
+
+Monotonic stack/queue 
+
+Constructive/case-work 
+
+Geometry/convex 
+
+Greedy 
+
+Graph algorithms 
+
+Sorting 
+
+Algorithm/data-structure category usage (full) 
+
+Seed 
+
+Evolved Figure 9: Full algorithm-category distribution for seed and evolved problems, including all categories with at least three combined mentions. The main-body Figure 3 shows the eleven categories with the largest absolute seed-to-evolved share shift. 23 G Examples of Evolved Benchmark Items 
+
+In this section, we provide examples of successfully evolved frontier tasks for LiveCodeBench and SciCode, and compare them with their seed problems. 
+
+G.1 LiveCodeBench Examples 
+
+LCB Seed: Copy Arrays decision/counting · O(N) 
+
+TASK 
+
+Given original and interval bounds bounds [i] = [ ui, v i], count arrays copy such that 
+
+copy [i] − copy [i − 1] = original [i] − original [i − 1] , 1 ≤ i < n, 
+
+with ui ≤ copy [i] ≤ vi for all i. The key observation is 
+
+copy [i] = original [i] + d, 
+
+so feasibility reduces to intersecting valid intervals for one global offset d.
+
+CONSTRAINTS 
+
+2 ≤ n ≤ 10 5
+
+1 ≤ original [i] ≤ 10 9
+
+1 ≤ ui ≤ vi ≤ 10 9
+
+EXAMPLES  
+
+> original=[1,2,3,4]; bounds=[[1,2],[2,3],[3,4],[4,5]]
+
+→ 2 
+
+> original=[1,2,3,4]; bounds=[[1,10],[2,9],[3,8],[4,7]]
+
+→ 4 
+
+> original=[1,2,1,2]; bounds=[[1,1],[2,3],[3,3],[2,3]]
+
+→ 0
+
+Evolved Problem: XOR-Linked Sequence digit DP · O(N bits) 
+
+TASK 
+
+The evolved task replaces additive differences with XOR differences: 
+
+copy [i] ⊕ copy [i − 1] = original [i] ⊕ original [i − 1] , 1 ≤ i < n. 
+
+Count non-negative x = copy [0] such that all entries satisfy their bounds. Since 
+
+copy [i] = x ⊕ pi, pi = original [i] ⊕ original [0] ,
+
+the task becomes counting x such that 
+
+ui ≤ x ⊕ pi ≤ vi for all i. 
+
+Unlike arithmetic intervals, these XOR-induced feasible sets are not contiguous. 
+
+CONSTRAINTS 
+
+0 ≤ n ≤ 10 5
+
+0 ≤ original [i] ≤ 10 9
+
+0 ≤ ui ≤ vi ≤ 10 9
+
+EXAMPLES  
+
+> original=[1,2]; bounds=[[1,2],[2,3]]
+
+→ 1 
+
+> original=[1,2]; bounds=[[1,1],[3,3]]
+
+→ 0 
+
+> original=[1,2,3]; bounds=[[1,10],[1,10],[1,10]]
+
+→ 6
+
+Mutation and algorithmic lift. The seed problem has a single additive offset, so it is solved by interval intersection in O(N ) time. The evolved variant changes the relation to XOR, yielding constraints of the form ui ≤ x ⊕ pi ≤ vi.Because XOR ranges are not contiguous, simple interval intersection fails, and a bitwise digit-DP or trie-style method is needed. 
+
+24 LCB Seed: Uniqueness whole array · O(N) 
+
+TASK 
+
+Given N people with values Ai, find the label of the person whose value is unique among all people and is numerically largest. If no value is unique, output −1.
+
+CORE STRUCTURE 
+
+Count global frequencies, then select the maximum value with frequency one and return its index. 
+
+CONSTRAINTS 
+
+1 ≤ N ≤ 3 × 10 5, 1 ≤ Ai ≤ 10 9.
+
+EXAMPLES  
+
+> A=[2,9,9,7,9,2,4,5,8]
+
+→ 9 
+
+> A=[1e9,1e9,998244353,998244353]
+
+→ -1 
+
+Evolved #1: Maximum Unique Value Query subarray queries 
+
+TASK 
+
+Given an array A and Q range queries (L, R ), output the index of the largest value that appears exactly once in 
+
+A[L..R ]. If no such value exists, output −1.
+
+ALGORITHMIC LIFT 
+
+The uniqueness test becomes range-dependent: each query has its own frequency profile, requiring offline or data-structural reasoning rather than one global pass. 
+
+CONSTRAINTS 
+
+1 ≤ N, Q ≤ 5 × 10 5, 1 ≤ Ai ≤ 10 9.
+
+EXAMPLES  
+
+> A=[10,10,20,20]; q=(1,4)
+
+→ -1  
+
+> A=[1,2,3,2,1]; q=(1,5),(1,2)
+
+→ 3,2  
+
+> A=[2,9,9,7,9,2,4,5,8]; q=(1,9)
+
+→ 9
+
+Evolved #2: Maximum Unique Path Value tree paths 
+
+TASK 
+
+Given a tree with node values Wi, each query gives nodes 
+
+u, v . On the path between them, output the node index whose value is largest among values appearing exactly once on that path. If none exists, output −1.
+
+ALGORITHMIC LIFT 
+
+The range-query setting is lifted from arrays to tree paths, so queries depend on path decomposition and tree topology rather than contiguous intervals. 
+
+CONSTRAINTS 
+
+1 ≤ N, Q ≤ 10 5, 0 ≤ Wi ≤ 10 9.
+
+The input graph is a tree. 
+
+EXAMPLES  
+
+> edge 1–2; W=[10,10]; q=(1,2)
+
+→ -1 
+
+> chain 1–2–3; W=[10,20,10]; q=(1,3)
+
+→ 2
+
+> chain; W=[1,2,3,2,1]; q=(1,5),(1,2)
+
+→ 3,2 
+
+Suite-level mutation pattern. The suite preserves the semantic target: identify the largest value that is unique in the relevant scope and return its index. The scope is progressively generalized from the whole array, to a subarray, and finally to a tree path. 
+
+25 G.2 SciCode Examples 
+
+SciCode Seed: 4th-Order Runge-Kutta Integrator forward simulation 
+
+TASK 
+
+Implement a classical fourth-order Runge-Kutta (RK4) integrator from scratch for a driven damped pendulum. The routine takes a derivative function, an initial state, and fixed time-step information, and returns the full state-space trajectory over n integration steps. 
+
+FUNCTION INTERFACE 
+
+def runge_kutta_4th_order( f, state, t0, dt, n, g, L, beta, A, alpha ): """Run an RK4 integrator for pendulum motion.""" 
+
+INPUT / OUTPUT 
+
+Input: derivative function f, initial state state = [theta, omega] , initial time t0 , step size dt , number of steps n, and pendulum parameters g, L, beta, A, alpha .
+
+Output: trajectory , a 2D NumPy array of shape (n+1, 2) containing the simulated states. 
+
+EXAMPLE TEST 
+
+state0 = np.array([0.1, 0.0]) traj = runge_kutta_4th_order( pendulum_derivs, state0, 0.0, 0.01, 100, 9.81, 1.0, 0.1, 0.0, 0.0 )assert traj.shape == (101, 2) 
+
+Evolved: Fit ODE Trajectory with Damped Gauss-Newton 
+
+inverse problem 
+
+TASK 
+
+Implement a nonlinear inverse solver that estimates both the unknown initial state and unknown ODE parameters from sparse observations. The solver must simulate the ODE trajectory using fixed-step RK4 between observation times and fit the unknown variables by damped Gauss-Newton with finite-difference Jacobians and backtracking line search. 
+
+FUNCTION INTERFACE 
+
+def fit_ode_trajectory_gauss_newton( f, state_guess, param_guess, t_obs, observations, steps_per_unit=100, max_iter=15, tol=1e-10, fd_eps=1e-7, ridge=1e-10 ): """Fit an ODE trajectory by damped Gauss-Newton.""" 
+
+INPUT / OUTPUT 
+
+Input: ODE right-hand side f, guesses for the initial state and parameters, observation times t_obs , observed trajectory array observations , and numerical optimization hyperpa-rameters. 
+
+Output: a tuple containing the fitted initial state, fitted pa-rameter vector, and simulated trajectory evaluated at the observation times. 
+
+EXAMPLE TEST 
+
+def exp_growth(x, t, theta): return np.array([theta[0] * x[0]]) t_obs = np.array([0.0, 0.2, 0.55, 1.1]) obs = np.exp(-0.8 * t_obs)[:, None] * 2.5 x_hat, theta_hat, traj = fit_ode_trajectory_gauss_newton( exp_growth, np.array([1.0]), np.array([-0.3]), t_obs, obs, steps_per_unit=200 )assert traj.shape == obs.shape 
+
+Mutation and algorithmic lift. The seed task performs forward simulation for a fixed ODE using the classical RK4 integrator. The evolved task preserves the ODE-trajectory setting but turns a direct numerical integration task into a full nonlinear parameter-estimation pipeline. 
+
+26 SciCode Seed: Compute the n-Tangle of an Even-Qubit Pure State 
+
+quantum states 
+
+TASK 
+
+Implement a function that computes the n-tangle of an even-numbered n-qubit pure state |ψ⟩.The input psi is a one-dimensional array of length 2n representing the state vector in the computational basis. You may assume that n is even. 
+
+FUNCTION INTERFACE 
+
+def n_tangle(psi): """ Compute the n-tangle of an even-n-qubit pure state. """ 
+
+INPUT / OUTPUT 
+
+Input: psi : np.ndarray , a one-dimensional array of length 2n representing a pure quantum state. 
+
+Output: tangle : float , the n-tangle of the input state. 
+
+EXAMPLE TESTS 
+
+MaxEnt = np.array([1, 0, 0, 1]) / np.sqrt(2) assert np.allclose( n_tangle(MaxEnt), 1.0 ) product_state = np.kron( np.array([0, 1]), np.array([0.8, 0.6]) ) assert np.allclose( n_tangle(product_state), 0.0 ) 
+
+Evolved: Maximum Pairwise CHSH Bell Value pairwise optimization 
+
+TASK 
+
+Implement a function that computes the largest CHSH Bell value attainable by any pair of qubits in an 
+
+n-qubit quantum state. The input may be either a pure-state vector or a density matrix, and both real and complex inputs are allowed. 
+
+FUNCTION INTERFACE 
+
+def max_pairwise_chsh(state): """ Compute the maximum CHSH Bell value over all two-qubit subsystems. """ 
+
+INPUT / OUTPUT 
+
+Input: state : np.ndarray , either a state vector of length 2n or a density matrix of shape (2 n, 2n).
+
+Output: value : float , the largest CHSH Bell value among all distinct pairs of qubits. 
+
+EXAMPLE TESTS 
+
+bell = np.array( [1, 0, 0, 1], dtype=float ) / np.sqrt(2) assert np.isclose( max_pairwise_chsh(bell), 2 * np.sqrt(2) ) ghz = np.zeros(8, dtype=float) ghz[0] = ghz[7] = 1 / np.sqrt(2) assert np.isclose( max_pairwise_chsh(ghz), 2.0 ) 
+
+Mutation and algorithmic lift. The seed task computes a single global entanglement quantity for an even-qubit pure state. The evolved task instead optimizes over all two-qubit subsystems, searching for the largest attainable CHSH Bell value. This shifts the problem from evaluating one global scalar functional to analyzing many candidate subsystems and comparing their pairwise nonlocal correlations. 
+
+H Examples of Evolution Trajectory 
+
+In this appendix section, we append example trajectories of Gemini-3-Flash on LiveCodeBench Easy split, shown in Figure 10. 
+
+27 Seed R1 R2 R3 R4 R5 R6 
+
+Evolution round                                       
+
+> abc387_b
+> abc389_a
+> abc393_b
+> 3705
+> 3817
+> 3768
+> abc387_a
+> abc394_b
+> abc396_a
+> 8/8 7/8 1/8
+> 8/8 not harder not harder not harder 7/8 6/8 1/8
+> 8/8 5/8 not harder 2/8
+> 8/8 7/8 3/8
+> 8/8 not harder not harder 5/8 pre_target 3/8
+> 8/8 not harder 7/8 6/8 not harder 4/8
+> 8/8 7/8 4/8 not harder 4/8
+> 8/8 7/8 4/8 not harder 4/8
+> 7/8 not harder not harder not harder 4/8 hardest le 3/8
+> Rejected proposal No iteration run
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> Solve rate
+
+Examples of Evolution Trajectory Figure 10: Example evolution trajectories produced by BenchEvolver. Each row shows one seed prob-lem, labeled by question ID. The leftmost column reports the seed solve rate, and subsequent columns ( R1 ,
+
+R2 , . . . ) show accepted evolution rounds in chronological order. Each cell reports passes /attempts , pooled across all target models, where attempts equals the number of target models times target_eval_k ; cell color encodes solve rate, with red indicating harder problems and green indicating easier ones. The dark path traces the accepted lineage within each row, highlighting the monotonic decrease in solve rate, i.e., the monotonic increase in empirical difficulty. Faint pink cells denote rejected proposals: not harder means the candidate did not exceed the required difficulty level, and judge means it failed final LLM-judge review. Light gray cells indicate that no further iteration was run. Overall, the trajectories show that BenchEvolver moves near-saturated seeds into a useful difficulty regime, while the rejection mechanism filters candidates that are too easy or invalid. 
+
+I Prompt Templates for BenchEvolver 
+
+In this section, we provide representative prompt templates used by the main generation components in BenchEvolver. These include the solution mutator, which proposes a harder reference solution; the statement writer, which converts the solution into a complete problem statement; and the test generator, which produces validated tiered test inputs for evaluation. 
+
+Solution Mutator 
+
+You are an expert competitive programmer and benchmark designer. Your job is to mutate an existing solution into a structurally different, more complex solution code for a harder problem. Return ONLY valid JSON. You are mutating a seed problem into a harder variant. === PARENT === Problem statement: {parent_problem} Solution code: {parent_solution} === DIFFICULTY CONTEXT === Seed difficulty level: {seed_difficulty_level} Parent difficulty level: {parent_difficulty_level} Best level reached for this seed: {best_level_reached} 
+
+28 Your goal: reach level {target_level_goal} or higher === EVOLUTION MEMORY === What worked, what failed, and why: {memory_context} === ALREADY ACCEPTED ACROSS ALL SEEDS === Accepted ideas from this run. Propose a dominant algorithmic idea that is clearly distinct from every entry below. {global_accepted_context} === TARGET MODEL WEAKNESSES === Reasoning errors to exploit: {target_weaknesses} === TASK === Produce a NEW problem whose difficulty lift is real, natural, genuine, and algorithmic. The parent information may be shown in MINIMAL-SPEC mode. If so, treat the parent solution code as the primary source of truth and use the compact semantic scaffold only to recover intended semantics and I/O. Do not stay close to the original wording or story. Your goal is to move the problem from difficulty level {parent_difficulty_level} toward level {target_level_goal}. Use the evolution memory above to guide your mutation strategy. Keep free mutation mode, but use that freedom to search for a SINGLE DOMINANT algorithmic lift. === Additional Guidance === {Examples of valid and invalid mutations} {Output constraints} 
+
+Problem Statement Writer 
+
+You are a competitive programming problem setter. Given a solution and sample input/output pairs, write a clear, natural problem statement. Return ONLY valid JSON. Solution code: {solution_code} Mutation notes: {mutation_notes} Algorithm used: {approach} Sample input/output pairs: {sample_io} Write a competitive-programming-style problem statement for this solution. Requirements: - The FINAL solution code is the primary source of truth. Use mutation notes only as hints; if they conflict with the code, ignore the notes and follow the code. - Natural, unambiguous prose (as in LeetCode/Codeforces/AtCoder) - Include: problem description, input format, output format, constraints, and sample input/output (embed the provided sample I/O pairs as "Sample Input / Sample Output" sections in the statement body) - Do NOT hint at the algorithm or data structure used - If sample I/O pairs are provided, the statement must be consistent with ALL of them - If no sample I/O is provided, infer a valid and unambiguous input/output spec from the solution code - Answer must be uniquely determined by the input. If the underlying task admits multiple equally valid answers under different deterministic strategies (e.g., merging equal adjacent values, choosing among tied minima/maxima, selecting any valid partition, returning any optimal subset), you MUST spell out the exact tie-breaking rule the solution uses (e.g., "choose the leftmost such pair", "return the smallest index", "output the lexicographically smallest sequence"). Infer the tie-breaking rule by reading the reference solution code. Do not guess and do not paper over the ambiguity. - Do NOT write blanket phrases like "any one may be chosen", "the answer is uniquely determined regardless of tie-breaking", or "any valid answer is accepted". If the answer truly does not depend on tie-breaking, prove it by stating the concrete invariant (e.g., "the sum is invariant under order of operations because addition is associative"); if you cannot state such an invariant, treat the task as ambiguous and add an explicit tie-breaking rule. - Every input variable must have explicit bounds in the constraints section appropriate to its type (e.g. integer range, string length, number of elements). Read them from the solution code if unsure - Use plain text for all math - Do NOT use any LaTeX or math markup of any kind - For every operation type, copy the exact token order from the code’s parser. Never swap argument order between the description, input format, and samples. - Use standard line-based competitive-programming formatting only. Do not invent dual formats, optional parsing conventions, or ambiguous line structure. - Do not claim stronger constraints than the code supports. If the code is only correct for a simpler/static version, do not write a dynamic/online statement. - If unsure, use fewer public examples rather than inventing a risky one. 
+
+29 Test Generator 
+
+> You are a senior competitive-programming test-data engineer. You write standalone Python 3 programs that generate deterministic, valid test inputs for a given problem. Your validate() function is the SOLE source of truth for input legality, and the caller performs no secondary format check. Any input you emit that passes validate() will be fed straight to the reference solution and the reference ’s stdout will be frozen as ground truth. A too-permissive validate() therefore silently corrupts the benchmark; a too-strict validate() starves the suite of inputs. Your programs must: - use a caller-controlled random seed so the same CLI args always produce the same inputs, - enforce every declared constraint via validate() exactly as implied by the problem statement AND the reference solution, - partition generation into four explicit tiers defined BEHAVIORALLY (see user message): small / medium / large / stress, - retry internally on validation failure before giving up on an input, - emit a single JSON object on stdout and nothing else. Return ONLY valid JSON wrapping the program. Problem statement: {problem_statement} Reference solution (authoritative for input format, constraints, and semantics): {solution_code} Sample input/output pairs (use these to infer the canonical format): {sample_io} Your task: write a SINGLE self-contained Python 3 program that generates test inputs for this problem. {Tier Definitions}
+
+J Reproducibility and Asset Licenses 
+
+Code and configurations. We will release the code used to run our evolution pipeline, including the configuration files for LiveCodeBench and SciCode experiments. The released repository will include scripts for seed selection, candidate generation, validation, target-model evaluation, and result aggregation. We will also provide the default hyperparameters used in our experiments, including the target model panels, number of solver attempts, repair budgets, validation thresholds, test-generation settings, and stopping criteria. 
+
+Benchmarks and datasets. Our experiments use existing public benchmark assets, including Live-CodeBench and SciCode. We cite the original benchmark papers and repositories in the main text. For Live-CodeBench, we use the Version 6 split and report results by seed difficulty. For SciCode, we use the valida-tion split and select the subset of subproblems described in Section 4. We use these assets only for research evaluation and follow their corresponding licenses and terms of use. 
+
+Licenses. We use LiveCodeBench under its MIT License and SciCode under the Apache License 2.0. We cite the original benchmark papers and repositories and follow the corresponding licenses and terms of use. For LiveCodeBench, we use the public benchmark data linked from the official repository; for SciCode, we use the Hugging Face dataset released under Apache-2.0. Any released generated tasks, tests, logs, and metadata from our work will include appropriate attribution and license information compatible with the underlying assets. 
+
+30
