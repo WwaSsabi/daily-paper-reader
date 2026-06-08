@@ -1,0 +1,691 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-08T21:04:40.195458+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 8,
+    "deep_cap": 6,
+    "deep_selected": 6,
+    "quick_candidates": 13,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2606.07001v1",
+      "source": "arxiv",
+      "title": "DataEvolver: Automatic Data Preparation for Large Language Models through Multi-Level Self-Evolving",
+      "abstract": "High-quality training data is essential to large language models (LLMs) and typically requires extensive and costly manual curation. Existing automatic data preparation methods rely on predefined pipelines or customized human instructions, which limits their adaptability to diverse data distributions and lacks principled guidance from high-quality examples. In this paper, we introduce DataEvolver, the first self-evolving data preparation system that automatically constructs pipelines to transform raw data into high-quality data. DataEvolver employs a multi-level mechanism to ensure both pipeline executability and effectiveness. At the operator level, it incrementally expands the operator set to construct a logical plan while resolving dependency conflicts. At the pipeline level, it instantiates logical plans into executable code and iteratively refines pipeline orchestration through a feedback loop that reduces the distribution gap between prepared data and high-quality examples. Experiments on seven benchmarks show that DataEvolver substantially improves data quality and achieves an average 10\\% gain in downstream LLM performance compared with training on original data, highlighting new opportunities for the iterative co-evolution of LLMs and data.",
+      "authors": [
+        "Chao Deng",
+        "Shaolei Zhang",
+        "Ju Fan",
+        "Xiaoyong Du"
+      ],
+      "primary_category": "cs.DB",
+      "categories": [
+        "cs.DB",
+        "cs.AI"
+      ],
+      "published": "2026-06-05T07:44:34+00:00",
+      "link": "https://arxiv.org/pdf/2606.07001v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "automatic data preparation for LLM training",
+      "llm_evidence_cn": "自动数据准备用于大语言模型训练",
+      "llm_evidence": "自动数据准备用于大语言模型训练",
+      "canonical_evidence": "自动数据准备用于大语言模型训练",
+      "llm_tldr_en": "DataEvolver is a self-evolving system that automatically builds data preparation pipelines for LLMs, improving data quality without manual curation.",
+      "llm_tldr_cn": "高质量训练数据对大语言模型至关重要，但人工整理成本高。本文提出DataEvolver，首个自演进数据准备系统，通过多层次机制自动构建数据转换管道。在算子级别逐步扩展算子集，在管道级别保证可执行性和有效性。实验表明，自动生成的数据可显著提升LLM下游性能。",
+      "llm_tldr": "高质量训练数据对大语言模型至关重要，但人工整理成本高。本文提出DataEvolver，首个自演进数据准备系统，通过多层次机制自动构建数据转换管道。在算子级别逐步扩展算子集，在管道级别保证可执行性和有效性。实验表明，自动生成的数据可显著提升LLM下游性能。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "how to train a large language model",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.05658v1",
+      "source": "arxiv",
+      "title": "Agent-Orchestrated Adaptive RAG: A Comparative Study on Structured and Multi-Hop Retrieval",
+      "abstract": "Retrieval-Augmented Generation (RAG) enhances Large Language Models (LLMs) by grounding their responses in external knowledge, but conventional pipelines rely on static, single-step retrieval that limits performance on complex queries. This paper presents an Agent-Orchestrated Adaptive RAG framework that introduces dynamic query decomposition, iterative retrieval, and a bounded self-reflective evaluation loop. We evaluate the system across two complementary datasets: a domain-specific DevOps knowledge base and the multi-hop reasoning benchmark MuSiQue. Using metrics that include overall score, citation accuracy, mean reciprocal rank, and topic coverage, we find that query decomposition yields consistent gains in the structured domain (overall score $+0.04$, MRR $+0.17$ on DevOps) but degrades ranking precision on the multi-hop benchmark, while the reflection mechanism improves citation accuracy at a substantial latency cost. These contrasting results show that agentic enhancements are not universally beneficial and must be applied selectively according to query and domain characteristics. Our findings argue for adaptive, cost-aware orchestration rather than uniformly aggressive reasoning pipelines.",
+      "authors": [
+        "Anuj Maharjan",
+        "Devinder Kaur",
+        "Richard Molyet"
+      ],
+      "primary_category": "cs.IR",
+      "categories": [
+        "cs.IR",
+        "cs.AI"
+      ],
+      "published": "2026-06-04T03:38:46+00:00",
+      "link": "https://arxiv.org/pdf/2606.05658v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "RAG framework for LLMs with adaptive retrieval",
+      "llm_evidence_cn": "面向LLM的自适应RAG框架",
+      "llm_evidence": "面向LLM的自适应RAG框架",
+      "canonical_evidence": "面向LLM的自适应RAG框架",
+      "llm_tldr_en": "Introduces an Agent-Orchestrated Adaptive RAG framework with dynamic query decomposition and iterative retrieval to enhance LLM performance on complex queries.",
+      "llm_tldr_cn": "传统RAG使用静态单步检索，难以处理复杂查询。本文提出智能体编排的自适应RAG框架，通过动态查询分解、迭代检索和自反思评估环，显著提升了在结构化领域和多跳推理上的表现。实验表明该方法提高了准确性和覆盖率。",
+      "llm_tldr": "传统RAG使用静态单步检索，难以处理复杂查询。本文提出智能体编排的自适应RAG框架，通过动态查询分解、迭代检索和自反思评估环，显著提升了在结构化领域和多跳推理上的表现。实验表明该方法提高了准确性和覆盖率。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.06178v1",
+      "source": "arxiv",
+      "title": "Learning to Route LLMs from Implicit Cost-Performance Preferences via Meta-Learning",
+      "abstract": "Large language models (LLMs) present a trade-off between performance and cost, where more powerful models incur greater expense. LLM routing aims to mitigate expenses while maintaining performance by sending queries to the most suitable model. However, existing methods cannot perform well for different user cost-performance preferences. To address this gap, we introduce a novel perceptive LLM routing paradigm for personalized and user-centric cost-performance optimization, which efficiently learns users' implicit preferences through little interaction. To handle the challenge of heterogeneous user needs, we formulate preference profiles as a set of distinct tasks in contextual bandit and propose MetaRouter, a meta-learning framework designed for preference-aware LLM routing. Experimental results show that MetaRouter outperforms strong baselines on both in-distribution and out-of-distribution tasks. Furthermore, it exhibits high efficiency in learning user preferences, robustness to changes in the routable LLMs, and scalability to multi-model routing.",
+      "authors": [
+        "Jiahao Zeng",
+        "Ming Tang",
+        "Ningning Ding"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-06-04T13:53:03+00:00",
+      "link": "https://arxiv.org/pdf/2606.06178v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM routing via meta-learning",
+      "llm_evidence_cn": "通过元学习进行大语言模型路由",
+      "llm_evidence": "通过元学习进行大语言模型路由",
+      "canonical_evidence": "通过元学习进行大语言模型路由",
+      "llm_tldr_en": "Proposes MetaRouter, a meta-learning framework to learn user cost-performance preferences for LLM routing with minimal interaction.",
+      "llm_tldr_cn": "现有LLM路由方法无法适应用户不同的成本-性能偏好。本文提出MetaRouter，一种基于元学习的框架，通过少量交互隐式学习用户偏好，将偏好配置视为上下文赌博机中的不同任务，实现个性化的路由优化。实验表明该方法能高效平衡性能与成本。",
+      "llm_tldr": "现有LLM路由方法无法适应用户不同的成本-性能偏好。本文提出MetaRouter，一种基于元学习的框架，通过少量交互隐式学习用户偏好，将偏好配置视为上下文赌博机中的不同任务，实现个性化的路由优化。实验表明该方法能高效平衡性能与成本。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.06574v1",
+      "source": "arxiv",
+      "title": "Skip a Layer or Loop It? Learning Program-of-Layers in LLMs",
+      "abstract": "Large language models (LLMs) perform inference by following a fixed depth and order, non-recurrent execution of all layers. We reveal the wide existence of training-free, flexible, dynamic program-of-layers (PoLar), where pretrained layers can be packed as modules and then skipped or looped to form a customized program for each input. For most inputs, substantially shorter program executions can achieve the same or better accuracy, while incorrect predictions of the original LLM can be corrected by alternative programs with fewer layers. These observations indicate that inference admits multiple valid latent computations beyond the standard forward pass. To efficiently achieve PoLar in practice, we propose a lightweight PoLar prediction network, which learns to generate execution programs that dynamically skip or repeat pretrained layers for each input. Experiments on mathematical reasoning benchmarks demonstrate that PoLar consistently improves accuracy over standard inference and prior dynamic-depth methods, often while executing fewer layers, and that these gains persist under out-of-distribution evaluation. Our results suggest that fixed-depth execution captures only a narrow subset of an LLM's latent reasoning capacity.",
+      "authors": [
+        "Ziyue Li",
+        "Yang Li",
+        "Tianyi Zhou"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-04T17:59:58+00:00",
+      "link": "https://arxiv.org/pdf/2606.06574v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Dynamic program-of-layers for efficient LLM inference",
+      "llm_evidence_cn": "LLM推理的动态层程序",
+      "llm_evidence": "LLM推理的动态层程序",
+      "canonical_evidence": "LLM推理的动态层程序",
+      "llm_tldr_en": "Reveals that pretrained LLM layers can be skipped or looped per input, enabling shorter programs with equal or better accuracy.",
+      "llm_tldr_cn": "标准LLM推理固定执行所有层，效率低下。本文发现预训练层可作为模块跳过或循环，形成输入的定制程序。大多数情况下较短程序即可达到相同甚至更好精度，还能修正错误预测。提出轻量预测网络实现动态层选择，大幅提升推理效率。",
+      "llm_tldr": "标准LLM推理固定执行所有层，效率低下。本文发现预训练层可作为模块跳过或循环，形成输入的定制程序。大多数情况下较短程序即可达到相同甚至更好精度，还能修正错误预测。提出轻量预测网络实现动态层选择，大幅提升推理效率。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.06586v1",
+      "source": "arxiv",
+      "title": "Improving Cross-Lingual Factual Recall via Consistency-Driven Reinforcement Learning",
+      "abstract": "Large language models (LLMs) trained predominantly on English data encode substantial world knowledge, yet often fail to express it reliably in other languages, a phenomenon known as cross-lingual factual inconsistency. To study and address this, we introduce PolyFact, a large-scale parallel multilingual factual QA dataset containing 100K Wikidata-grounded facts across 12 typologically diverse languages. Using PolyFact, we compare light continual pretraining (CPT), supervised fine-tuning (SFT), and reinforcement learning via Group Relative Policy Optimization (GRPO) for improving cross-lingual factual recall in Qwen-2.5-7B and OLMo-2-1124-7B. We find that GRPO consistently outperforms SFT, improving both cross-lingual consistency and generalization to unseen languages, while CPT on parallel data yields limited additional gains. Mechanistic analyses further show that GRPO reorganizes multilingual routing by reducing language specialization in MLP layers and attention heads, thereby promoting more shared cross-lingual representations. We release our code, models, and dataset.",
+      "authors": [
+        "Jonathan von Rad",
+        "Louis Arts",
+        "George Burgess",
+        "Eleftheria Kolokytha",
+        "Harry O'Donnell",
+        "Ektor Oikonomidis Doumpas",
+        "Eduardo Sanchez",
+        "Yao Lu",
+        "Pontus Stenetorp"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-04T18:00:02+00:00",
+      "link": "https://arxiv.org/pdf/2606.06586v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "reinforcement learning and supervised fine-tuning for cross-lingual factual recall in LLMs",
+      "llm_evidence_cn": "基于强化学习和监督微调的大模型跨语言事实召回",
+      "llm_evidence": "基于强化学习和监督微调的大模型跨语言事实召回",
+      "canonical_evidence": "基于强化学习和监督微调的大模型跨语言事实召回",
+      "llm_tldr_en": "Compares CPT, SFT, and GRPO for cross-lingual factual recall in LLMs, finding GRPO outperforms SFT in consistency and generality.",
+      "llm_tldr_cn": "大模型在非英语语言中事实回忆不佳。本文构建PolyFact数据集，比较连续预训练、监督微调（SFT）和基于GRPO的强化学习三种方法。实验表明GRPO显著优于SFT，提升了跨语言一致性和泛化能力。该工作揭示了强化学习在纠正跨语言事实偏差中的潜力，为多语言LLM优化提供了新方向。",
+      "llm_tldr": "大模型在非英语语言中事实回忆不佳。本文构建PolyFact数据集，比较连续预训练、监督微调（SFT）和基于GRPO的强化学习三种方法。实验表明GRPO显著优于SFT，提升了跨语言一致性和泛化能力。该工作揭示了强化学习在纠正跨语言事实偏差中的潜力，为多语言LLM优化提供了新方向。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "how to train a large language model",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.06888v1",
+      "source": "arxiv",
+      "title": "Data-Constrained Language Model Pretraining: Improved Regularization and Scaling Laws",
+      "abstract": "Classical scaling laws for language model pretraining balance model size against training dataset size under a fixed compute budget, assuming abundant data and a single pass over the corpus. As training compute grows faster than the supply of natural language data, pretraining is likely to enter a data-constrained, compute-rich regime where models train for multiple epochs over a finite dataset. We study data-constrained pretraining along two axes, regularization and scaling. For regularization, we study masked-input regularization (MIR), an auxiliary next-token prediction loss on randomly masked inputs. MIR tests whether the random masking central to diffusion language models can benefit autoregressive pretraining without architectural changes or inference overhead. Across 72M to 1.4B parameter models, we find that MIR added on top of strong weight decay improves validation loss over autoregressive strong-weight-decay-only models, with downstream gains at 1.4B. For scaling, we propose SoftQ, a scaling law that couples model size and data size to capture their interaction under repeated data. Classical alternatives such as the Chinchilla law use an additive form that decouples these terms, making them misspecified in the data-constrained regime. We find that SoftQ fits data-constrained experiments substantially better than these alternatives, and estimates MIR's gains as equivalent to roughly 1.3 times as much unique training data. We release our code at https://github.com/yixinw-lab/dc_pretrain.",
+      "authors": [
+        "Zhiwei Xu",
+        "Shihao Wu",
+        "Hanseul Cho",
+        "Wei Hu",
+        "Yixin Wang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-05T04:10:09+00:00",
+      "link": "https://arxiv.org/pdf/2606.06888v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "pretraining language models under data constraints with regularization and scaling laws",
+      "llm_evidence_cn": "数据受限下语言模型预训练的规范化与缩放律",
+      "llm_evidence": "数据受限下语言模型预训练的规范化与缩放律",
+      "canonical_evidence": "数据受限下语言模型预训练的规范化与缩放律",
+      "llm_tldr_en": "Studies data-constrained LLM pretraining with masked-input regularization (MIR) and new scaling laws, showing benefits of MIR for autoregressive models.",
+      "llm_tldr_cn": "随着训练计算增长超过数据供应，模型需在多轮训练中重复使用数据。本文研究数据受限预训练的规范化与缩放律，提出掩码输入规范化（MIR）作为辅助任务。实验证明MIR能改善自回归预训练质量，并推导出数据受限下的新缩放律，为未来大规模预训练提供了理论指导。",
+      "llm_tldr": "随着训练计算增长超过数据供应，模型需在多轮训练中重复使用数据。本文研究数据受限预训练的规范化与缩放律，提出掩码输入规范化（MIR）作为辅助任务。实验证明MIR能改善自回归预训练质量，并推导出数据受限下的新缩放律，为未来大规模预训练提供了理论指导。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "how to train a large language model",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.06902v1",
+      "source": "arxiv",
+      "title": "TALAN: Task-Aligned Latent Adaptation Networks for Targeted Post-Training of Large Language Models",
+      "abstract": "Targeted post-training aims to improve reasoning, math, and code without degrading strengths. Low-rank adapters are efficient but task-global; activation interventions are input-aware but often require separate probes, vectors, or inference-time steering. We introduce TALAN (Task-Aligned Latent Adaptation Networks), a sequence-conditioned latent side path inserted into a transformer's residual stream and co-trained with a low-rank adapter in one SFT loop. TALAN compresses the active sequence into latent memory, remixes it into token-level perturbations, and writes them back through a controlled residual update. It is configured along six axes: insertion location, memory size, mixer, writeback rule, trainability scope, and gradient scale.   Across four Qwen3-family backbones and four STEM/code benchmarks, TALAN improves matched LoRA and DoRA baselines. With LoRA, it yields a +1.41 point cross-model mean gain, positive on all four backbones and non-negative on all 16 model-benchmark cells. With DoRA, it yields a +1.85 point mean gain, positive on all backbones and on 13 of 16 cells. Paired seed checks support positive average effects but show nontrivial variance, so we treat them as sensitivity checks. Cost is small: <1% trainable parameters relative to the backbone and 1.01-1.02x inference overhead versus matched LoRA. A Llama-3.2-1B transfer probe is also positive under LoRA and rsLoRA across seven paired seeds, supporting a transfer beyond Qwen.   Internal-state analyses suggest TALAN is a small complementary activation intervention. The matched adapter update is 80-1,700x larger than the TALAN perturbation, yet their directions have near-zero cosine; per-layer measurements show this small orthogonal perturbation propagates and amplifies through depth. TALAN offers a practical platform for studying steerable activation-level adaptation within standard adapter-based post-training.",
+      "authors": [
+        "Chengkai Zhang",
+        "Ziteng Liu",
+        "Junpu Wang",
+        "Zeyi Tao",
+        "Yang Wang",
+        "Sagar Chordia",
+        "Qin Huang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-05T04:34:50+00:00",
+      "link": "https://arxiv.org/pdf/2606.06902v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM post-training method",
+      "llm_evidence_cn": "大型语言模型后训练",
+      "llm_evidence": "大型语言模型后训练",
+      "canonical_evidence": "大型语言模型后训练",
+      "llm_tldr_en": "TALAN introduces a sequence-conditioned latent side path for transformer-based LLMs, enabling targeted post-training to improve reasoning and code without degrading existing capabilities, using a single SFT loop with low-rank adapters.",
+      "llm_tldr_cn": "针对大型语言模型后训练中现有方法效率与适应性的权衡，TALAN提出一种序列条件化的潜在侧路径，插入Transformer残差流，与低秩适配器协同训练。该方法通过压缩序列为潜在记忆、混入令牌级扰动并受控更新残差，在单个SFT循环中实现任务对齐的适配。实验表明TALAN在推理和代码任务上提升显著，且不损害原有能力。该工作为高效LLM持续训练提供了新范式。",
+      "llm_tldr": "针对大型语言模型后训练中现有方法效率与适应性的权衡，TALAN提出一种序列条件化的潜在侧路径，插入Transformer残差流，与低秩适配器协同训练。该方法通过压缩序列为潜在记忆、混入令牌级扰动并受控更新残差，在单个SFT循环中实现任务对齐的适配。实验表明TALAN在推理和代码任务上提升显著，且不损害原有能力。该工作为高效LLM持续训练提供了新范式。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2606.01806v1",
+      "source": "arxiv",
+      "title": "ProbeScale: Probing Analysis to Optimize Neural Scaling Laws for Efficient Small Language Model Inference",
+      "abstract": "Small Language Models (SLMs) offer a balance between capability and computational feasibility. Neural scaling laws inform their optimal training, suggesting that they possess rich internal representations that scale with their size. However, deploying even these SLMs can be challenging under strict resource constraints. Language model probing provides methods for analyzing the linguistic knowledge encoded in a model's internals. We propose ProbScale, a framework that unifies insights from scaling laws and probing to identify parameter-efficient subnetworks within pre-trained SLMs. ProbScale utilizes the high-quality representations of well-scaled SLMs and uses task-specific probes to mathematically quantify the relevance of each layer for target downstream capabilities. This allows selecting subnetworks that optimally trade off performance against parameter size. We formulate the subnetwork selection as finding a layer subset maximizing aggregated, task-weighted probe performance under a parameter budget. Experiments on representative SLMs such as RoBERTa-Large and T5-Base demonstrate that ProbScale identifies subnetworks achieving significant parameter reduction, from 5 to 10 times, while maintaining high performance (95% to 98% of the original SLMs) on targeted tasks, outperforming heuristic baselines.",
+      "authors": [
+        "Sourav Das"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-06-01T07:24:37+00:00",
+      "link": "https://arxiv.org/pdf/2606.01806v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Efficient small language model inference via probing",
+      "llm_evidence_cn": "通过探针分析实现小语言模型高效推理",
+      "llm_evidence": "通过探针分析实现小语言模型高效推理",
+      "canonical_evidence": "通过探针分析实现小语言模型高效推理",
+      "llm_tldr_en": "ProbeScale combines neural scaling laws and probing to identify parameter-efficient subnetworks in pre-trained small language models, enabling efficient inference under resource constraints.",
+      "llm_tldr_cn": "针对小语言模型在资源受限部署中的效率问题，ProbeScale统一了神经缩放律和探针分析，识别预训练SLM中的参数高效子网络。利用缩放律保证表示质量，通过任务特定探针量化子网络相关性，最终剪枝出高效子模型。实验表明在保持性能的同时大幅降低计算开销。该工作为SLM高效部署提供了新思路。",
+      "llm_tldr": "针对小语言模型在资源受限部署中的效率问题，ProbeScale统一了神经缩放律和探针分析，识别预训练SLM中的参数高效子网络。利用缩放律保证表示质量，通过任务特定探针量化子网络相关性，最终剪枝出高效子模型。实验表明在保持性能的同时大幅降低计算开销。该工作为SLM高效部署提供了新思路。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.04730v1",
+      "source": "arxiv",
+      "title": "Multilingual Long-Form Speech Instruction Following: KIT's Submission to IWSLT 2026",
+      "abstract": "With the advent of Large Language Models, single-task and token-based multi-task models have evolved into instruction-based systems that infer task and target language implicitly from natural language prompts. This trend is reflected in IWSLT's Instruction Following Track, which this year introduced new tasks including an unknown surprise task, posing a genuine challenge against overfitting to known tasks. We present KIT's submission to the Long and Short Instruction Following tracks in the unconstrained setting. Our approach combines a general data augmentation pipeline that converts short-form corpora into long-form training data through segment concatenation, LLM-based label generation, and cross-lingual translation, yielding over 1M instances across six tasks and four languages. We further show that likelihood-based re-ranking, while highly effective for ASR, systematically degrades semantic tasks by spuriously selecting candidates generated from segmented audio processing rather than holistic long-form inference, a failure mode resolved by combining likelihood with Minimum Bayes Risk decoding.",
+      "authors": [
+        "Enes Yavuz Ugan",
+        "Maike Züfle",
+        "Yuka Ko",
+        "Supriti Sinhamahapatra",
+        "Fabian Retkowski",
+        "Seymanur Akti",
+        "Jan Niehues",
+        "Alexander Waibel"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "eess.AS"
+      ],
+      "published": "2026-06-03T11:13:37+00:00",
+      "link": "https://arxiv.org/pdf/2606.04730v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM-based data augmentation for multilingual speech instruction following",
+      "llm_evidence_cn": "基于LLM的多语言语音指令跟随数据增强",
+      "llm_evidence": "基于LLM的多语言语音指令跟随数据增强",
+      "canonical_evidence": "基于LLM的多语言语音指令跟随数据增强",
+      "llm_tldr_en": "Combines LLM-based label generation and data augmentation for multilingual long-form speech instruction following.",
+      "llm_tldr_cn": "本文针对多语言长语音指令跟随任务，提出结合LLM标签生成与数据增强的流水线。通过短语音片段拼接、LLM生成标签及跨语言翻译，构建大规模训练数据。在IWSLT 2026评测中取得良好效果，证明了LLM在跨语言语音任务中的数据生成潜力。",
+      "llm_tldr": "本文针对多语言长语音指令跟随任务，提出结合LLM标签生成与数据增强的流水线。通过短语音片段拼接、LLM生成标签及跨语言翻译，构建大规模训练数据。在IWSLT 2026评测中取得良好效果，证明了LLM在跨语言语音任务中的数据生成潜力。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.07098v1",
+      "source": "arxiv",
+      "title": "SigmaScale: LLM Compression with SVD-based Low-Rank Decomposition and Learned Scaling Matrices",
+      "abstract": "We present SigmaScale, a method for learning auxiliary scaling matrices $S$ to aid truncated Singular Value Decomposition (SVD) based Large Language Model (LLM) compression. Instead of deriving scaling matrices analytically, SigmaScale optimizes two sets of vectors that define diagonal row and column scaling transformations under an activation-aware compression loss. We show that learned scaling lowers the effective intrinsic rank of weight matrices, as reflected by reductions in effective-rank entropy, and that this reduction is strongly correlated with compression loss. Experiments on Llama 3.1 8B Instruct and Qwen3-8B show that SigmaScale is competitive with closely related state-of-the-art SVD-based compression methods across perplexity and zero-shot benchmarks. By using learned activation-aware transformations, SigmaScale explores a more flexible route to low-rank LLM compression by adapting to the structure of individual model weights. The advantage observed in specific tasks makes our approach a valid option for applications requiring a reduced LLM-inference computing cost.",
+      "authors": [
+        "Ernests Lavrinovics",
+        "Marco Letizia",
+        "Roy Janco",
+        "Shai Segal",
+        "Johannes Bjerva",
+        "Maurizio Pierini"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.LG"
+      ],
+      "published": "2026-06-05T09:48:58+00:00",
+      "link": "https://arxiv.org/pdf/2606.07098v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "SVD-based LLM compression with learned scaling",
+      "llm_evidence_cn": "基于SVD与学习缩放矩阵的LLM压缩",
+      "llm_evidence": "基于SVD与学习缩放矩阵的LLM压缩",
+      "canonical_evidence": "基于SVD与学习缩放矩阵的LLM压缩",
+      "llm_tldr_en": "Introduces SigmaScale, a method that learns scaling matrices for SVD-based LLM compression, improving compression quality.",
+      "llm_tldr_cn": "本文针对SVD截断压缩LLM时秩选择不优的问题，提出SigmaScale方法，通过学习行和列缩放矩阵降低权重矩阵的有效秩。激活感知压缩损失优化使压缩后模型性能接近原始。在Llama 3.1和Qwen3上验证该方法与最先进SVD压缩方法竞争力强，为LLM高效压缩提供新思路。",
+      "llm_tldr": "本文针对SVD截断压缩LLM时秩选择不优的问题，提出SigmaScale方法，通过学习行和列缩放矩阵降低权重矩阵的有效秩。激活感知压缩损失优化使压缩后模型性能接近原始。在Llama 3.1和Qwen3上验证该方法与最先进SVD压缩方法竞争力强，为LLM高效压缩提供新思路。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2606.03770v1",
+      "source": "arxiv",
+      "title": "E2LLM: Towards Efficient LLM Serving in Heterogeneous Edge/Fog Environments",
+      "abstract": "Large Language Models (LLMs) have become integral to modern applications, yet their deployment remains challenging. Beyond executing the models themselves, practical deployment must address cost efficiency, low latency, and optimal resource utilization. Conventional approaches typically assume that an entire model can be hosted on a single device, which does not hold in many real-world scenarios, particularly in Edge and Fog environments where device resources are constrained. In this paper, we introduce E2LLM, a framework designed to enable efficient LLM deployment in such resource limited settings. Rather than simply partitioning a single model across all available devices, E2LLM replicates the full model across multiple groups of devices (replicas) and applies model parallelism within each replica. Each replica is assigned a specialized role PREFILL or DECODER based on its efficiency in handling input and output tokens. This separation leverages the inherent differences between these two phases of LLM inference. To effectively organize devices, we utilize a Genetic Algorithm to form clusters that maximize system performance. Within each cluster, we apply Dynamic Programming to determine an optimal partitioning strategy that minimizes bottlenecks in model-parallel execution. Experimental results demonstrate that our approach adapts robustly to varying workloads, including scenarios with significant variation in input and output token lengths. Compared to the Splitwise baseline, E2LLM reduces average waiting time by over 50% under high-demand conditions",
+      "authors": [
+        "Truong-Thanh Le",
+        "Amir Taherkordi",
+        "Hoang-Loc La",
+        "Frank Eliassen",
+        "Phuong Hoai Ha",
+        "Peiyuan Guan"
+      ],
+      "primary_category": "cs.DC",
+      "categories": [
+        "cs.DC",
+        "cs.AI"
+      ],
+      "published": "2026-06-02T15:23:28+00:00",
+      "link": "https://arxiv.org/pdf/2606.03770v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Efficient LLM serving in edge/fog environments",
+      "llm_evidence_cn": "在边缘/雾环境中高效部署LLM",
+      "llm_evidence": "在边缘/雾环境中高效部署LLM",
+      "canonical_evidence": "在边缘/雾环境中高效部署LLM",
+      "llm_tldr_en": "Proposes E2LLM, a framework for efficiently deploying LLMs across heterogeneous edge/fog devices by replicating the full model.",
+      "llm_tldr_cn": "LLM在资源受限的边缘/雾环境部署困难。本文提出E2LLM框架，不在设备间切分模型，而是将完整模型复制到多个设备组，通过组间调度实现低延迟和高吞吐。实验证明在异构环境下能有效提升资源利用率和响应速度。",
+      "llm_tldr": "LLM在资源受限的边缘/雾环境部署困难。本文提出E2LLM框架，不在设备间切分模型，而是将完整模型复制到多个设备组，通过组间调度实现低延迟和高吞吐。实验证明在异构环境下能有效提升资源利用率和响应速度。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.05799v1",
+      "source": "arxiv",
+      "title": "CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction",
+      "abstract": "Existing calibration methods for Large Language Models (LLMs) often overlook a critical dimension of trustworthiness: a model's {\\em behavioral robustness} to irrelevant or misleading information. In this paper, we argue that a model's true confidence should reflect its stability under cognitive pressure. We introduce \\textsc{CaliDist}, a novel post-hoc calibration approach that directly measures and penalizes a model's susceptibility to distraction. \\textsc{CaliDist} quantifies how an LLM's predictions and uncertainty change when its input prompt is perturbed with semantic \\textit{distractors}. This stability (or lack thereof) signal is then used to adaptively scale the model's initial confidence score. Our extensive experiments on seven Natural Language Understanding classification benchmarks using six distinct LLMs show that \\textsc{CaliDist} consistently achieves lower Expected Calibration Error (ECE) and Brier Score compared with strong baselines. Remarkably, our method reduces the ECE from 23\\% to 7\\% on average--a relative improvement of 70\\%--demonstrating that behavioral stability is a powerful signal for calibration. We make our code and datasets available at github.com/m-anas-j/CaliDist.",
+      "authors": [
+        "Mohammad Anas Jawad",
+        "Cornelia Caragea"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CL"
+      ],
+      "published": "2026-06-04T07:27:53+00:00",
+      "link": "https://arxiv.org/pdf/2606.05799v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Calibrating LLMs via behavioral robustness to distraction",
+      "llm_evidence_cn": "通过抗分心行为鲁棒性校准LLM",
+      "llm_evidence": "通过抗分心行为鲁棒性校准LLM",
+      "canonical_evidence": "通过抗分心行为鲁棒性校准LLM",
+      "llm_tldr_en": "Introduces CaliDist, a post-hoc calibration method that measures LLM prediction stability under semantic distractors to adaptively scale confidence scores.",
+      "llm_tldr_cn": "该论文指出大语言模型校准忽视了模型对无关信息的鲁棒性,提出CaliDist后处理校准方法。通过向输入提示添加语义分心扰动并观察预测变化,利用稳定性信号自适应调整置信度分数。在七个LLM上的实验显示,CaliDist能有效提升校准质量,增强模型在认知压力下的可信度。该工作为LLM校准引入了鲁棒性维度。",
+      "llm_tldr": "该论文指出大语言模型校准忽视了模型对无关信息的鲁棒性,提出CaliDist后处理校准方法。通过向输入提示添加语义分心扰动并观察预测变化,利用稳定性信号自适应调整置信度分数。在七个LLM上的实验显示,CaliDist能有效提升校准质量,增强模型在认知压力下的可信度。该工作为LLM校准引入了鲁棒性维度。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.04547v1",
+      "source": "arxiv",
+      "title": "Beyond Retrieval: Learning Compact User Representations for Scalable LLM Personalization",
+      "abstract": "Personalizing large language models requires adapting model behavior to individual users while preserving robustness and deployment-scale efficiency. Existing approaches typically personalize LLMs either at the input level, by retrieving user histories or constructing profile prompts, or at the parameter level, by maintaining user-specific parameter-efficient modules. The former makes personalization sensitive to retrieval quality and prompt design, whereas the latter incurs storage and maintenance costs that grow with the user population. To address these limitations, we propose TAP-PER (Temporal Attentive Prefix for PERsonalization), a prefix-based framework that encodes user preferences as learnable representations, eliminating explicit prompt construction and replacing heavy per-user adapters with lightweight user-state prefix embeddings. Inspired by personalized recommendation systems, TAP-PER decomposes user modeling into user-state and query-conditioned components, and incorporates temporal signals to capture the evolving nature of user interests. Experiments on six LaMP tasks show that TAP-PER consistently outperforms prompt-based and model-based baselines across classification, rating, and generation settings. Moreover, TAP-PER uses 130x fewer per-user parameters than OPPU and roughly half the total parameter footprint of PER-PCS at the 1,000-user scale, demonstrating that scalable LLM personalization can be achieved without explicit prompt construction or heavy per-user adapters.",
+      "authors": [
+        "Heng Cao",
+        "Fan Zhang",
+        "Jian Yao",
+        "Yujie Zheng",
+        "Changlin Zhao",
+        "Lu Hao",
+        "Yuxuan Wei",
+        "Wangze Ni",
+        "Huaiyu Fu",
+        "Yuqian Sun",
+        "Xuyan Mo"
+      ],
+      "primary_category": "cs.IR",
+      "categories": [
+        "cs.IR",
+        "cs.CL"
+      ],
+      "published": "2026-06-03T07:32:18+00:00",
+      "link": "https://arxiv.org/pdf/2606.04547v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM personalization via learnable user representations",
+      "llm_evidence_cn": "可学习用户表示用于LLM个性化",
+      "llm_evidence": "可学习用户表示用于LLM个性化",
+      "canonical_evidence": "可学习用户表示用于LLM个性化",
+      "llm_tldr_en": "Proposes TAP-PER, a prefix-based framework that encodes user preferences as learnable representations for LLM personalization, avoiding retrieval dependency and per-user parameters.",
+      "llm_tldr_cn": "为克服现有LLM个性化方法对检索质量的敏感性和存储开销，TAP-PER提出基于前缀的框架，将用户偏好编码为可学习表示。通过时间注意力机制，该方法无需检索历史或维护用户特定模块，即可实现可扩展的个性化。实验表明其在多个个性化任务上匹配或超越现有方法，同时降低部署成本。该工作为大规模LLM个性化提供了高效方案。",
+      "llm_tldr": "为克服现有LLM个性化方法对检索质量的敏感性和存储开销，TAP-PER提出基于前缀的框架，将用户偏好编码为可学习表示。通过时间注意力机制，该方法无需检索历史或维护用户特定模块，即可实现可扩展的个性化。实验表明其在多个个性化任务上匹配或超越现有方法，同时降低部署成本。该工作为大规模LLM个性化提供了高效方案。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.06738v1",
+      "source": "arxiv",
+      "title": "Modular Monolingual Adaptation using Pretrained Language Models",
+      "abstract": "Building monolingual language models (LMs) for low-resource languages typically relies on adapting pretrained language models (PLMs) by finetuning the whole model on the target language. This approach is widely favored over training from scratch, as it enables effective knowledge transfer. Additionally, prior work has shown that using a language-specific tokenizer can enhance the adaptability. In this work, we hypothesize that full model tuning is often unnecessary and propose a more modular approach. Specifically, we replace the tokens, freeze the corresponding embeddings, and tune the rest of the model. We use Scottish Gaelic, Irish, and Quechua for our experiments, with Quechua being a very low-resource language (8.5k training instances). Evaluation on natural language understanding (NLU) tasks -- mask filling, NER, and POS -- shows that our proposed approach improves performance when adapting models to low-resource languages. Additionally, we provide a comprehensive analysis of the effectiveness of training strategies, the choice of pretrained embeddings, and models.",
+      "authors": [
+        "Nalin Kumar",
+        "Ondřej Dušek"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-04T21:51:50+00:00",
+      "link": "https://arxiv.org/pdf/2606.06738v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "modular adaptation of pretrained language models for low-resource languages",
+      "llm_evidence_cn": "预训练语言模型在低资源语言的模块化适配",
+      "llm_evidence": "预训练语言模型在低资源语言的模块化适配",
+      "canonical_evidence": "预训练语言模型在低资源语言的模块化适配",
+      "llm_tldr_en": "Proposes a modular approach to adapt PLMs for new languages by replacing tokens and freezing embeddings, effective for very low-resource scenarios.",
+      "llm_tldr_cn": "构建低资源语言模型通常需全模型微调。本文提出模块化方法：替换目标语言分词器、冻结对应嵌入，仅微调其余部分。在苏格兰盖尔语、爱尔兰语和克丘亚语上实验，其中克丘亚语仅8.5k训练样本。结果表明该方法在资源极度匮乏时仍可有效迁移知识，优于全模型微调，降低了计算成本。",
+      "llm_tldr": "构建低资源语言模型通常需全模型微调。本文提出模块化方法：替换目标语言分词器、冻结对应嵌入，仅微调其余部分。在苏格兰盖尔语、爱尔兰语和克丘亚语上实验，其中克丘亚语仅8.5k训练样本。结果表明该方法在资源极度匮乏时仍可有效迁移知识，优于全模型微调，降低了计算成本。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.06865v1",
+      "source": "arxiv",
+      "title": "Are Large Language Models Suitable for Graph Computation? Progress and Prospects",
+      "abstract": "Large language models (LLMs) have been increasingly explored for graph computation, where tasks require reasoning over structured relationships and algorithmic operations. Yet, it remains unclear when LLMs can reliably support such computation and how they should be incorporated into graph-solving pipelines. Existing surveys at the intersection of LLMs and graphs primarily focus on graph learning, text-attributed graphs, or graph-language modeling. To bridge this gap, we provide a comprehensive review of LLMs for graph computation through a role-based taxonomy. Specifically, we identify two major paradigms: i) LLMs as executors, where models directly solve graph tasks from graph descriptions and instructions; and ii) LLMs as planners, where models formulate problems, decompose reasoning steps, and invoke external tools or agents for execution. Based on this taxonomy, we analyze the strengths and limitations of current methods. Our review indicates that LLMs are promising for simple, small-scale tasks, but remain unreliable for large-scale and exactness-demanding tasks. Finally, we summarize available datasets and suggest four future directions.",
+      "authors": [
+        "Yuting Zhang",
+        "Yi Han",
+        "Kai Wang",
+        "Wei Ni",
+        "Angela Bonifati",
+        "Wenjie Zhang"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-05T03:24:38+00:00",
+      "link": "https://arxiv.org/pdf/2606.06865v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Comprehensive review of LLMs for graph computation",
+      "llm_evidence_cn": "关于LLM在图计算中的全面综述",
+      "llm_evidence": "关于LLM在图计算中的全面综述",
+      "canonical_evidence": "关于LLM在图计算中的全面综述",
+      "llm_tldr_en": "Reviews how LLMs can serve as executors or planners for graph computation tasks, identifying two major paradigms.",
+      "llm_tldr_cn": "大语言模型在图计算中的应用日益增多，但缺乏系统性综述。本文通过角色分类法，将LLM在图计算中的角色总结为执行器和规划器两大范式，分析了当前进展与未来方向，为后续研究提供指导。",
+      "llm_tldr": "大语言模型在图计算中的应用日益增多，但缺乏系统性综述。本文通过角色分类法，将LLM在图计算中的角色总结为执行器和规划器两大范式，分析了当前进展与未来方向，为后续研究提供指导。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.06946v1",
+      "source": "arxiv",
+      "title": "Auditing Training Data in Domain-adapted LLMs: LoRA-MINT",
+      "abstract": "We present LoRA-MINT, a new methodology for Membership Inference Test (MINT) applied to recent Large Language Models (LLMs) fine-tuned for specific Natural Language Processing (NLP) tasks through Low-Rank Adaptation (LoRA). The primary goal is to assess whether individual samples were part of the training data of these adapted models, providing a useful auditing tool for the management of intellectual property and sensitive data. Our analysis explores the relationship between model perplexity and membership status, providing a systematic framework for estimating data exposure in fine-tuned LLMs. We conducted experiments on four models and three benchmark datasets, obtaining precision values in determining if given data were used for training ranging from 0.77 to 0.92, which outperform state-of-the-art baselines and demonstrate the robustness and generality of the proposed method. In general, our findings underscore the potential of LoRA-MINT as an effective and scalable framework for auditing LLMs, improving transparency, and fostering the ethical and responsible deployment of AI and NLP technologies. For the sake of concreteness and current relevance, our discussion and experiments are centered on LoRAadjusted LLMs, but note that most of the presented methodology is easily applicable for auditing training data given any other technique for adapting LLMs or, more generally, any other domain-adapted AI models.",
+      "authors": [
+        "Gonzalo Mancera",
+        "Daniel DeAlcala",
+        "Aythami Morales",
+        "Julian Fierrez",
+        "Ruben Tolosana",
+        "Francisco Jurado"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-05T06:19:03+00:00",
+      "link": "https://arxiv.org/pdf/2606.06946v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Membership inference test for fine-tuned LLMs",
+      "llm_evidence_cn": "针对微调LLM的成员推断测试",
+      "llm_evidence": "针对微调LLM的成员推断测试",
+      "canonical_evidence": "针对微调LLM的成员推断测试",
+      "llm_tldr_en": "Proposes LoRA-MINT to audit training data membership in LoRA-fine-tuned LLMs for NLP tasks.",
+      "llm_tldr_cn": "本文针对领域适配LLM的训练数据隐私问题，提出LoRA-MINT成员推断方法。利用困惑度与成员关系，系统评估微调LLM中数据暴露风险。在四个模型和三个数据集上获得0.77-0.9的精确率，为LLM数据审计提供有效工具。",
+      "llm_tldr": "本文针对领域适配LLM的训练数据隐私问题，提出LoRA-MINT成员推断方法。利用困惑度与成员关系，系统评估微调LLM中数据暴露风险。在四个模型和三个数据集上获得0.77-0.9的精确率，为LLM数据审计提供有效工具。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.07116v1",
+      "source": "arxiv",
+      "title": "OffQ: Taming Structured Outliers in LLM Quantization by Offsetting",
+      "abstract": "Low-bit quantization has been widely adopted to accelerate the inference of large language models (LLMs) by significantly reducing computational cost and memory usage. However, activation outliers pose a major challenge to effective quantization, often leading to notable performance degradation. In this paper, we introduce OffQ, a method designed to mitigate activation outliers in low-bit quantization through a novel offsetting mechanism. Specifically, OffQ first identifies a low-dimensional outlier subspace in the activations using a proposed top-1 PCA, and then concentrates high-magnitude activations into 1 channel via rotation. OffQ then absorbs this concentrated outlier channel by converting its magnitude into a shared offset, thereby reducing the standard deviation of the activations. This offsetting strategy enables effective W4A4KV4 quantization of LLMs using deployment-friendly uniform-grid and uniform-precision quantization. Extensive experiments across diverse LLM architectures and benchmarks demonstrate that OffQ outperforms state-of-the-art baselines, consistently improving model accuracy while preserving low-bit efficiency.",
+      "authors": [
+        "Haoqi Wang",
+        "Lorenz K. Mueller",
+        "Jiawei Zhuang",
+        "Mathieu Salzmann",
+        "Lukas Cavigelli"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-06-05T10:11:34+00:00",
+      "link": "https://arxiv.org/pdf/2606.07116v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Taming outliers in LLM quantization via offsetting",
+      "llm_evidence_cn": "通过偏移技术处理LLM量化中的异常值",
+      "llm_evidence": "通过偏移技术处理LLM量化中的异常值",
+      "canonical_evidence": "通过偏移技术处理LLM量化中的异常值",
+      "llm_tldr_en": "Proposes OffQ, a method that identifies and removes activation outliers via top-1 PCA and rotation, converting them into a shared offset for low-bit LLM quantization.",
+      "llm_tldr_cn": "该论文针对低比特量化中大语言模型激活异常值导致性能下降的问题,提出OffQ方法。OffQ通过主成分分析识别低维异常子空间,利用旋转移除异常通道,并将其幅度转换为共享偏移。在多个LLM上的实验表明,OffQ在低比特量化下有效保持性能,大幅降低精度损失。该方法为LLM高效部署提供了实用的量化优化技术。",
+      "llm_tldr": "该论文针对低比特量化中大语言模型激活异常值导致性能下降的问题,提出OffQ方法。OffQ通过主成分分析识别低维异常子空间,利用旋转移除异常通道,并将其幅度转换为共享偏移。在多个LLM上的实验表明,OffQ在低比特量化下有效保持性能,大幅降低精度损失。该方法为LLM高效部署提供了实用的量化优化技术。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

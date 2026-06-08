@@ -1,0 +1,219 @@
+Title: Auditing Training Data in Domain-adapted LLMs: LoRA-MINT
+
+URL Source: https://arxiv.org/pdf/2606.06946v1
+
+Published Time: Mon, 08 Jun 2026 00:30:57 GMT
+
+Number of Pages: 6
+
+Markdown Content:
+# Auditing Training Data in Domain-adapted LLMs: LoRA-MINT 
+
+Gonzalo Mancera ∗, Daniel DeAlcala ∗, Aythami Morales ∗‡ Julian Fierrez ∗, Ruben Tolosana ∗, Francisco Jurado †∗BiometricsAI, Universidad Autonoma de Madrid, Spain 
+
+> †
+
+Computer Engineering Department, Universidad Autonoma de Madrid, Spain 
+
+> ‡
+
+Department of Mathematics, Universidad de Las Palmas de Gran Canaria, Spain 
+
+Abstract —We present LoRA-MINT, a new methodology for Membership Inference Test (MINT) applied to recent Large Lan-guage Models (LLMs) fine-tuned for specific Natural Language Processing (NLP) tasks through Low-Rank Adaptation (LoRA). The primary goal is to assess whether individual samples were part of the training data of these adapted models, providing a useful auditing tool for the management of intellectual property and sensitive data. Our analysis explores the relationship between model perplexity and membership status, providing a systematic framework for estimating data exposure in fine-tuned LLMs. We conducted experiments on four models and three benchmark datasets, obtaining precision values in determining if given data were used for training ranging from 0.77 to 0.92, which outper-form state-of-the-art baselines and demonstrate the robustness and generality of the proposed method. In general, our findings underscore the potential of LoRA-MINT as an effective and scalable framework for auditing LLMs, improving transparency, and fostering the ethical and responsible deployment of AI and NLP technologies. For the sake of concreteness and current relevance, our discussion and experiments are centered on LoRA-adjusted LLMs, but note that most of the presented methodology is easily applicable for auditing training data given any other technique for adapting LLMs or, more generally, any other domain-adapted AI models. 
+
+Index Terms —LLM, Low-Rank Adaptation (LoRA), Member-ship Inference Test (MINT), Privacy, Parameter-Efficient Fine-Tuning (PEFT), Perplexity, Data Auditing, AI Ethics. 
+
+I. I NTRODUCTION 
+
+In recent years, Natural Language Processing (NLP) tech-nologies have achieved remarkable adoption in diverse do-mains — including healthcare [1], law [2], customer service [3], finance [4], human resources [5], and education [6]. These systems have transformed the way textual information is processed, analyzed, and interpreted, thanks to advances in Machine Learning (ML) that enable the efficient handling of massive volumes of unstructured data. However, the ac-celerated integration of Artificial Intelligence (AI) and NLP solutions has also introduced complex ethical, social, and legal challenges [7], [8], particularly in terms of privacy [9]–[12], data ownership [13], and accountability [14]. In response to these emerging concerns, the European Union enacted the AI Act in June 2024 1, establishing one of the most comprehensive regulatory frameworks for AI to date. The legislation aims to ensure that AI technologies operate trans-parently, maintain fundamental rights, and remain auditable 
+
+> 1https://artificialintelligenceact.eu
+
+throughout their entire lifecycle. It explicitly promotes the creation of robust evaluation and monitoring mechanisms to detect potential misuse and guaranty regulatory compliance. Similar initiatives have been launched in other regions [15], highlighting a global movement towards responsible AI gov-ernance, data traceability, and model accountability. Within this evolving regulatory landscape, data privacy has become a central concern in the design and deployment of AI systems. As models grow in scale and capability, they are increasingly trained or adapted to use sensitive datasets that may include personal or private information [16]. Understand-ing how much of this information is implicitly memorized and potentially retrievable from trained models has therefore become essential for both ethical and legal compliance. Within modern AI systems, Large Language Models (LLMs) have emerged as foundational technologies for state-of-the-art NLP [17]. These models have evolved from general-purpose text generators into sophisticated systems capable of reasoning and decision support in professional domains — such as healthcare [18], education [6], and finance [19]. Their remarkable capabilities stem from large-scale pre-training [20], during which they learn syntactic, semantic, and con-textual patterns from massive text corpora. The fine-tuning process allows a general-purpose pretrained LLM to specialize in a particular task or domain by ad-justing on smaller, curated datasets [21]. However, since LLM architectures have grown in the billions of parameters, full fine-tuning has become computationally expensive and environmentally unsustainable [22]. This has led to the rise of Parameter-Efficient Fine-Tuning (PEFT) techniques, which aim to adapt LLMs using far fewer trainable parameters while maintaining strong performance. Among these approaches, Low-Rank Adaptation (LoRA) [23] has gained exceptional traction due to its simplicity, scalability, and minimal resource requirements. Rather than updating every weight in an LLM, LoRA inserts small low-rank matrices into its linear layers, enabling targeted adapta-tion with only a fraction of the parameters. This dramatically reduces computational costs while preserving performance quality. Recent advances, such as quantized LoRA (QLoRA) [24], further reduce hardware demands, enabling efficient fine-tuning of billion-scale LLMs on commodity GPUs. However, while the accessibility of LoRA-based fine-tuning                
+
+> arXiv:2606.06946v1 [cs.CL] 5 Jun 2026 Audited Model 𝑀 𝐿𝑜𝑟𝑎
+> Training Text 𝓓 𝑻𝒓𝒂𝒊𝒏
+> “The dog runs fast now ”
+> “It was agood day ”Output
+> Query Text c
+> “The dog runs fast now ”
+> cϵ𝓓 𝑻𝒓𝒂𝒊𝒏 ?Fig. 1. The objective of LoRA-MINT is to determine whether a given sample
+> cbelongs to the training set of a LoRA-fine-tuned model Dtrain by comparing it against a distribution of synthetic samples.
+
+has democratized LLM customization, it has simultaneously intensified concerns about data exposure and privacy leakage [25]. Fine-tuning datasets — especially those from domains such as medicine, finance, or law — may contain personally identifiable or confidential information [26]. Given the known tendency of LLMs to memorize parts of their training data, the discussion here is about extracting training data from LLMs. This discussion is particularly salient in the context of Membership Inference Attacks (MIAs) [27], where adversaries attempt to determine whether a particular data instance was used during model training by analyzing the model output. MIAs pose a direct challenge to the privacy of training data, and while some previous studies have examined these attacks in generic ML settings, few studies have specifically analyzed their behavior in fine-tuned LLMs, especially in those models adapted through LoRA. Along this like of work, the present paper presents LoRA-MINT, a framework designed to assess training data exposure in parameter-efficient fine-tuning. Our main contributions:  
+
+> •
+
+We introduce LoRA-MINT, a framework for evaluating if given data were used in LoRA-based fine-tuning.  
+
+> •
+
+We perform a comprehensive evaluation of four LLMs and three datasets, analyzing perplexity, distributions, and membership inference accuracy.  
+
+> •
+
+The experiments show that LoRA-MINT effectively dis-tinguishes between training and non-training samples, resulting in a useful training data auditing tool for fine-tuned LLMs (see Fig. 1). For the sake of concreteness and current relevance, our discussion and experiments are centered on LoRA-adjusted LLMs, but note that most of the presented methodology is easily applicable for auditing training data given any other technique for adapting LLMs or, more generally, any other domain-adapted AI models. II. R ELATED WORKS 
+
+A. Membership Inference Test (MINT) 
+
+MINT (Membership Inference Test) is a framework devel-oped to evaluate the compliance of ML models with emerging regulatory requirements regarding the use of training data. Its goal is to provide a systematic and robust methodology that can be applied across different data modalities—including text, images, audio and multimodal models—while accommo-dating various levels of transparency regarding the model’s development and training pipeline [28]–[31]. Depending on the context, auditors may have limited information about the model or detailed access to its architecture and training procedures, making MINT adaptable to a wide spectrum of regulatory scenarios [32], [33]. The conceptual foundation of MINT is rooted in the exten-sive body of work on Membership Inference Attacks (MIA), which investigate whether a model has memorized specific training examples [27]. Early contributions demonstrated that ML models can reveal membership information through their output distributions or confidence scores [34]. Subsequent research expanded these ideas, analyzing the role of overfit-ting, loss-based indicators, and gradient signals as potential membership signals. In the context of LLMs, MIAs encounter distinctive difficul-ties arising from the immense scale and heterogeneity of train-ing data, as well as the strong overlap between training and non-training text distributions [35]. The single-epoch nature of pre-training further limits the attacker’s ability to observe repeated exposure to samples, making membership detection inherently complex [36]. Several techniques have been pro-posed to address these challenges. For example, [37] employed loss-based comparisons using semantically similar sentences generated through masked LLMs, while [38] introduced user inference strategies that rely on estimating the likelihood of user-specific samples. Recently, new attacks that specifically exploit the probabilistic and structural characteristics of LLMs have been introduced: Min-K % [39] and Min-K % ++ [40] leverage differences in token probability distributions, while MoPe focuses on the local smoothness of model behavior around training points [41]. However, the trustworthiness of some of these approaches is limited by inadequate evaluation methodologies that may overestimate their effectiveness [42]. In addition, the intrinsic variability and ambiguity of natural language obscure consistent behavioral signals, making it difficult for attackers to extract robust membership cues [43]. 
+
+B. Low-Rank Adaptation (LoRA) 
+
+Low-Rank Adaptation (LoRA) [23] is a parameter-efficient fine-tuning (PEFT) technique designed to adapt large pre-trained LLMs to downstream tasks without updating all model parameters. Instead of modifying the full weight matrices during fine-tuning, LoRA introduces a pair of low-rank ma-trices that approximate the weight updates within a lower-dimensional subspace. Formally, given a weight matrix W0 ∈
+
+Rd×k, LoRA freezes W0 and learns two smaller matrices 
+
+A ∈ Rd×r and B ∈ Rr×k, where r ≪ min( d, k ). The adapted weight is expressed as: 
+
+W = W0 + BA (1) This low-rank decomposition significantly reduces the num-ber of trainable parameters —often by several orders of magnitude— while maintaining competitive downstream per-formance. By updating only the LoRA parameters during training, the original model remains intact, allowing efficient storage, modular fine-tuning, and task switching. Beyond efficiency, LoRA also modifies the optimization dynamics of fine-tuning, potentially influencing how the model memorizes and represents information. This characteristic makes LoRA-based models an interesting target for MINT and privacy-oriented audits, as the separation between frozen and trainable parameters may affect the distribution of private information within the model. III. P ROPOSED METHOD : L ORA-MINT LoRA-MINT is a novel framework designed to identify training samples embedded within LLMs that have been fine-tuned using LoRA. The core principle of the method relies on 
+
+perplexity , a standard measure of how well a language model predicts a given sequence. Perplexity quantifies the model’s uncertainty: lower perplexity indicates that the model assigns higher probability to the observed text, suggesting that similar samples may have appeared in its training data. Formally, for a sequence X of N tokens with probabilities p(xi), the perplexity PPL is defined as: PPL (X) = exp − 1
+
+N
+
+> N
+
+X
+
+> i=1
+
+log p(xi)
+
+!
+
+(2) Using the behavior of perplexity under LoRA-fine-tuned weight adaptations, LoRA-MINT systematically compares perplexity patterns across candidate samples to detect those likely used during fine-tuning. This enables rigorous auditing of data provenance and improves transparency in parameter-efficient adaptation workflows. In practice, LoRA-MINT leverages synthetic in-domain test samples to create a reference distribution of perplexities for text that is known not to be part of the fine-tuning data. Can-didate samples are then compared to this reference, with sam-ples exhibiting perplexities below the mean of the synthetic distribution flagged as likely training members, while those above are considered non-members. This approach provides a simple, principled, and efficient method for auditing the use of training data in fine-tuned LLMs. A more detailed explanation of the method, including the construction and refinement of the reference distribution, is provided in Section III-A. 
+
+A. Problem Formulation 
+
+Let MLoRA denote a LoRA-fine-tuned LLM, and let C =
+
+{ci}Nc 
+
+> i=1
+
+be the set of candidate samples to audit. Our goal is to determine, for each candidate ci, whether it belongs to the set of training samples Dtrain or to the set of non-member samples 
+
+Dnon . To achieve this, we leverage the concept of perplexity ,as defined in Equation (2), which measures how well a model predicts a given sequence of tokens. To establish a reference for non-member samples, we gen-erate a set of M synthetic in-domain samples S = {sj }Mj=1 ,which are topically aligned with the fine-tuning domain and syn PPL low PPL high       
+
+> ′
+> Fig. 2. Filtered distribution S′of synthetic in-domain samples, obtained by removing extremes below θlow and above θhigh .
+
+constructed so as to avoid inclusion in Dtrain . Using the set of perplexities {PPL( sj )}Mj=1 of the synthetic samples, we denote the empirical mean and standard deviation of the reference distribution as μ and σ.To reduce the influence of extreme values that are far from typical in-domain behavior and better approximate the target distribution, we define a filtered synthetic set S′ by excluding samples outside the percentile range defined by θlow and θhigh :
+
+S′ = { sj ∈ S | PPL( sj ) ∈ [PPL θlow , PPL θhigh ] }. (3) The reference distribution is then refined by adjusting its mean as μsyn ← μ − σ/k . The values of θlow , θhigh , and 
+
+k are jointly selected based on a subset of samples from 
+
+Dtrain , choosing the configuration that maximizes detection performance over both member and non-member samples. This procedure allows the reference distribution to better approximate the typical perplexities of Dtrain (see Fig. 2). This step is crucial because the most challenging cases arise when a sample from Dnon is very similar to a sample from Dtrain .For each candidate sample ci ∈ C , we compute its perplexity 
+
+PPL( ci) as defined in Eq. (2) and compare it with the refined synthetic reference distribution. Candidate samples are classified as: 
+
+ci ∈
+
+(
+
+Dtrain , if PPL( ci) < μ syn ,
+
+Dnon , if PPL( ci) ≥ μsyn . (4) This formulation provides a simple and statistically grounded approach to auditing LoRA-fine-tuned models. By carefully filtering extreme percentiles (θlow , θ high ) in S and adjusting the mean of the reference distribution to be close to Dtrain , the method accurately captures typical behavior in the domain while remaining robust, even when samples from 
+
+Dnon are very similar to those from Dtrain . The method can be summarized as a pipeline (see Fig. 3): (i) generate synthetic in-domain samples S, (ii) determine and exclude extreme percentiles (θlow , θ high ) to refine the reference distribution, (iii) adjust the mean of the synthetic distribution by a fraction of the standard deviation to approximate Dtrain , (iv) compute Text DB 
+
+> 𝒟 Train
+
+Large Language 
+
+Model 
+
+𝑀     
+
+> 𝑀 =𝒟 𝑇𝑟𝑎𝑖𝑛 =
+> Qwen3 -4B -Thinking -2507,
+> DeepSeek -R1 -Distill -Llama -8B,
+> Phi -4-14B
+> CamelMaths ,Maths -College
+> Medical -o1 -SFT
+
+Large Language 
+
+Model 
+
+𝑀 𝐿𝑜𝑟𝑎                
+
+> Output Certain Task
+> 𝑐 iϵ𝒟 Train ?
+> 𝑆
+> (𝑆 𝑦𝑛𝑡ℎ𝑒𝑡𝑖𝑐 𝑖𝑛 −𝑑𝑜𝑚𝑎𝑖𝑛 𝑠𝑎𝑚𝑝𝑙𝑒𝑠 )
+> PPL(S i)
+> PPL( ci)
+> ChatGPT -4Fig. 3. Overview of LoRA-MINT. The base LLM is fine-tuned with LoRA using the training set Dtrain . Synthetic in-domain samples are used to build a reference perplexity distribution, against which the perplexity of each candidate sample ciis compared to determine whether it belongs to the training set.
+
+perplexities PPL( ci) for candidate samples C, and (v) classify candidates relative to the reference mean. Note that the same spirit of using distribution tails as the core of our method is also found in related work around bias evaluation in biometrics [44] and general AI systems [45]. IV. E XPERIMENTAL FRAMEWORK 
+
+A. Audited Large Language Models 
+
+To investigate whether variations in model architecture, size, and complexity influence the effectiveness of MINT, we evaluated four different pre-trained LLMs, namely: Qwen3-4B-Thinking-2507 [46], DeepSeek-R1-Distill-Llama-8B [47], Phi-4-14B [48], Llama-3.2-3B, Mistral and MistralSmall .These models were specifically selected to represent a diverse set of LLMs, ranging from smaller optimized architectures to larger, more complex transformers. By auditing models with such varied characteristics, we aim to gain a deeper understanding of how differences in model design affect the training data exposure and auditability. 
+
+B. Experimental Protocol 
+
+In this work, all LoRA-fine-tuned models MLoRA de-scribed in Section IV-A were trained on three different datasets —CAMELMaths Instruction Dataset, Maths-College, and Medical-o1-SFT— following a consistent and carefully controlled parameter-efficient adaptation pipeline. This unified setup ensures that any observed differences in auditing perfor-mance can be attributed to the characteristics of the models or datasets, rather than to variations in hyperparameters or training procedures. To perform the fine-tuning, we adopt LoRA with a fixed scaling parameter α = 32 , and apply a dropout rate of 0.15 
+
+to regularize the low-rank updates introduced during training. LoRA adapters are inserted into seven key transformer’s architecture components, including the attention modules 
+
+q_proj , k_proj , v_proj , o_proj and the MLP modules 
+
+gate_proj , up_proj , down_proj , thus modifying both the attention mechanisms and the feed-forward networks. This placement enables sufficiently expressive parameter-efficient adaptation while leaving the original pretrained model weights untouched. All models were fine-tuned for a total of 8 epochs using 15,000 task-specific samples per dataset. This protocol there-fore defines the precise and reproducible configuration used to obtain the LoRA-finetuned models later subjected to auditing. To construct the reference distribution required for LoRA-MINT, we generated 1,000 synthetic in-domain samples using GPT-4 together with a subset of 500 samples from Dtrain ,which was used to determine the optimal values of θlow ,
+
+θhigh and k, defining the filtered distribution S′ that maxi-mizes detection performance. These synthetic sequences were curated to match the topic and structural properties of the target domain, while being guaranteed not to overlap with the original fine-tuning data. As a result, the resulting reference distribution S′ provides a stable and controlled approximation of the model’s behavior in non-member samples, which is crucial for establishing the baseline perplexity distribution against which membership candidates are evaluated. After constructing the synthetic reference distribution, we sampled 2,000 training instances and 2,000 held-out test in-stances from each dataset. For every sample, we computed the perplexity under MLoRA and compared it against the refined synthetic distribution following the methodology introduced in Section 3. This procedure enables a systematic and rigorous MINT evaluation, allowing us to quantify the extent to which LoRA-based parameter-efficient fine-tuning introduces mea-surable privacy leakage across different models and domains. V. E XPERIMENTS AND RESULTS 
+
+The experiments were conducted on the models described in Section IV-A. Each model was fine-tuned using LoRA under the same configuration reported in Section IV-B, ensuring a consistent and fully reproducible experimental setup. TABLE I RESULTS OF LORA-MINT. A LL LORA-FINE -TUNED MODELS WERE TRAINED FOR A TOTAL OF 8 EPOCHS , AND THE AUDITING PROCEDURE WAS CONDUCTED USING THE PROPOSED SYNTHETIC -REFERENCE METHOD . F OR EACH DATASET , SYNTHETIC DISTRIBUTIONS WERE REFINED BY REMOVING LOWER AND UPPER PERCENTILES , PLOW AND PHIGH , RESPECTIVELY , FOLLOWED BY MEAN ADJUSTMENT USING A SCALING FACTOR k. T HE REPORTED CONFIGURATION CORRESPONDS TO THE VALUES OF PLOW , PHIGH , AND k THAT MAXIMIZE DETECTION PERFORMANCE . T HE TABLE REPORTS THE AUC  
+
+> AND THE
+
+TPR — FPR METRICS , SHOWING THE DETECTION EFFECTIVENESS ACROSS MODELS AND DATASETS .
+
+AUC TPR — FPR 
+
+CamelMaths Maths-College Medical-o1-SFT CamelMaths Maths-College Medical-o1-SFT Qwen3-4B 0.791 0.890 0.841 0.7325 — 0.121 0.804 — 0.024 0.740 — 0.112 DeepSeek-R1 0.774 0.857 0.832 0.722 — 0.224 0.785 — 0.175 0.764 — 0.140 Phi-4 0.782 0.900 0.842 0.745 — 0.180 0.832 — 0.032 0.792 — 0.108 Llama-3.2-3B 0.770 0.820 0.874 0.780 — 0.240 0.790 — 0.150 0.800 — 0.052 Mistral 0.810 0.810 0.830 0.765 — 0.145 0.805 — 0.180 0.830 — 0.111 MistralSmall 0.886 0.925 0.890 0.860 — 0.015 0.842 — 0.028 0.825 — 0.045 
+
+For the fine-tuning stage, each model was trained on 15,000 samples from the training dataset, and we generated a synthetic reference distribution of 1,000 in-domain samples, which serves as a baseline for modeling the expected behavior of non-member instances. During the evaluation phase, we classified 2,000 test sam-ples and 2,000 training samples following the auditing proce-dure described in Section IV-B. The resulting metrics for each model and dataset are summarized in Table I. Importantly, the selection of the percentile thresholds Plow ,
+
+Phigh , together with the adjustment factor k, was guided by performance optimization. For each configuration, the reported values correspond to those that yield the best results. This is evident compared to the unadjusted case, where Plow =0, Phigh = 100 , and k = 1 lead to less discriminative AUC values. Consequently, the optimized thresholds provide a more robust choice for standardizing the LoRA-MINT procedure in practical auditing scenarios. 
+
+A. Ablation Study of LoRA Target Modules in LoRA-MINT 
+
+To quantify the importance of different injection points of LoRA within the transformer architecture, we conduct a structured ablation study with five configurations using the DeepSeek-R1-Distill-Llama-8B model on the 
+
+Medical-o1-SF dataset. This setup allows us to evaluate how attention- and MLP-based adaptations affect detection performance, perplexity, and the controlled overfitting behav-ior of LoRA-MINT. The results are summarized in Table II. We first evaluate partial adaptation by enabling only 
+
+q_proj and k_proj , followed by the full adaptation of attention with q_proj , k_proj , v_proj and o_proj .We then isolate the MLP effects using only up_proj and 
+
+down_proj , and subsequently enable the entire MLP path-way, including gate_proj . Finally, we activate all modules simultaneously, representing the maximum LoRA capacity. These five experiments provide a decomposition of how different structural components contribute to LoRA-MINT. By isolating partial and complete attention pathways, partial and complete MLP transformations, and their joint activation, this ablation study reveals which mechanisms are most responsible for improving detection performance and shaping the benefi-cial overfitting dynamics observed during training. 
+
+TABLE II ABLATION STUDY OF LORA TARGET MODULES IN LORA-MINT USING THE DE E P SE E K -R1-D I S T I L L -L L A M A -8B MODEL EVALUATED ON THE 
+
+ME D I C A L -O1-SF DATASET . A CTIVE LORA INJECTION POINTS ARE SHOWN IN BOLD , WHILE INACTIVE MODULES APPEAR IN GRAY . E ACH CONFIGURATION ISOLATES A SPECIFIC SUBSET OF ATTENTION OR MLP 
+
+> PATHWAYS TO QUANTIFY THEIR CONTRIBUTION TO DETECTION PERFORMANCE
+
+.Target Modules AUC 
+
+q proj , k proj , v proj, o proj, gate proj, up proj, down proj 0.504 
+
+q proj , k proj , v proj , o proj ,gate proj, up proj, down proj 0.568 q proj, k proj, v proj, o proj, gate proj, up proj , down proj 0.688 q proj, k proj, v proj, o proj, 
+
+gate proj , up proj , down proj 0.754 
+
+q proj , k proj , v proj , o proj ,
+
+gate proj , up proj , down proj 0.832 
+
+VI. C ONCLUSIONS 
+
+We introduced LoRA-MINT, a lightweight training data auditing framework for LoRA-finetuned LLMs. The method leverages perplexity distributions from synthetic in-domain samples to distinguish training from non-training data in a simple and interpretable way. For the sake of concreteness and current relevance, our discussion and experiments are centered on LoRA-adjusted LLMs, but note that most of the presented methodology is easily applicable for auditing training data given any other technique for adapting LLMs or, more generally, any other domain-adapted AI models. Across three model families and domain-specific datasets, LoRA-MINT achieves excellent performance, with AUC val-ues ranging from 0.77 to 0.90, showing that detecting training data is possible even when only a small fraction of parameters are fine-tuned. Our analysis shows that refining the synthetic distribution through percentile filtering and mean adjustment is key to maximizing separability, while controlled overfitting increases the gap between member and non-member perplex-ities. Finally, an ablation study confirms that both attention and MLP adaptations contribute to detection, with their joint activation yielding the best results. In general, LoRA-MINT provides an interpretable and model-agnostic tool for training data auditing in parameter-efficient fine-tuned models. Future work includes extending the framework to other PEFT methods and developing mitigation strategies to reduce training data memorization while preserving utility [49]. VII. A CKNOWLEDGMENT 
+
+Support by M2RAI (PID2024-160053OB-I00, MICIU/FEDER) and C´ atedra ENIA UAM-VERIDAS en IA Responsable (NextGenerationEU PRTR TSI-100927-2023-2). Mancera is supported by FPI-PRE2022-104499 MICINN/FEDER and DeAlcala is supported by FPU21/05785 MIU. Work conducted within the ELLIS Unit Madrid. REFERENCES [1] S. Locke, A. Bashall, S. Al-Adely, J. Moore, A. Wilson, and G. B. Kitchen, “Natural Language Processing in medicine: a review,” Trends in Anaesthesia and Critical Care , vol. 38, pp. 4–9, 2021. [2] M. Lopez-Duran et al. , “Benchmarking graph neural networks for document layout analysis in public affairs,” in ICDAR Workshops , 2026. [3] P. A. Olujimi and A. Ade-Ibijola, “NLP techniques for automating responses to customer queries: a systematic review,” Discover Artificial Intelligence , vol. 3, no. 1, p. 20, 2023. [4] K. Du et al. , “Natural Language Processing in finance: A survey,” 
+
+Information Fusion , vol. 115, p. 102755, 2025. [5] A. Pe˜ na et al. , “Addressing bias in LLMs: Strategies and application to fair AI-based recruitment,” vol. 8, no. 2, Oct. 2025, p. 1976–1987. [6] J. Irigoyen et al. , “EduEVAL-DB: A role-based dataset for pedagogical risk evaluation in educational explanations,” in ACM/SoLAR Intl. Conf. on Learning Analytics & Knowledge Workshops (LAKw) , 2026. [7] A. K. Sharma et al. , “Ethical AI: Towards defining a collective evaluation framework,” in IEEE COMPSAC , 2025, pp. 1665–1670. [8] A. Pe˜ na et al. , “Human-centric multimodal machine learning: Recent advances and testbed on AI-based recruitment,” SN Computer Science ,vol. 4, no. 5, p. 434, June 2023. [9] M. Gomez-Barrero et al. , “Privacy-preserving comparison of variable-length data with application to biometric template protection,” IEEE Access , vol. 5, pp. 8606–8619, June 2017. [10] A. Hassanpour et al. , “Differential privacy preservation in robust con-tinual learning,” IEEE Access , vol. 10, February 2022. [11] P. Omid and F. Soren, “The digital double: Data privacy,” Security, and Consent in AI Implants West J Dent Sci , vol. 2, no. 1, p. 108, 2025. [12] C. Busch, R. Veldhuis et al. , Privacy and Security Matters in Biometric Technologies . Springer, 2026. [13] J. Muldoon, “Data-owning democracy or digital socialism?” Critical Review Intl. Social & Political Phil. , vol. 28, no. 4, pp. 570–591, 2025. [14] D. DeAlcala et al. , “Active membership inference test (aMINT): En-hancing model auditability with multi-task learning,” in IEEE/CVF Intl. Conf. on Computer Vision (ICCV) , 2025, pp. 647–656. [15] The White House. (2024) Memorandum on Advancing the United States’ Leadership in Artificial Intelligence. [Online]. Available: https: //www.whitehouse.gov/briefing-room/presidential-actions/2024/10/24/ [16] K. Chen et al. , “A survey on privacy risks and protection in Large Language Models,” Journal of King Saud University Computer and Information Sciences , vol. 37, no. 7, p. 163, 2025. [17] W. X. Zhao, K. Zhou, J. Li, T. Tang, X. Wang, Y. Hou, Y. Min et al. ,“A survey of large language models,” arXiv:2303.18223 , 2023. [18] S. Goyal et al. , “HealAI: A healthcare LLM for effective medical documentation,” in Proc. ACM WSDM , 2024, pp. 1167–1168. [19] J. Wang et al. , “Financial analysis: Intelligent financial data analysis system based on LLM-RAG,” arXiv:2504.06279 , 2025. [20] J. Achiam, S. Adler, S. Agarwal, L. Ahmad, I. Akkaya, F. L. Aleman 
+
+et al. , “GPT-4 technical report,” arXiv:2303.08774 , 2023. [21] A. Pe˜ na et al. , “Continuous document layout analysis: Human-in-the-loop AI-based data curation, database, and evaluation in the domain of public affairs,” Information Fusion , vol. 108, p. 102398, 2024. [22] D. Patterson, J. Gonzalez, Q. Le, C. Liang et al. , “Carbon emissions and large neural network training,” arXiv:2104.10350 , 2021. [23] E. J. Hu, Y. Shen, P. Wallis, Z. Allen-Zhu, Y. Li et al. , “LoRA: Low-rank adaptation of Large Language Models.” Proc. ICLR , 2022. [24] T. Dettmers, A. Pagnoni, A. Holtzman, and L. Zettlemoyer, “QLoRA: Efficient finetuning of quantized LLMs,” Advances in Neural Informa-tion Processing Systems (NIPS) , vol. 36, pp. 10 088–10 115, 2023. [25] N. Carlini et al. , “Extracting training data from Large Language Mod-els,” in USENIX Security Symposium , 2021, pp. 2633–2650. [26] G. Mancera, A. Morales et al. , “PBa-LLM: Privacy-and bias-aware NLP using Named-Entity Recognition (NER),” in Proc. ICDAR , 2025. [27] R. Shokri, M. Stronati, C. Song, and V. Shmatikov, “Membership inference attacks against machine learning models,” in IEEE Symposium on Security and Privacy (SP) , 2017, pp. 3–18. [28] D. Dealcala et al. , “A comprehensive analysis of factors impacting membership inference,” in CVPR Workshops , 2024, pp. 3585–3593. [29] D. DeAlcala, A. Morales, J. Fierrez, G. Mancera, R. Tolosana, and J. Ortega-Garcia, “Is my data in your AI? Membership Inference Test (MINT) applied to face biometrics,” IEEE Access , 2025. [30] D. DeAlcala et al. , “gMINT: Gradient-based membership inference test applied to image models,” in IEEE/CVF Conf. on Computer Vision and Pattern Recognition Workshops (CVPRw) , 2025, pp. 2781–2790. [31] G. Mancera, D. DeAlcala, J. Fierrez, R. Tolosana, and A. Morales, “Is my text in your AI model? Gradient-based membership inference test applied to LLMs,” IEEE Conf. on AI Workshops (CAIw) , 2026. [32] D. DeAlcala, A. Morales, J. Fierrez, G. Mancera, R. Tolosana et al. ,“MINT-Demo: membership inference test demonstrator,” in AAAI Work-shop on AI Governance: Alignment, Morality, and Law (AIGOV) , 2025. [33] D. DeAlcala et al. , “Is my Vision-Language data in your AI? Member-ship inference test (MINT) Demo 2,” in IEEE COMPSAC , 2026. [34] N. Carlini, S. Chien, M. Nasr, S. Song, A. Terzis, and F. Tramer, “Mem-bership Inference Attacks from first principles,” in IEEE Symposium on Security and Privacy (SP) , 2022, pp. 1897–1914. [35] Y. Yao, J. Duan, K. Xu, Y. Cai, Z. Sun, and Y. Zhang, “A survey on large language model (LLM) security and privacy: The good, the bad, and the ugly,” High-Confidence Computing , vol. 4, no. 2, 2024. [36] M. Duan, A. Suri, N. Mireshghallah et al. , “Do Membership Inference Attacks work on Large Language Models?” arXiv:2402.07841 , 2024. [37] J. Mattern, F. Mireshghallah, Z. Jin, B. Sch¨ olkopf et al. , “Membership Inference Attacks against Language Models via neighbourhood compar-ison,” arXiv:2305.18462 , 2023. [38] N. Kandpal, K. Pillutla, A. Oprea, P. Kairouz, C. A. Choquette-Choo, and Z. Xu, “User inference attacks on Large Language Models,” arXiv preprint arXiv:2310.09266 , 2023. [39] W. Shi, A. Ajith, M. Xia, Y. Huang, D. Liu, T. Blevins, D. Chen, and L. Zettlemoyer, “Detecting pretraining data from large language models,” in International Conference on Learning Representations , vol. 2024, 2024, pp. 51 826–51 843. [40] J. Zhang, J. Sun, E. Yeats, Y. Ouyang, M. Kuo, J. Zhang, H. Yang, and H. Li, “Min-k%++: Improved baseline for pre-training data detection from large language models,” in International Conference on Learning Representations , vol. 2025, 2025, pp. 64 845–64 862. [41] M. Li, J. Wang, J. Wang, and S. Neel, “MoPe: Model perturbation based privacy attacks on language models,” in Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing ,2023, pp. 13 647–13 660. [42] M. Meeus, I. Shilov, S. Jain, M. Faysse, M. Rei, and Y.-A. de Montjoye, “SoK: Membership Inference Attacks on LLMs are rushing nowhere (and how to fix it),” in IEEE Conf. on Secure and Trustworthy Machine Learning (SaTML) , 2025, pp. 385–401. [43] F. Mireshghallah, K. Goyal, A. Uniyal, T. Berg-Kirkpatrick, and R. Shokri, “Quantifying privacy risks of masked Language Models using Membership Inference Attacks,” arXiv preprint arXiv:2203.03929 , 2022. [44] I. Solano et al. , “Balancing tails when comparing distributions: Com-prehensive equity index (CEI) with application to bias evaluation in operational face biometrics,” Pattern Recognition , vol. 179, 2026. [45] D. DeAlcala et al. , “Measuring bias in AI models: An statistical approach introducing n-sigma,” in IEEE Conf. on Computers, Software, and Applications (COMPSAC) , June 2023, pp. 1167–1172. [46] A. Yang, A. Li, B. Yang, B. Zhang, B. Hui, B. Zheng, B. Yu, C. Gao, C. Huang et al. , “Qwen3 technical report,” arXiv:2505.09388 , 2025. [47] D. Guo, D. Yang, H. Zhang, J. Song, R. Zhang, R. Xu, Q. Zhu, S. Ma, P. Wang, X. Bi et al. , “DeepSeek-R1: Incentivizing reasoning capability in LLMs via reinforcement learning,” arXiv:2501.12948 , 2025. [48] M. Abdin et al. , “Phi-4 technical report,” arXiv:2412.08905 , 2024. [49] A. Morales et al. , “SensitiveNets: Learning agnostic representations with application to face recognition,” IEEE Trans. on Pattern Analysis and Machine Intelligence , vol. 43, no. 6, pp. 2158–2164, June 2021.

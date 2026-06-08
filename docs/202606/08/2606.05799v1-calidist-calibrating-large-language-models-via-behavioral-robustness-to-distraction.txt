@@ -1,0 +1,1003 @@
+Title: CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction
+
+URL Source: https://arxiv.org/pdf/2606.05799v1
+
+Published Time: Fri, 05 Jun 2026 00:55:36 GMT
+
+Number of Pages: 24
+
+Markdown Content:
+# CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+Mohammad Anas Jawad 1 Cornelia Caragea 1
+
+Abstract 
+
+Existing calibration methods for Large Language Models (LLMs) often overlook a critical dimen-sion of trustworthiness: a model’s behavioral ro-bustness to irrelevant or misleading information. In this paper, we argue that a model’s true con-fidence should reflect its stability under cogni-tive pressure. We introduce C ALI DIST , a novel post-hoc calibration approach that directly mea-sures and penalizes a model’s susceptibility to distraction. C ALI DIST quantifies how an LLM’s predictions and uncertainty change when its in-put prompt is perturbed with semantic distractors .This stability (or lack thereof) signal is then used to adaptively scale the model’s initial confidence score. Our extensive experiments on seven Natu-ral Language Understanding classification bench-marks using six distinct LLMs show that C A-
+
+> LI
+
+DIST consistently achieves lower Expected Cal-ibration Error (ECE) and Brier Score compared with strong baselines. Remarkably, our method re-duces the ECE from 23% to 7% on average—a rel-ative improvement of 70%—demonstrating that behavioral stability is a powerful signal for cali-bration. We make our code and datasets available at github.com/m-anas-j/CaliDist .
+
+1. Introduction 
+
+Large Language Models (LLMs) have demonstrated re-markable capabilities across a vast spectrum of complex tasks, leading to their rapid integration into high-stakes applications (Thirunavukarasu et al., 2023). In these appli-cations, the correctness of a model’s output is paramount, but equally important is the reliability of its confidence. A well-calibrated model expresses confidence that accurately 
+
+> 1
+
+Computer Science, University of Illinois Chicago, USA. Cor-respondence to: Mohammad Anas Jawad <mjawad4@uic.edu >,Cornelia Caragea <cornelia@uic.edu >.
+
+Proceedings of the 43 rd International Conference on Machine Learning , Seoul, South Korea. PMLR 306, 2026. Copyright 2026 by the author(s). 
+
+reflects the true likelihood of its correctness and is essential for building trustworthy systems, enabling their safe adop-tion (Sun et al., 2024). However, modern LLMs, particularly those fine-tuned with Reinforcement Learning from Human Feedback (RLHF), are often severely miscalibrated, typi-cally exhibiting a strong tendency towards overconfidence (Achiam et al., 2023; Tian et al., 2023). Existing research on model calibration has largely followed two main paradigms. The first, inherited from traditional deep learning, involves post-hoc statistical adjustments, such as temperature scaling (Guo et al., 2017). While effec-tive, these calibration methods are limited by their require-ment for direct access to model logits, rendering them inap-plicable to many proprietary LLMs. The second paradigm, developed for the generative nature of LLMs, estimates con-fidence by measuring response consistency, most notably through self-consistency (Wang et al., 2023). These meth-ods cleverly probe the model’s internal uncertainty but often incur significant computational costs. More importantly, they measure consistency against the model’s own internal stochasticity, not against external challenges. This leaves a critical dimension of trustworthiness under-explored: a model’s behavioral robustness . Recent studies have shown that LLMs are notoriously brittle, often chang-ing their predictions when presented with irrelevant but plausible “distractor” information (Shi et al., 2023). This brittleness mirrors well-documented phenomena in human cognitive psychology, and motivates us to design a princi-pled, behavior-centric view of calibration. Specifically, we can draw two parallels, each corresponding to a distinct, measurable behavior. First, a model’s tendency to alter its original prediction after being exposed to misleading infor-mation is a computational parallel to the Misinformation Effect (Loftus & Palmer, 1974), where human memory of an event can be fundamentally altered by misleading post-event information. Here, the model’s initial prediction acts as its “memory” of an answer, and a semantic distractor serves as post-event information that can erroneously corrupt that memory. A model highly susceptible to this effect is inher-ently less reliable, as it reveals a fundamental flaw in its reasoning process: it indicates that the model’s conclusions are not based on a robust, internal understanding of the prob-lem, but are instead heavily influenced by superficial cues in 1
+
+> arXiv:2606.05799v1 [cs.LG] 4 Jun 2026
+
+CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 0.0 0.2 0.4 0.6 0.8 1.0   
+
+> Prediction Instability ( )
+> 0
+> 100
+> 200
+> 300
+> 400
+> 500
+> Frequency in Bin
+> 489
+> 215
+> 162
+> 106
+> 42
+> llama - csqa - sample_corruption
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> 0.91
+> 0.68
+> 0.60 0.58
+> 0.45
+> Accuracy in Bin
+
+(a) Llama-3.1 0.0 0.2 0.4 0.6 0.8 1.0    
+
+> Prediction Instability ( )
+> 0
+> 100
+> 200
+> 300
+> 400
+> 500
+> Frequency in Bin
+> 516
+> 205
+> 134
+> 101
+> 58
+> qwen - csqa - sample_corruption
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> 0.93
+> 0.83
+> 0.69 0.63
+> 0.41
+> Accuracy in Bin
+
+(b) Qwen-3 0.0 0.2 0.4 0.6 0.8     
+
+> Prediction Instability ( )
+> 0
+> 100
+> 200
+> 300
+> 400
+> 500
+> 600
+> Frequency in Bin
+> 582
+> 207
+> 123
+> 71 37
+> phi4 - csqa - sample_corruption
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> 0.85
+> 0.68
+> 0.48 0.44
+> 0.35
+> Accuracy in Bin
+
+(c) Phi-4-Mini 0.0 0.2 0.4 0.6 0.8 1.0     
+
+> Prediction Instability ( )
+> 0
+> 100
+> 200
+> 300
+> 400
+> 500
+> 600
+> 700
+> Frequency in Bin
+> 701
+> 188
+> 73 38 21
+> gemini - csqa - sample_corruption
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> 0.93
+> 0.81
+> 0.63
+> 0.50
+> 0.33
+> Accuracy in Bin
+
+(d) Gemini-2.0-Flash 
+
+Figure 1. Negative correlation between prediction accuracy and prediction instability. Accuracy drops as Prediction Instability μ increases. Samples on which the models demonstrate higher μ tend to have lower average accuracy. Distractor used: Sample-corruption style. 
+
+the prompt. Second, a model that remains highly confident while being easily distracted exhibits a behavior akin to the 
+
+Dunning-Kruger Effect , where low competence on a task is paired with an inflated overestimation of ability (Kruger & Dunning, 1999). 1 In this parallel, the model’s “incompe-tence” is its inability to resist distraction, and its “overesti-mation” is its failure to reduce its confidence accordingly. To operationalize these parallels, we introduce C ALI DIST , a novel post-hoc approach that quantifies and aggregates these behavioral signals for calibration. C ALI DIST systematically perturbs an input prompt with targeted distractors and uses the combined instability signal from both prediction changes and confidence shifts to adaptively scale the model’s original confidence score. C ALI DIST measures the Misinformation Effect parallel with Prediction Instability ( μ), which quan-tifies how frequently a model’s prediction changes when perturbed. C ALI DIST also captures the Dunning-Kruger parallel by observing this instability in conjunction with the model’s Confidence Stability ( δ), or its change in predictive uncertainty. Crucially, we validate that these behavioral metrics are not just quirks but are directly linked to correctness. As vi-sualized in Figure 1, we observe a strong and consistent negative correlation between Prediction Instability ( μ) and the model’s accuracy on the original, unmodified prompts. We tested three open-source and one proprietary model and observed that samples exhibiting low instability (e.g., 
+
+μ ≤ 0.2) have a very high average accuracy (often above 80-90%), whereas accuracy drops sharply as instability in-creases. This finding provides the foundational evidence for our work: susceptibility to distractors is a powerful, measur-able proxy for a model’s likelihood of error. Because our approach can operate on log-probabilities or verbalized con-fidences (Tian et al., 2023; Xiong et al., 2024), it is broadly applicable to both white-box and black-box LLMs. 
+
+> 1
+
+From a computational perspective, this behavior corresponds to an inaccurate estimate of epistemic uncertainty . We propose that susceptibility to distraction is a measurable proxy for this uncertainty: a model with robust knowledge (low epistemic un-certainty) should not be swayed by irrelevant distractors. Thus, high instability coupled with high confidence signals uncaptured epistemic uncertainty. 
+
+Our main contributions are as follows: (1) We introduce behavioral robustness to distraction as a new and critical dimension for LLM calibration, grounding it in established principles from cognitive psychology, such as the Misin-formation Effect and the Dunning-Kruger Effect. We em-pirically demonstrate its strong correlation with prediction accuracy; (2) We propose C ALI DIST , a novel, accuracy-preserving post-hoc calibration approach that quantifies a model’s stability (or lack thereof) against semantic distrac-tors to adaptively adjust per-sample confidence scores; (3) We demonstrate the versatility of C ALI DIST , showing its effectiveness for both white-box and black-box LLMs; (4) We provide extensive empirical evidence showing that our method significantly reduces Expected Calibration Error (ECE) and Brier Score (BS) across multiple datasets and LLMs and outperforms strong baselines. 
+
+2. Related Work 
+
+Post-Hoc and Black-Box Model Calibration. Post-hoc calibration remaps a model’s output probabilities without altering its weights. The most common method, Tempera-ture Scaling (TS) (Guo et al., 2017), divides the logits by a learnable scalar T , but like other foundational methods such as Platt Scaling (Platt et al., 1999) and Isotonic Regression (Zadrozny & Elkan, 2002), it requires access to model log-its. Recent works have extended these ideas to LLMs, for instance, by learning task-specific temperatures (Shen et al., 2024) or adapting TS for semantic-level confidence (Lamb et al., 2025). The primary limitation of these approaches is their inapplicability to black-box APIs. The challenge of calibrating black-box models has spurred research into meth-ods that do not require logit access. One prominent direction is verbalized confidence, where the model is prompted to state its certainty directly (Xiong et al., 2024). These scores can provide a stronger signal than the conditional probabili-ties of RLHF-tuned models (Tian et al., 2023; Xiong et al., 2024). Other approaches involve training auxiliary models to predict correctness (Ulmer et al., 2024; Pedapati et al., 2024), or using conformal prediction (Azaria & Mitchell, 2023). Contemporary work has also explored probing inter-nal representations. For instance, CCPS (Khanmohammadi 2CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+et al., 2025) calibrates confidence by analyzing the stability of internal representations against Jacobian-based adversar-ial perturbations. However, CCPS relies on access to hidden states and requires training extensive auxiliary encoders. In contrast, C ALI DIST is a purely behavioral robustness based approach. It requires no access to model internals—neither logits nor hidden states, making it deployable not only on open-source but also on proprietary models (e.g., GPT-4o, Gemini) where methods like CCPS or TS are inapplica-ble. Thus, our method is distinct as it requires no external model training, deriving its signal directly from the target model’s behavior. C ALI DIST is fully compatible with log-probabilities or verbalized confidence, effectively acting as a behavioral proxy for TS and achieves a similar confidence-scaling effect without needing logit access. 
+
+Consistency and Perturbation-Based Confidence Estima-tion. A separate family of methods estimates confidence by measuring the consistency of a model’s outputs across multiple forward passes (Wang et al., 2023; Manakul et al., 2023; Xiong et al., 2024; Wightman et al., 2023). These techniques, which can measure semantic similarity (Lamb et al., 2025) or aggregate votes from paraphrased prompts (Kadavath et al., 2022), often incur substantial computa-tional overhead, typically requiring 10-40 passes for a stable signal (Manakul et al., 2023). SPUQ (Gao et al., 2024) ex-tends self-consistency by introducing non-adversarial pertur-bations (e.g., paraphrasing, temperature changes) to probe epistemic and aleatoric uncertainty. Similarly, SteerConf (Zhou et al., 2025) manipulates the metacognitive instruc-tions in the prompt (e.g., ”be cautious” vs. ”be confident”) to measure the coherence of the model’s self-assessment. CALI DIST differs fundamentally from these approaches in both objective and mechanism . While SPUQ measures sta-bility against semantic equivalents and SteerConf measures stability against instructional steering, C ALI DIST measures behavioral robustness against adversarial misinformation. We do not ask the model to be cautious or rephrase the input; we actively inject misleading “distractors” to test if the model’s reasoning path is robust to the Misinformation Effect. Additionally, unlike SPUQ or SteerConf, which aggregate multiple outputs into a new confidence score, C A-
+
+> LI
+
+DIST explicitly rescales the initial confidence score using a learned parametric scaling factor. This allows C ALI DIST 
+
+to function as a sample-specific behavioral proxy for Tem-perature Scaling, a property we empirically validate in §5. 
+
+Bayesian and Parameter-Space Approaches. A distinct line of research models uncertainty through the lens of Bayesian inference. Methods such as Bayesian Low-Rank Adaptation (Yang et al., 2024), Blob (Wang et al., 2024), and Information-Theoretic Evidential Deep Learning (Li et al., 2025) estimate uncertainty by modeling the poste-rior distribution of model parameters (e.g., LoRA weights). While theoretically grounded, these approaches operate in the parameter space, requiring access to weights and are often computationally expensive. C ALI DIST , conversely, operates in the behavioral space at inference time. It is a lightweight, post-hoc method that requires no training, making it compatible with frozen, API-based models. 
+
+LLM Robustness to Adversarial Context. A parallel stream of research has established that LLMs are brittle and easily swayed by irrelevant context or distractors (Shi et al., 2023; Chen et al., 2024; Mozes et al., 2023; Wang et al., 2025). Xiong et al. (2024) employ induced consistency to sample multiple responses. While existing work uses these failures to demonstrate LLM limitations, to our knowledge, our work is the first to formally bridge the concept of distrac-tion robustness with confidence calibration, leveraging this behavioral signal as a core component of our framework. 
+
+3. Methodology 
+
+In this section, we elaborate on the working principle of the CALI DIST framework. Our proposed framework calibrates the confidence of an LLM by evaluating its behavioral ro-bustness. Instead of relying solely on a model’s initial, static confidence score, our method leverages the stability (or lack thereof) of its predictions and certainty when presented with “distractor” information. The core intuition is that a reli-able model should remain stable in both its conclusion and its associated confidence, even under cognitive load. We show the operational flow of C ALI DIST in Figure 2. The algorithm is presented in Appendix A. 
+
+3.1. Formalism and Notation 
+
+Let M be the model, πo be the original input prompt, x be the input, y be the ground truth, and ˆy be the model’s initial prediction, for which it produces an initial confidence score 
+
+p = P (ˆ y|πo(x)) . This confidence can be derived from either the logit-based probability of the output token (for open-source models) or from the log-probability and verbal-ized confidence (for both open-source and black-box mod-els). We define a set of k distractors D = {d1, d 2, . . . , d k}.Each distractor dj is a piece of information designed to be semantically related to the task but logically irrelevant or contradictory to the initially predicted reasoning path for the input x. For each distractor dj , we construct a new, distracted prompt πdj ← πo ⊕ dj , where ⊕ denotes the concatenation or integration of the distractor into the origi-nal prompt. The model’s forward pass on this new prompt yields a new prediction ˜ydj with a corresponding confidence score p′ 
+
+> j
+
+= P (˜ ydj |πdj (x)) .
+
+3.2. Distractor Styles 
+
+We design three distinct styles of distractors to induce dif-ferent types of perturbations in the responses of LLMs: 
+
+Assertion-style , Probe-style , and Sample-Corruption-style .3CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction Model response:           
+
+> Based on the information available in the given context, the most likely
+> event to occur next is ( c) run with the balls, trying to make baskets.
+> Extracted prediction and confidence:
+> Prediction: c
+> Log probability: 0.89
+> Input prompt:
+> Consider the following sentence.
+> Sentence: A group of boys are playing ball on a court. They are being guided by their coach. They
+> Given the context, which of the following events is most likely to occur next?
+> Option a. hit the ball all the way back to the goal group.
+> Option b. are getting themselves ready to hit the ball thrown to them
+> Option c. run with the balls, trying to make baskets.
+> Option d. pretend to hit the ball back and forth, trying to get it to their goal.
+> Model response after distraction:
+> Based on the information available in the given context, the most likely
+> event to occur next is ( b) are getting themselves ready to hit the ball
+> thrown to them.
+> Extracted prediction and confidence:
+> Prediction: b
+> Log probability: 0.72
+> … … …
+> Process repeated for all k distractors
+> … … …
+> Input prompt augmented with assertion -style distractors:
+> Consider the following sentence.
+> Sentence: A group of boys are playing ball on a court. They are being guided by their coach. They
+> Given the context, which of the following events is most likely to occur next?
+> Option a. hit the ball all the way back to the goal group.
+> Option b. are getting themselves ready to hit the ball thrown to them
+> Option c. run with the balls, trying to make baskets.
+> Option d. pretend to hit the ball back and forth, trying to get it to their goal.
+
+Stage 1: Original Prediction Generation 
+
+Stage 2: Distracted Prediction Generation                                                          
+
+> Distractors
+> 𝑑 1,𝑑 2,𝑑 3=[𝑏 ,𝑎 ,𝑑 ]
+> Distracted predictions
+> 𝑦’1 ,𝑦’2 ,𝑦’3 =[𝑏 ,𝑐 ,𝑎 ]
+> Original prediction
+> 𝑦 =𝑐 Prediction Instability
+> (How often the answer changes)
+> 𝜇 =1⋅𝑝’1 +0⋅𝑝’2 +1⋅𝑝’3
+> |𝑝’ |=0.52
+> Original prediction confidence
+> 𝑝 =0.89
+> Distracted predictions confidences
+> 𝑝’1 ,𝑝’2 ,𝑝’3 =[0.72 ,0.85 ,0.83 ]
+> Reliability Score
+> 𝜆 =1−𝜇
+> 𝛿 =5.33
+> Parameterized scaling factor
+> 𝜎 (𝜆 ,𝛼 ,𝛽 )=0.8
+> Calibrated Confidence
+> Conf 𝜎 =𝜎 𝜆 ,𝛼 ,𝛽 ⋅𝑝 =0.71
+> Confidence Instability
+> (How much the certainty waivers )
+> 𝛿 =|𝑝 −𝑚𝑒𝑎𝑛 (𝑝’ )|=0.09
+
+…       
+
+> Using 𝛼 =−3.8,𝛽 =0.15
+> Hint: An expert says the answer is b. are getting themselves ready to hit the ball thrown to them.
+> Note that the hint is only for your reference. Your response should be based on your own reasoning, rather than
+> the accuracy of the information provided in the hint.
+
+Stage 3: Calibrated Confidence Formulation 
+
+Figure 2. Illustration of the C ALI DIST framework. Note that in experiments we use multiple distractor prompts per example; here, for simplicity, we show only one distractor prompt. 
+
+Assertion-style Distractors. Assertion-style distractors are authoritative assertions appended to the original prompt to try to deviate a model’s initial response. For example, an assertion-style distractor may state, “ Wikipedia claims the answer is . . . .”, followed by a misdirecting label (i.e., a label that is different from the original prediction ˆy.
+
+Probe-style Distractors. These distractors are designed to encourage the model to consider alternative answers, thereby inducing uncertainty and checking for deviation from its original response. An example of a probe-style distractor is, “ Do you think the answer could be . . . ?” 
+
+Sample-Corruption-style Distractors. This style intro-duces a disruptive paradigm by corrupting the samples them-selves with misleading cues. For instance, in the MNLI benchmark (Williams et al., 2018), if the premise is “She is known to many as the Queen of Rockabilly” and the hypoth-esis is “She is known to many as the Queen of Rockabilly or the First Lady of Rockabilly” , the hypothesis can be cor-rupted by adding “This sentence contradicts the premise.” 
+
+as a distractor. The primary goal of this distractor style is to observe any deviations in the model’s responses caused by distractors embedded in the sample and to use these deviations as calibration signals. The formulation of these distractor-styles is motivated by well-documented psychological phenomena discussed in Section 1—specifically, the Misinformation Effect and the Dunning-Kruger Effect—allowing us to systematically operationalize distinct human cognitive failure modes into concrete engineering metrics. We emphasize that C ALI DIST 
+
+is entirely distractor-agnostic by design; any structured perturbation capable of eliciting a measurable behavioral change in the model serves as a valid calibration signal. Furthermore, these distractors are generated automatically at runtime via a handful of predefined semantic templates used in conjunction with the task’s label space (detailed in Algorithm 1 and Appendix E and F). This design choice establishes a crucial dichotomy between system setup and end-user experience: the system designer defines the overarching task parameters and the distractor templates once at the initialization phase, leaving the end user completely unburdened. The end user can interact with the language model as per usual without needing to construct, optimize, or even think about the underlying distractors, all while receiving fundamentally better-calibrated responses. 
+
+3.3. C ALI DIST : Distraction-Based Calibration 
+
+CALI DIST follows a systematic, multi-step process for each input sample to derive a final, calibrated confidence score. 
+
+Elicit Initial Prediction. First, we use the original prompt 
+
+πo on sample x to obtain the baseline (original) prediction 
+
+ˆy and its associated confidence P (ˆ y|x).
+
+Generate Distractors and Elicit Distracted Predictions. 
+
+For a given classification task with c possible labels, we generate k = ( c − 1) × m distractors, where m is a hyper-parameter that denotes the number of distractors to generate per class. Each distractor is constructed based on one of the originally unselected labels, creating a set of plausible alter-4CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+native contexts. For instance, in the MNLI task with labels 
+
+{Entailment, Contradiction, Neutral }, if the original predic-tion ˆy is “Contradiction”, we generate distractors related to “Entailment” and “Neutral”. This creates a structured and principled set of challenges for the model. We use the 
+
+k distracted prompts πd1 , · · · , π dk to obtain the prediction 
+
+˜ydj and its confidence P (˜ ydj |πdj (x)) for all j = 1 , · · · , k .
+
+Quantify Prediction and Confidence Instability. Using the set of responses from the distracted prompts, we calcu-late two core metrics of instability: • Prediction Instability ( μ): Prediction Instability mea-sures the frequency with which the model changed its prediction from the original answer ˆy. It is calculated as the weighted confidence scores of the fraction of distracted predictions ˜ydj that do not match ˆy:
+
+μ ← 1
+
+k
+
+> k
+
+X
+
+> j=1
+
+I(˜ ydj̸ = ˆ y) · P (˜ ydj |πdj (x)) (1) A high μ indicates the model is easily swayed by irrel-evant information, whereas low μ indicates stability. • Confidence Instability ( δ): This metric measures the magnitude of the shift in the model’s average confi-dence level between its original prediction and its pre-dictions under distraction. It is defined as: 
+
+δ ← P (ˆ y|πo(x)) − 1
+
+k
+
+> k
+
+X
+
+> j=1
+
+P (˜ ydj |πdj (x)) (2) A large δ signifies that the model’s certainty is volatile and unreliable. 
+
+Calculate Reliability Score ( λ). We synthesize the two instability metrics into a single scalar reliability score, λ.This formulation is designed to capture distinct behavioral failure modes: 
+
+λraw = 1 − μδ + ϵ (3) where ϵ is a small constant (e.g., 1e − 10 ) for numerical stability. The interaction between the numerator and denom-inator is structural, not a simple heuristic choice: • μ as a Gating Mechanism: Prediction flips represent catastrophic semantic failures. The term (1 − μ) en-sures that as Prediction Instability approaches 1 (total failure), the reliability score λ linearly collapses to 0, regardless of the confidence stability. • δ as a Sensitivity Gain: Confidence fluctuations are subtle, continuous signals. Placing δ in the denomina-tor acts as a gain amplifier, ensuring the score remains highly sensitive to minor tremors in certainty even when predictions remain stable. To standardize the dynamic range of the scores and prevent saturation in the subsequent calibration step, we use Min-Max normalization to map λraw to a fixed interval [0 , 10] 
+
+using a small held-out validation set: 
+
+λ = MinMax (λraw ) × 10 (4) 
+
+Final Confidence Calibration. Finally, the normalized reliability score λ is mapped to a calibration scalar via a parameterized sigmoid function σ. This factor scales the original confidence to yield the final calibrated probability score, Conf σ :Conf σ = σ(λ, α, β ) · P (y|x) (5) where 
+
+σ(λ, α, β ) = 11 + e−β(λ−α) (6) Crucially, this formulation is not arbitrary; it is grounded in Platt Scaling (Platt et al., 1999). From the perspective of Empirical Risk Minimization (ERM) (McCullagh, 2019), we treat the calibration task as a binary classification prob-lem (predicting correctness) using λ as the input feature. The sigmoid function serves as the canonical link function for the Bernoulli distribution, and the sigmoid parameters α
+
+(centering) and β (scaling) are learned by minimizing the Brier Score, a strictly proper scoring rule, over the same held-out validation set used in λ normalization in Equation 4. We provide the full theoretical derivation and proof of equivalence to Platt Scaling in Appendix B. This formulation balances sample-level granularity with task-level optimization. While μ and δ are estimated per sample to capture instance-specific diagnostic signals, α
+
+and β are hyperparameters that define the shape of the para-metric sigmoid function (Generalized Logistic Function) and are estimated per task (or dataset). This design allows CALI DIST to dynamically adapt to different root causes of overconfidence. For instance, sample-level knowledge errors typically manifest as high prediction instability ( μ), where the model flips its answer under distraction. Con-versely, sample-level reasoning defects manifest as high confidence instability ( δ), capturing the ‘shaken but stub-born’ behavior where the model adheres to its prediction but betrays volatile underlying logic (in Appendix C we pro-vide the intuitive logic of our framework’s behavior using three key scenarios). Unifying these signals into λ ensures that C ALI DIST ’s corrective penalty scales precisely with individual sample vulnerabilities. 
+
+4. Experiment Setup 
+
+Datasets. We evaluate the effectiveness of our proposed CALI DIST approach on seven diverse and challenging benchmarks spanning multiple Natural Language Under-standing (NLU) tasks. For Natural Language Inference 5CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+(NLI), we use MNLI (Williams et al., 2018), a large-scale, multi-genre corpus, and MSciNLI (Sadat & Caragea, 2024), which specifically tests inference over scientific texts. For paraphrase identification, we include the Twitter PPDB (Lan et al., 2017), a dataset of paraphrase pairs drawn from so-cial media. For Commonsense Reasoning, we employ Hel-laSwag (Zellers et al., 2019), a sentence completion task that requires predictive reasoning, and Commonsense QA (Talmor et al., 2019) a multiple-choice question-answering benchmark. Finally, to test performance on more complex reasoning and knowledge-intensive tasks, we use Yahoo An-swers (Zhang et al., 2015), a large-scale topic classification dataset, and AQuA-RAT ((Ling et al., 2017), a collection of algebraic word problems that require step-by-step ratio-nales. For each dataset, we procure 1000 samples from their respective test sets and a separate set of 200 samples as the held-out validation set (when explicit validation sets are unavailable). This selection of datasets enables us to evaluate our method’s performance across a diverse range of domains and reasoning types. 
+
+Models. Our experiments are conducted on a diverse suite of six state-of-the-art language models to ensure that our findings are broadly applicable. For open-source mod-els, we use four prominent LLMs: Llama-3.1 8B Instruct (Grattafiori et al., 2024), Qwen3 8B (Yang et al., 2025), Phi-4-mini Instruct (Abouelenin et al., 2025), and Gemma-3 4B Instruct (Kamath et al., 2025). These models were se-lected for their strong performance and varying architectural designs. To validate the effectiveness of our framework in black-box scenarios where logit access is unavailable, we also evaluate two leading proprietary models accessed via their APIs: GPT-4o-Mini (OpenAI, 2024) and Gemini 2.0 Flash (Google, 2024). These models expose token-wise log-probabilities, enabling our evaluation protocol to be applied to a set of different types of confidence values. 
+
+Baselines. We evaluate the performance of C ALI DIST 
+
+against several well-established baselines to contextualize its effectiveness. Given that our method uses multiple for-ward passes to assess reliability, our primary comparison is with state-of-the-art consistency-based approaches. We implement three variants: Self-Consistency (Wang et al., 2023), which relies on a simple majority vote over stochastic samples; Entropy-based Consistency , which uses the en-tropy of the output distribution as a confidence measure; and 
+
+First-Second-Distance Consistency (FSD), which mea-sures the probability gap between the top two most frequent predictions (Lyu et al., 2025). For all consistency methods, we use a standard of 15 forward passes per sample. Addi-tionally, for open-source models where logits are accessible, we compare our approach with Temperature Scaling (TS) (Guo et al., 2017). Since our method can be viewed as a behavioral proxy for TS in black-box settings, this com-parison serves as an important point of reference. Finally, we include the uncalibrated Vanilla Confidence (i.e., the model’s raw output probability) and verbalized confidence 
+
+(i.e., the verbalized confidence generated as a response) as baselines to quantify the absolute improvement gained by each calibration method. Appendix C provides a detailed description of each baseline. 
+
+Our Method: C ALI DIST Variants. We experiment with two different applications of C ALI DIST , based on the dis-tractor style and the confidence value used. For example, CALI DIST (As.) uses the default probability-based confi-dence with assertion-style distractor, while the verbalized variant is denoted as C ALI DIST verbalized (As.) We provide additional details about our approach in Appendix G. 
+
+Evaluation Metrics. To evaluate the calibration of our models, we use two standard metrics – Expected Calibra-tion Error (ECE) and Brier Score (BS). Details about these metrics can be found in Appendix H. Note that we do not report accuracy since C ALI DIST is an accuracy-preserving method that does not alter the model’s original prediction. 
+
+Hyperparameter Tuning. The parameters α and β in the final sigmoid function are critical for tuning the calibration behavior. These are not fixed values but are determined em-pirically for each task. We use the same held-out validation set (as for Eq. 4) to perform a grid search over a predefined range of values for α and β. The optimal combination is selected as the one that minimizes Brier Score on this valida-tion set. This ensures that the penalty function is well-suited to the specific task and model being evaluated. Additional implementation details are in Appendix I. 
+
+5. Results and Observations 
+
+Our experiments, detailed in Tables 1, 2, and 3, confirm the effectiveness and versatility of C ALI DIST . We analyze its performance on: 1) open-source models with full logit access; 2) in simulated black-box settings using verbalized confidence; and 3) finally on proprietary, API-based models. We show the results of L LAMA -3.1 and Q WEN -3 in Tables 1 and 2. The results for P HI -4-M INI and G EMMA -3 are shown in Appendix J. 
+
+CALI DIST as a Superior Behavioral Proxy for Tempera-ture Scaling. Table 1 shows the comparison between Ca-liDist (with all distractor styles) and TS. Our results validate that C ALI DIST effectively functions as a behavioral proxy for TS in black-box settings. Crucially, Table 1 demon-strates that C ALI DIST frequently outperforms white-box TS. We attribute this empirical advantage to the granularity of the scaling mechanism that C ALI DIST provides. This allows our method to selectively penalize specific brittle predictions without uniformly dampening the confidence 6CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+Table 1. Comparison of C ALI DIST with four baselines using two open-source LLMs. Confidence used for all baselines except for Consistency, Entropy, and FSD are logit-based confidence scores. Metrics are given by ×10 2. The best-performing values are in bold .                                                                                                                                                                                                                                                                                        
+
+> LLM Metric MSciNLI MNLI PPDB Yahoo! Answers HellaSwag CSQA AQuA Average ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓
+> LLAMA -3.1 8B
+> Temperature Scaling 12.10 22.38 5.83 19.27 5.12 18.98 12.64 17.72 1.98 16.87 5.57 14.73 8.71 17.11 7.42 18.15 Vanilla 25.76 28.30 2.81 19.01 13.50 20.87 19.74 21.18 8.66 17.65 12.59 16.57 23.18 22.82 15.18 20.91 Consistency 34.30 34.84 11.29 21.03 19.35 23.34 25.01 24.82 17.82 20.92 17.87 19.41 4.88 14.51 18.65 22.70 Entropy 28.05 30.75 32.14 32.44 26.68 27.88 19.89 21.25 18.83 21.59 18.37 19.71 33.22 28.20 25.31 25.97 FSD 29.09 29.09 17.99 24.51 23.26 24.78 21.04 22.65 16.03 20.41 15.95 18.89 20.07 19.63 20.49 22.85 CaliDist (As.) 5.75 21.94 2.74 19.01 7.02 19.16 4.11 16.88 4.24 16.92 4.73 14.70 2.02 17.65 4.37 18.04 CaliDist (Pr.) 4.98 21.82 2.83 19.02 3.75 18.91 4.56 16.89 4.17 16.99 5.32 14.77 2.98 17.45 4.08 17.98
+> CaliDist (Sa.) 6.23 21.58 2.77 19.01 5.42 18.72 5.85 17.20 4.11 17.02 4.32 15.01 2.73 17.25 4.49 18.11
+> QWEN -3 8B
+> Temperature Scaling 35.46 35.72 27.16 28.35 38.80 39.05 28.45 28.36 15.95 16.92 14.83 15.86 8.28 10.63 24.13 24.98 Vanilla 38.60 38.60 29.37 29.87 39.46 39.66 29.42 29.38 18.05 18.42 16.39 16.91 12.54 12.70 26.26 26.51 Consistency 40.14 40.14 30.25 30.54 39.47 39.46 29.86 29.89 18.82 18.76 14.87 30.37 9.15 9.63 26.08 28.40 Entropy 38.23 39.07 30.65 30.89 38.96 38.87 29.05 29.21 17.12 17.83 14.86 30.40 8.90 10.86 25.40 28.16 FSD 38.87 39.38 30.58 30.74 39.10 39.14 29.52 29.57 17.86 18.15 17.17 17.36 7.37 9.48 25.78 26.26 CaliDist (As.) 2.08 22.76 6.49 21.36 5.87 21.93 3.73 18.47 3.41 14.99 1.57 12.45 3.27 11.17 3.77 17.59
+> CaliDist (Pr.) 6.51 23.44 11.04 22.00 4.57 24.72 5.11 18.49 3.71 14.90 2.56 12.18 2.82 11.21 5.19 18.13 CaliDist (Sa.) 2.88 22.55 6.38 21.43 2.39 21.38 6.53 19.62 3.70 14.62 4.80 13.62 3.90 11.16 4.37 17.77
+
+Table 2. Comparison of C ALI DIST with the verbalized confidence method using two open-source LLMs. Metrics are given by ×10 2. The best-performing values are in bold .                                                                                                                        
+
+> LLM Metric MNLI PPDB Yahoo! Answers HellaSwag AQuA Average ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓
+> LLAMA -3.1
+> 8B  Verbalized 26.40 28.49 14.63 19.83 16.82 21.10 11.56 21.06 20.57 24.98 18.00 23.09 CaliDist verbalized (As.) 10.03 23.22 5.07 19.55 4.96 18.65 9.15 23.55 20.59 26.46 9.96 22.29 CaliDist verbalized (Pr.) 7.00 22.37 7.70 19.37 3.51 18.47 9.11 23.54 20.16 25.04 9.50 21.76 CaliDist verbalized (Sa.) 10.20 23.26 2.28 17.52 5.07 18.75 9.12 23.54 20.84 24.16 9.50 21.45
+> QWEN -3
+> 8B  Verbalized 9.28 19.21 31.64 32.32 13.10 21.33 3.23 15.73 16.74 17.63 14.80 21.24 CaliDist verbalized (As.) 7.79 19.05 6.86 21.51 3.04 19.82 3.52 15.98 13.71 17.68 6.98 18.81 CaliDist verbalized (Pr.) 9.18 19.10 9.34 23.86 3.29 19.71 3.52 15.98 14.44 17.83 7.95 19.30 CaliDist verbalized (Sa.) 7.27 18.98 2.61 20.84 3.85 19.97 3.52 15.98 14.06 17.41 6.26 18.64
+
+of robust samples, effectively providing a higher-resolution signal than global temperature scaling. 
+
+CALI DIST outperforms consistency-based calibration methods. CALI DIST consistently outperforms all three consistency-based baselines (Consistency, Entropy, FSD). This suggests that measuring a model’s stability against external, adversarial distractors is a more effective relia-bility signal than measuring its internal consistency across stochastic reasoning paths. 
+
+Effectiveness in Verbalized, Black-Box Settings. To val-idate C ALI DIST ’s applicability to black-box models, we tested a verbalized confidence variant on the same open-source LLMs. The results in Table 2 are unequivocal: C A-
+
+LI DIST verbalized achieves a lower ECE than the uncalibrated Verbalized baseline in every single setting. This demon-strates that our approach can significantly enhance reliabil-ity using only natural language outputs, without any access to model internal weights. 
+
+Analysis of distractor styles. While no single variant is universally optimal, we observe strong trends in the per-formance of our different distractor styles. CALI DIST -Assertion (As.) and C ALI DIST -Sample-Corruption (Sa.) emerge as the most consistently effective strategies. These distractor styles tend to highly disrupt the models’ initial responses, suggesting that distractor styles with strong dis-ruption tendencies yield better calibration. Nevertheless, the consistent calibration gains achieved across all three distinct distractor styles in Tables 1 and 2 provide strong empirical evidence of C ALI DIST ’s generalization capabilities across distractor styles. Rather than being overly sensitive to the precise engineering of a single handcrafted prompt, the framework successfully extracts a robust calibration signal from entirely different perturbation types, demonstrating that behavioral instability is a universal proxy for model er-ror regardless of the specific distractor architecture utilized. 
+
+Performance on Proprietary Models. When leverag-ing proprietary, API-exposed log-probabilities (Table 3), CALI DIST achieves state-of-the-art calibration on GPT-4o-Mini and Gemini-2.0-Flash, substantially outperforming all baselines. This confirms that our behavioral signals remain highly effective even on the most advanced models. Re-sults are more nuanced when relying purely on verbalized confidence; while C ALI DIST still provides notable ECE improvements, the gains are less pronounced compared to the log-probability setting. 
+
+6. Ablations and Analysis 
+
+Impact of Sigmoid Scaling Parameters ( α, β ). A core component of our method is the parameterized sigmoid func-tion, which translates the reliability score λ into the final scaling factor. To justify the necessity of tuning these param-eters, we compare the performance of our standard method, which uses optimal α and β values found via grid search on the validation set, against a “Default Sigmoid” baseline where α is set to 0 and β is set to 1. As shown in Figure 3, 7CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+Table 3. Performance comparison of CaliDist compared to four baselines using two proprietary LLMs. Metrics are given by ×10 2.The best-performing values for each confidence type except for consistency-based methods are in bold .                                                                                                                                                                                                              
+
+> Confidence Metric MSciNLI HellaSwag CSQA Average Type ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓
+> GPT-4 O-M INI
+> Consistency
+> Consistency 33.20 33.28 10.90 11.99 15.52 16.07 19.87 20.45 Entropy 25.23 29.36 11.04 12.31 15.30 16.00 17.19 19.22 FSD 28.76 30.77 9.37 11.51 14.95 15.82 17.69 19.37
+> Log-Prob.
+> Vanilla 34.97 35.14 12.96 13.14 13.87 14.21 20.60 20.83 CaliDist (As.) 4.01 21.83 3.18 10.84 4.71 11.51 3.64 14.64 CaliDist (Pr.) 4.06 21.59 3.36 10.48 1.04 10.07 2.82 14.05
+> CaliDist (Sa.) 3.92 22.58 5.07 11.04 3.42 10.84 4.14 14.82
+> Verbalized
+> Verbalized 13.25 24.98 13.79 14.61 8.50 13.08 11.85 17.56 CaliDist verb. (As.) 13.59 24.53 14.38 14.61 8.59 13.03 12.19 17.39
+> CaliDist verb. (Pr.) 13.96 25.73 14.83 14.26 7.62 13.38 12.14 17.79 CaliDist verb. (Sa.) 11.47 24.89 13.79 14.59 7.55 13.27 10.94 17.58
+> GEMINI -2.0-F LASH
+> Consistency
+> Consistency 30.28 30.75 9.23 9.39 12.97 13.21 17.49 17.78 Entropy 28.14 29.69 8.76 9.16 12.49 13.03 16.46 17.29 FSD 28.09 29.59 8.79 9.11 12.18 12.80 16.35 17.17
+> Log-Prob.
+> Vanilla 29.81 30.38 9.88 9.61 12.82 13.08 17.50 17.69 CaliDist (As.) 5.46 20.44 5.16 8.55 2.39 10.89 4.34 13.29 CaliDist (Pr.) 4.82 18.88 4.90 8.27 5.19 10.71 4.97 12.62
+> CaliDist (Sa.) 5.87 21.03 5.89 8.69 3.44 11.36 5.07 13.69
+> Verbalized
+> Verbalized 4.91 21.66 22.60 13.80 10.56 13.01 12.69 16.16 CaliDist verb. (As.) 4.89 21.09 22.60 13.80 11.50 12.88 13.00 15.92 CaliDist verb. (Pr.) 5.04 21.27 22.60 13.80 10.56 13.01 12.73 16.03 CaliDist verb. (Sa.) 3.75 20.79 22.60 13.80 10.56 13.01 12.30 15.87 Assertion
+> Probe
+> Sample Corruption
+> Distractor Style
+> 0
+> 5
+> 10
+> 15
+> 20
+> 25
+> 30
+> Average ECE (  )
+> 25.77 25.95
+> 24.07
+> 3.38 4.15 3.52
+> Llama-3.1
+> (Avg. over CSQA and AQuA datasets)
+> Assertion
+> Probe
+> Sample Corruption
+> Distractor Style
+> 20.12
+> 16.86
+> 20.62
+> 2.42 2.69
+> 4.35
+> Qwen-3
+> (Avg. over CSQA and AQuA datasets)
+> Impact of Sigmoid Scaling Parameters ( ,)
+> Default Sigmoid ( = 0, = 1) Optimized Sigmoid (Tuned ,)
+
+Figure 3. Impact of different formulations of Scaling Factor σ.
+
+for both Llama-3.1 and Qwen-3, the optimized sigmoid con-sistently and dramatically reduces the ECE compared to the default, untuned version. This demonstrates that learning a task- and model-specific mapping from the reliability score to the final scaling factor is not merely a minor optimization but a critical step for achieving the best possible calibration. 
+
+Computational Efficiency. A key practical advantage of C ALI DIST is its computational efficiency compared to consistency-based methods. While techniques like self-consistency often require a large number of forward passes, ranging from 15 to 40 passes to obtain a stable signal (Wang et al., 2023), C ALI DIST uses a principled and substantially smaller number. The required passes are determined by the task’s label space, k = ( c − 1) · m, where c is the number of classes. Empirically, we find that setting m = 1 is sufficient for C ALI DIST to vastly outperform the consistency base-lines. For instance, on our most label-intensive benchmark, Yahoo Answers (c = 10) , C ALI DIST with probe-style dis-tractor achieves superior calibration with only 9 distractors (forward passes). In contrast, the baselines remain less 
+
+Table 4. Computational overhead comparison across calibration methods. Input and output token counts are reported as relative multiples of the baseline. 
+
+Method Total Forward Passes Output Tokens (Relative) Input Tokens (Relative) ECE ↓
+
+Vanilla/Verbalized 1 1 × 74 1 × 1064 25.76 Self-Consistency (Entropy) 15 15 × 74 15 × 1064 28.05 CaliDist (As.) ( m = 1 ) 3 3 × 98 3 × 1402 8.02 CaliDist (Sa.) 3 3 × 65 3 × 1184 6.14 Assertion       
+
+> Probe
+> Sample Corr.
+> 0
+> 5
+> 10
+> 15
+> 20
+> 25
+> 30
+> Average ECE (  )
+> Llama
+> (Avg. over MSciNLI & AQUA)
+> Assertion
+> Probe
+> Sample Corr.
+> Qwen
+> (Avg. over MSciNLI & AQUA)
+> Generalizability of Sigmoid Parameters Across Domains
+> IID ECE (Optimal ,)OOD ECE (Transferred ,)Original ECE (Uncalibrated)
+
+Figure 4. Generalizability of α, β across domains. 
+
+effective even with a higher budget of 15 passes. We per-form a separate analysis on the increasing value of m in Appendix J.3 and show in Figure 6 that calibration perfor-mance plateaus after a certain threshold. Additionally, to provide a more granular view of computational efficiency, we show the Average Input-Output Tokens per sample for Llama-3.1 on MSciNLI in Table 4. We observe that C A-
+
+LI DIST methods require ≈5 times fewer tokens on average, while achieving a calibration improvement of ≈75% over the more expensive self-consistency methods, highlighting the efficiency and effectiveness of C ALI DIST .
+
+Generalizability of Sigmoid Parameters. To assess the practical utility of our framework, we tested the general-izability of the learned sigmoid parameters ( α, β ) in an out-of-domain (OOD) setting. As shown in Figure 4, pa-rameters tuned on easier source tasks, such as MNLI and CSQA, transfer effectively to more challenging target tasks, such as MSciNLI and AQuA, consistently outperforming the uncalibrated baseline and achieving performance that often outperforms consistency-based baselines. This finding confirms that the learned parameters capture a generalizable signal of model reliability, enhancing our framework’s util-ity by reducing the need for exhaustive, per-dataset tuning. 
+
+Discriminative Power (AUROC). While ECE and Brier Score assess the reliability of probability estimates, they do not explicitly capture the model’s ability to discriminate between correct and incorrect predictions. To evaluate this, we computed the Area Under the Receiver Operating Char-acteristic (AUROC). Table 5 presents the AUROC scores for Qwen 3 across four datasets. C ALI DIST consistently demonstrates superior discriminative power compared to baselines, indicating that our behavioral scaling not only 8CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+Table 5. AUROC scores ( ×10 2) for Qwen 3 across four bench-marks. C ALI DIST (Assertion-style) consistently achieves the high-est discriminative power, significantly outperforming consistency and entropy-based baselines.                          
+
+> Dataset Vanilla Consist. Entropy FSD CALI DIST
+> MSciNLI 63.83 52.67 52.67 52.67 68.27
+> CSQA 70.01 50.51 50.56 54.45 77.62
+> Yahoo 60.61 53.44 53.44 53.44 70.68
+> PPDB 54.05 52.05 52.05 52.05 63.99
+
+Table 6. Comparison between SPUQ and C ALI DIST (Assertion-style) on CSQA and AQuA. C ALI DIST achieves significantly lower ECE and Brier Scores across all settings.                             
+
+> LLM Method Dataset ECE ↓BS ↓
+> LLAMA -3.1 8B
+> SPUQ CSQA 12.68 21.45 CaliDist CSQA 4.73 14.70
+> SPUQ AQuA 11.88 29.64 CaliDist AQuA 2.02 17.65 QWEN -3 8B
+> SPUQ CSQA 11.52 17.69 CaliDist CSQA 1.57 12.45
+> SPUQ AQuA 11.88 29.64 CaliDist AQuA 3.77 17.59
+
+calibrates confidence magnitudes but also improves the rela-tive ranking of correct versus incorrect answers. 
+
+Comparison with SPUQ. We expand our evaluation by comparing C ALI DIST against SPUQ (Gao et al., 2024). As detailed in Table 6, C ALI DIST consistently demonstrates superior calibration performance on the CSQA and AQuA benchmarks. Our method achieves substantial reductions in both ECE and Brier Score compared to SPUQ across both Llama-3.1 and Qwen-3. 
+
+Comparison with Logit-Dependent Baselines. Tradi-tional post-hoc methods such as Vector Scaling (VS) and Isotonic Regression (IR) are inherently logit-dependent, re-quiring access to class-wise probability vectors and mak-ing them inapplicable to black-box APIs. Conversely, C A-
+
+> LI
+
+DIST operates purely in the behavioral space, deriving its signal λ from a model’s contextual robustness under pertur-bation. To verify the efficacy of this behavioral approach, we compare C ALI DIST against VS and IR under an identi-cal validation budget of 200 samples using Llama-3.1. As shown in Table 7, C ALI DIST consistently outperforms these strong logit-based baselines in ECE across both tasks. This demonstrates that evaluating a model’s stability under pres-sure provides a high-resolution signal for epistemic uncer-tainty, achieving superior calibration performance without requiring internal model access. 
+
+Downstream Efficacy on High-Stakes Pipelines To eval-uate C ALI DIST in realistic, high-stakes environments where reliable confidence is critical for selective answering or abstention, we conduct a case study on ContractNLI, a com-plex contract-understanding benchmark (Koreeda & Man-ning, 2021). Using Llama-3.1 with Assertion-style distrac-
+
+Table 7. Comparison of C ALI DIST against strong logit-dependent post-hoc baselines under an identical validation budget of 200 samples using Llama-3.1.                
+
+> Task Method ECE ↓BS ↓
+> MNLI VS 3.47 18.29 IR 3.31 19.21 CaliDist(As.) 2.80 19.01
+> PPDB VS 3.69 18.18 IR 4.33 18.91 CaliDist(As.) 2.46 18.02
+
+Table 8. Calibration performance on the ContractNLI legal bench-mark using Llama-3.1 with Assertion-style distractors.                
+
+> Method ECE ↓BS ↓
+> Vanilla Verbal 29.79 30.98 Consistency 23.84 27.67 Entropy 28.70 30.58 FSD 19.16 26.10 CaliDist(As.) 4.04 22.59
+> CaliDist verbalized (As.) 4.63 23.25
+
+tors, we show in Table 8 that C ALI DIST drastically reduces ECE to ≈4%, significantly outperforming verbalized and consistency baselines. This sharp reduction in calibration er-ror directly enables downstream pipelines to safely identify and abstain from uncalibrated predictions. 
+
+Extension to Complex Reasoning. We show in Appendix K that C ALI DIST can be extended to open-ended complex reasoning tasks such as GSM8K (Cobbe et al., 2021). By identifying brittle reasoning chains through distractors, our method significantly improves calibration over baselines. 
+
+7. Conclusion 
+
+In this work, we introduce C ALI DIST , a novel approach that shifts confidence calibration from statistical adjust-ments to an evaluation of behavioral robustness. By quan-tifying a model’s stability against semantic distractors—a signal we empirically validate as a strong predictor of er-ror—C ALI DIST provides a direct, instance-specific mea-sure of reliability. Our experiments show that our method consistently achieves better calibration than consistency-based baselines and often outperforms the TS baseline. Be-cause it does not require logit access, it also serves as an effective and computationally efficient proxy for TS in both white-box and black-box settings. While our evaluation fo-cuses on the <10B parameter range to target cost-effective, high-throughput, and privacy-focused edge applications that run on-device, exploring whether large-scale LLMs possess enough anti-distraction capability to bypass these distrac-tions remains a compelling future direction. This work opens promising avenues for developing model-specific “stress tests” and incorporating behavioral signals into train-ing objectives to build more stable models. Ultimately, our findings suggest that to truly trust a model’s confidence, we must first understand its behavior under pressure. 9CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+Acknowledgment 
+
+This research is supported in part by the U.S. NSF IIS award 2107518 and a Google grant. We thank our anonymous reviewers for their constructive feedback, which helped improve the quality of our paper. 
+
+Impact Statement 
+
+This paper presents C ALI DIST , a framework that enhances the reliability of Large Language Models by aligning confi-dence with behavioral robustness, offering a crucial method-ology for auditing black-box and open-source systems where internal access is restricted. Beyond achieving state-of-the-art calibration, our work introduces a functionally mo-tivated taxonomy of distractors designed to probe distinct cognitive failure modes—such as testing for sycophancy via assertion, grounding via sample corruption, and inter-nal conviction via direct probing—thereby operationaliz-ing psychological concepts like the Misinformation and Dunning-Kruger effects into measurable engineering met-rics. By demonstrating that different distractor styles can isolate specific vulnerabilities, our framework provides a flexible foundation for designing targeted reliability tests, ensuring that models deployed in high-stakes environments possess not just statistical accuracy, but genuine resilience to cognitive pressure. 
+
+References 
+
+Abouelenin, A., Ashfaq, A., Atkinson, A., Awadalla, H., Bach, N., Bao, J., Benhaim, A., Cai, M., Chaudhary, V., Chen, C., Chen, D., Chen, D., Chen, J., Chen, W., Chen, Y.-C., ling Chen, Y., Dai, Q., Dai, X., Fan, R., Gao, M., Gao, M., Garg, A., Goswami, A., Hao, J., Hendy, A., Hu, Y., Jin, X., Khademi, M., Kim, D., Kim, Y. J., Lee, G., Li, J., Li, Y., Liang, C., Lin, X., Lin, Z., Liu, M., Liu, Y., Lopez, G., Luo, C., Madan, P., Mazalov, V., Mitra, A., Mousavi, A., Nguyen, A., Pan, J., Perez-Becker, D., Platin, J., Portet, T., Qiu, K., Ren, B., Ren, L., Roy, S., Shang, N., Shen, Y., Singhal, S., Som, S., Song, X., Sych, T., Vaddamanu, P., Wang, S., Wang, Y., Wang, Z., Wu, H., Xu, H., Xu, W., Yang, Y., Yang, Z., Yu, D., Zabir, I., Zhang, J., Zhang, L. L., Zhang, Y., and Zhou, X. Phi-4-mini technical report: Compact yet powerful multimodal language models via mixture-of-loras, 2025. URL https://arxiv.org/abs/2503.01743 .Achiam, J., Adler, S., Agarwal, S., Ahmad, L., Akkaya, I., Aleman, F. L., Almeida, D., Altenschmidt, J., Altman, S., Anadkat, S., et al. Gpt-4 technical report. arXiv preprint arXiv:2303.08774 , 2023. Azaria, A. and Mitchell, T. M. The internal state of an llm knows when it’s lying. In EMNLP (Findings) , 2023. Brier, G. W. Verification of forecasts ex-pressed in terms of probability. Monthly Weather Review , 78(1):1 – 3, 1950. doi: 10.1175/1520-0493(1950)078 ⟨0001:VOFEIT ⟩2.0.CO;2. URL https://journals.ametsoc.org/view/ journals/mwre/78/1/1520-0493_1950_ 078_0001_vofeit_2_0_co_2.xml .Chen, X., Chi, R. A., Wang, X., and Zhou, D. Premise order matters in reasoning with large language mod-els. ArXiv , abs/2402.08939, 2024. URL https: //api.semanticscholar.org/CorpusId: 267657940 .Cobbe, K., Kosaraju, V., Bavarian, M., Chen, M., Jun, H., Kaiser, L., Plappert, M., Tworek, J., Hilton, J., Nakano, R., et al. Training verifiers to solve math word problems. 
+
+arXiv preprint arXiv:2110.14168 , 2021. Gao, X., Zhang, J., Mouatadid, L., and Das, K. Spuq: Perturbation-based uncertainty quantification for large language models. In Proceedings of the 18th Conference of the European Chapter of the Association for Compu-tational Linguistics (Volume 1: Long Papers) , pp. 2336– 2346, 2024. Gneiting, T. and Raftery, A. E. Strictly proper scoring rules, prediction, and estimation. Journal of the American statistical Association , 102(477):359–378, 2007. Google. Gemini 1.5: Unlocking multimodal understand-ing across millions of tokens of context. arXiv preprint arXiv:2403.05530 , 2024. Grattafiori, A., Dubey, A., Jauhri, A., Pandey, A., Kadian, A., Al-Dahle, A., Letman, A., Mathur, A., Schelten, A., Vaughan, A., Yang, A., Fan, A., Goyal, A., Hartshorn, A., Yang, A., Mitra, A., Sravankumar, A., Korenev, A., Hinsvark, A., Rao, A., Zhang, A., Rodriguez, A., Gregerson, A., Spataru, A., Roziere, B., Biron, B., Tang, B., Chern, B., Caucheteux, C., Nayak, C., Bi, C., Marra, C., McConnell, C., Keller, C., Touret, C., Wu, C., Wong, C., Ferrer, C. C., Nikolaidis, C., Allonsius, D., Song, D., Pintz, D., Livshits, D., Wyatt, D., Esiobu, D., Choudhary, D., Mahajan, D., Garcia-Olano, D., Perino, D., Hupkes, D., Lakomkin, E., AlBadawy, E., Lobanova, E., Dinan, E., Smith, E. M., Radenovic, F., Guzm ´an, F., Zhang, F., Synnaeve, G., Lee, G., Anderson, G. L., Thattai, G., Nail, G., Mialon, G., Pang, G., Cucurell, G., Nguyen, H., Ko-revaar, H., Xu, H., Touvron, H., Zarov, I., Ibarra, I. A., Kloumann, I., Misra, I., Evtimov, I., Zhang, J., Copet, J., Lee, J., Geffert, J., Vranes, J., Park, J., Mahadeokar, J., Shah, J., van der Linde, J., Billock, J., Hong, J., Lee, J., Fu, J., Chi, J., Huang, J., Liu, J., Wang, J., Yu, J., Bitton, J., Spisak, J., Park, J., Rocca, J., Johnstun, J., Saxe, J., Jia, J., Alwala, K. V., Prasad, K., Upasani, K., Plawiak, K., Li, 10 CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+K., Heafield, K., Stone, K., El-Arini, K., Iyer, K., Malik, K., Chiu, K., Bhalla, K., Lakhotia, K., Rantala-Yeary, L., van der Maaten, L., Chen, L., Tan, L., Jenkins, L., Martin, L., Madaan, L., Malo, L., Blecher, L., Landzaat, L., de Oliveira, L., Muzzi, M., Pasupuleti, M., Singh, M., Paluri, M., Kardas, M., Tsimpoukelli, M., Oldham, M., Rita, M., Pavlova, M., Kambadur, M., Lewis, M., Si, M., Singh, M. K., Hassan, M., Goyal, N., Torabi, N., Bashlykov, N., Bogoychev, N., Chatterji, N., Zhang, N., Duchenne, O., C¸ elebi, O., Alrassy, P., Zhang, P., Li, P., Vasic, P., Weng, P., Bhargava, P., Dubal, P., Krishnan, P., Koura, P. S., Xu, P., He, Q., Dong, Q., Srinivasan, R., Ganapathy, R., Calderer, R., Cabral, R. S., Stojnic, R., Raileanu, R., Maheswari, R., Girdhar, R., Patel, R., Sauvestre, R., Polidoro, R., Sumbaly, R., Taylor, R., Silva, R., Hou, R., Wang, R., Hosseini, S., Chennabasappa, S., Singh, S., Bell, S., Kim, S. S., Edunov, S., Nie, S., Narang, S., Raparthy, S., Shen, S., Wan, S., Bhosale, S., Zhang, S., Vandenhende, S., Batra, S., Whitman, S., Sootla, S., Collot, S., Gururangan, S., Borodinsky, S., Herman, T., Fowler, T., Sheasha, T., Georgiou, T., Scialom, T., Speck-bacher, T., Mihaylov, T., Xiao, T., Karn, U., Goswami, V., Gupta, V., Ramanathan, V., Kerkez, V., Gonguet, V., Do, V., Vogeti, V., Albiero, V., Petrovic, V., Chu, W., Xiong, W., Fu, W., Meers, W., Martinet, X., Wang, X., Wang, X., Tan, X. E., Xia, X., Xie, X., Jia, X., Wang, X., Gold-schlag, Y., Gaur, Y., Babaei, Y., Wen, Y., Song, Y., Zhang, Y., Li, Y., Mao, Y., Coudert, Z. D., Yan, Z., Chen, Z., Papakipos, Z., Singh, A., Srivastava, A., Jain, A., Kelsey, A., Shajnfeld, A., Gangidi, A., Victoria, A., Goldstand, A., Menon, A., Sharma, A., Boesenberg, A., Baevski, A., Feinstein, A., Kallet, A., Sangani, A., Teo, A., Yunus, A., Lupu, A., Alvarado, A., Caples, A., Gu, A., Ho, A., Poul-ton, A., Ryan, A., Ramchandani, A., Dong, A., Franco, A., Goyal, A., Saraf, A., Chowdhury, A., Gabriel, A., Bharambe, A., Eisenman, A., Yazdan, A., James, B., Maurer, B., Leonhardi, B., Huang, B., Loyd, B., Paola, B. D., Paranjape, B., Liu, B., Wu, B., Ni, B., Hancock, B., Wasti, B., Spence, B., Stojkovic, B., Gamido, B., Montalvo, B., Parker, C., Burton, C., Mejia, C., Liu, C., Wang, C., Kim, C., Zhou, C., Hu, C., Chu, C.-H., Cai, C., Tindal, C., Feichtenhofer, C., Gao, C., Civin, D., Beaty, D., Kreymer, D., Li, D., Adkins, D., Xu, D., Testuggine, D., David, D., Parikh, D., Liskovich, D., Foss, D., Wang, D., Le, D., Holland, D., Dowling, E., Jamil, E., Mont-gomery, E., Presani, E., Hahn, E., Wood, E., Le, E.-T., Brinkman, E., Arcaute, E., Dunbar, E., Smothers, E., Sun, F., Kreuk, F., Tian, F., Kokkinos, F., Ozgenel, F., Cag-gioni, F., Kanayet, F., Seide, F., Florez, G. M., Schwarz, G., Badeer, G., Swee, G., Halpern, G., Herman, G., Sizov, G., Guangyi, Zhang, Lakshminarayanan, G., Inan, H., Shojanazeri, H., Zou, H., Wang, H., Zha, H., Habeeb, H., Rudolph, H., Suk, H., Aspegren, H., Goldman, H., Zhan, H., Damlaj, I., Molybog, I., Tufanov, I., Leontiadis, I., Veliche, I.-E., Gat, I., Weissman, J., Geboski, J., Kohli, J., Lam, J., Asher, J., Gaya, J.-B., Marcus, J., Tang, J., Chan, J., Zhen, J., Reizenstein, J., Teboul, J., Zhong, J., Jin, J., Yang, J., Cummings, J., Carvill, J., Shepard, J., McPhie, J., Torres, J., Ginsburg, J., Wang, J., Wu, K., U, K. H., Saxena, K., Khandelwal, K., Zand, K., Matosich, K., Veeraraghavan, K., Michelena, K., Li, K., Jagadeesh, K., Huang, K., Chawla, K., Huang, K., Chen, L., Garg, L., A, L., Silva, L., Bell, L., Zhang, L., Guo, L., Yu, L., Moshkovich, L., Wehrstedt, L., Khabsa, M., Avalani, M., Bhatt, M., Mankus, M., Hasson, M., Lennie, M., Reso, M., Groshev, M., Naumov, M., Lathi, M., Keneally, M., Liu, M., Seltzer, M. L., Valko, M., Restrepo, M., Patel, M., Vyatskov, M., Samvelyan, M., Clark, M., Macey, M., Wang, M., Hermoso, M. J., Metanat, M., Rastegari, M., Bansal, M., Santhanam, N., Parks, N., White, N., Bawa, N., Singhal, N., Egebo, N., Usunier, N., Mehta, N., Laptev, N. P., Dong, N., Cheng, N., Chernoguz, O., Hart, O., Salpekar, O., Kalinli, O., Kent, P., Parekh, P., Saab, P., Balaji, P., Rittner, P., Bontrager, P., Roux, P., Dollar, P., Zvyagina, P., Ratanchandani, P., Yuvraj, P., Liang, Q., Alao, R., Rodriguez, R., Ayub, R., Murthy, R., Nayani, R., Mitra, R., Parthasarathy, R., Li, R., Hogan, R., Battey, R., Wang, R., Howes, R., Rinott, R., Mehta, S., Siby, S., Bondu, S. J., Datta, S., Chugh, S., Hunt, S., Dhillon, S., Sidorov, S., Pan, S., Mahajan, S., Verma, S., Yamamoto, S., Ramaswamy, S., Lindsay, S., Lindsay, S., Feng, S., Lin, S., Zha, S. C., Patil, S., Shankar, S., Zhang, S., Zhang, S., Wang, S., Agarwal, S., Sajuyigbe, S., Chintala, S., Max, S., Chen, S., Kehoe, S., Satter-field, S., Govindaprasad, S., Gupta, S., Deng, S., Cho, S., Virk, S., Subramanian, S., Choudhury, S., Goldman, S., Remez, T., Glaser, T., Best, T., Koehler, T., Robinson, T., Li, T., Zhang, T., Matthews, T., Chou, T., Shaked, T., Vontimitta, V., Ajayi, V., Montanez, V., Mohan, V., Kumar, V. S., Mangla, V., Ionescu, V., Poenaru, V., Mi-hailescu, V. T., Ivanov, V., Li, W., Wang, W., Jiang, W., Bouaziz, W., Constable, W., Tang, X., Wu, X., Wang, X., Wu, X., Gao, X., Kleinman, Y., Chen, Y., Hu, Y., Jia, Y., Qi, Y., Li, Y., Zhang, Y., Zhang, Y., Adi, Y., Nam, Y., Yu, Wang, Zhao, Y., Hao, Y., Qian, Y., Li, Y., He, Y., Rait, Z., DeVito, Z., Rosnbrick, Z., Wen, Z., Yang, Z., Zhao, Z., and Ma, Z. The llama 3 herd of models, 2024. URL 
+
+https://arxiv.org/abs/2407.21783 .Guo, C., Pleiss, G., Sun, Y., and Weinberger, K. Q. On calibration of modern neural networks. In International conference on machine learning , pp. 1321–1330. PMLR, 2017. Kadavath, S., Conerly, T., Askell, A., Henighan, T., Drain, D., Perez, E., Schiefer, N., Hatfield-Dodds, Z., DasSarma, N., Tran-Johnson, E., et al. Language models (mostly) know what they know. CoRR , 2022. 11 CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+Kamath, A., Ferret, J., Pathak, S., Vieillard, N., Merhej, R., Perrin, S., Matejovicova, T., Ram ´e, A., Rivi `ere, M., Rouillard, L., Mesnard, T., Cideron, G., bastien Grill, J., Ramos, S., Yvinec, E., Casbon, M., Pot, E., Penchev, I., Liu, G., Visin, F., Kenealy, K., Beyer, L., Zhai, X., Tsitsulin, A., Busa-Fekete, R., Feng, A., Sachdeva, N., Coleman, B., Gao, Y., Mustafa, B., Barr, I., Parisotto, E., Tian, D., Eyal, M., Cherry, C., Peter, J.-T., Sinopalnikov, D., Bhupatiraju, S., Agarwal, R., Kazemi, M., Malkin, D., Kumar, R., Vilar, D., Brusilovsky, I., Luo, J., Steiner, A., Friesen, A., Sharma, A., Sharma, A., Gilady, A. M., Goedeckemeyer, A., Saade, A., Feng, A., Kolesnikov, A., Bendebury, A., Abdagic, A., Vadi, A., Gy ¨orgy, A., Pinto, A. S., Das, A., Bapna, A., Miech, A., Yang, A., Paterson, A., Shenoy, A., Chakrabarti, A., Piot, B., Wu, B., Shahri-ari, B., Petrini, B., Chen, C., Lan, C. L., Choquette-Choo, C. A., Carey, C., Brick, C., Deutsch, D., Eisenbud, D., Cattle, D., Cheng, D., Paparas, D., Sreepathihalli, D. S., Reid, D., Tran, D., Zelle, D., Noland, E., Huizenga, E., Kharitonov, E., Liu, F., Amirkhanyan, G., Cameron, G., Hashemi, H., Klimczak-Pluci ´nska, H., Singh, H., Mehta, H., Lehri, H. T., Hazimeh, H., Ballantyne, I., Szpektor, I., Nardini, I., Pouget-Abadie, J., Chan, J., Stanton, J., Wieting, J., Lai, J., Orbay, J., Fernandez, J., Newlan, J., yeong Ji, J., Singh, J., Black, K., Yu, K., Hui, K., Vo-drahalli, K., Greff, K., Qiu, L., Valentine, M., Coelho, M., Ritter, M., Hoffman, M., Watson, M., Chaturvedi, M., Moynihan, M., Ma, M., Babar, N., Noy, N., Byrd, N., Roy, N., Momchev, N., Chauhan, N., Sachdeva, N., Bunyan, O., Botarda, P., Caron, P., Rubenstein, P. K., Culliton, P., Schmid, P., Sessa, P. G., Xu, P., Stanczyk, P., Tafti, P., Shivanna, R., Wu, R., Pan, R., Rokni, R., Willoughby, R., Vallu, R., Mullins, R., Jerome, S., Smoot, S., Girgin, S., Iqbal, S., Reddy, S., Sheth, S., P ˜oder, S., Bhatnagar, S., Panyam, S. R., Eiger, S., Zhang, S., Liu, T., Yacovone, T., Liechty, T., Kalra, U., Evci, U., Misra, V., Roseberry, V., Feinberg, V., Kolesnikov, V., Han, W., Kwon, W., Chen, X., Chow, Y., Zhu, Y., Wei, Z., Egyed, Z., Cotruta, V., Giang, M., Kirk, P., Rao, A., Black, K., Babar, N., Lo, J., Moreira, E., Martins, L. G., Sanseviero, O., Gonzalez, L., Gleicher, Z., Warkentin, T., Mirrokni, V., Senter, E., Collins, E., Barral, J., Ghahra-mani, Z., Hadsell, R., Matias, Y., Sculley, D., Petrov, S., Fiedel, N., Shazeer, N., Vinyals, O., Dean, J., Hass-abis, D., Kavukcuoglu, K., Farabet, C., Buchatskaya, E., Alayrac, J.-B., Anil, R., Dmitry, Lepikhin, Borgeaud, S., Bachem, O., Joulin, A., Andreev, A., Hardin, C., Dadashi, R., and Hussenot, L. Gemma 3 technical report, 2025. URL https://arxiv.org/abs/2503.19786 .Khanmohammadi, R., Miahi, E., Mardikoraem, M., Kaur, S., Brugere, I., Smiley, C., Thind, K. S., and Ghassemi, M. M. Calibrating llm confidence by probing perturbed representation stability. In Proceedings of the 2025 Con-ference on Empirical Methods in Natural Language Pro-cessing , pp. 10459–10525, 2025. Koreeda, Y. and Manning, C. ContractNLI: A dataset for document-level natural language inference for contracts. In Moens, M.-F., Huang, X., Specia, L., and Yih, S. W.-t. (eds.), Findings of the As-sociation for Computational Linguistics: EMNLP 2021 , pp. 1907–1919, Punta Cana, Dominican Repub-lic, November 2021. Association for Computational Linguistics. doi: 10.18653/v1/2021.findings-emnlp. 164. URL https://aclanthology.org/2021. findings-emnlp.164/ .Kruger, J. and Dunning, D. Unskilled and unaware of it: how difficulties in recognizing one’s own incompetence lead to inflated self-assessments. Journal of personality and social psychology , 77(6):1121, 1999. Lamb, T. A., Ivanova, D. R., Torr, P., and Rudner, T. G. Semantic-level confidence calibration of language models via temperature scaling. In ICLR Workshop: Quantify Uncertainty and Hallucination in Foundation Models: The Next Frontier in Reliable AI , 2025. Lan, W., Qiu, S., He, H., and Xu, W. A continuously grow-ing dataset of sentential paraphrases. In Proceedings of the 2017 Conference on Empirical Methods in Natu-ral Language Processing . Association for Computational Linguistics, 2017. Li, Y., R ¨ugamer, D., Bischl, B., and Rezaei, M. Cali-brating LLMs with information-theoretic evidential deep learning. In The Thirteenth International Conference on Learning Representations , 2025. URL https:// openreview.net/forum?id=YcML3rJl0N .Ling, W., Yogatama, D., Dyer, C., and Blunsom, P. Program induction by rationale generation: Learning to solve and explain algebraic word problems. In Proceedings of the 55th Annual Meeting of the Association for Computa-tional Linguistics (Volume 1: Long Papers) , pp. 158–167, 2017. Loftus, E. F. and Palmer, J. C. Reconstruction of automo-bile destruction: An example of the interaction between language and memory. Journal of verbal learning and verbal behavior , 13(5):585–589, 1974. Lyu, Q., Shridhar, K., Malaviya, C., Zhang, L., Elazar, Y., Tandon, N., Apidianaki, M., Sachan, M., and Callison-Burch, C. Calibrating large language models with sample consistency. In Proceedings of the AAAI Conference on Artificial Intelligence , volume 39, pp. 19260–19268, 2025. 12 CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+Manakul, P., Liusie, A., and Gales, M. Selfcheckgpt: Zero-resource black-box hallucination detection for genera-tive large language models. In Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing , pp. 9004–9017, 2023. McCullagh, P. Generalized linear models . Routledge, 2019. Mozes, M., He, X., Kleinberg, B., and Griffin, L. D. Use of llms for illicit purposes: Threats, prevention measures, and vulnerabilities. ArXiv , abs/2308.12833, 2023. URL https://api.semanticscholar. org/CorpusId:261101245 .OpenAI. Gpt-4o system card. arXiv preprint arXiv:2410.21276 , 2024. Pedapati, T., Dhurandhar, A., Ghosh, S., Dan, S., and Sat-tigeri, P. Large language model confidence estimation via black-box access. Trans. Mach. Learn. Res. , 2025, 2024. URL https://api.semanticscholar. org/CorpusId:270357312 .Platt, J. et al. Probabilistic outputs for support vector ma-chines and comparisons to regularized likelihood meth-ods. Advances in large margin classifiers , 10(3):61–74, 1999. Sadat, M. and Caragea, C. MSciNLI: A diverse bench-mark for scientific natural language inference. In Duh, K., Gomez, H., and Bethard, S. (eds.), Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (Volume 1: Long Papers) , pp. 1610–1629, Mexico City, Mexico, June 2024. Associa-tion for Computational Linguistics. doi: 10.18653/v1/ 2024.naacl-long.90. URL https://aclanthology. org/2024.naacl-long.90/ .Shen, M., Das, S., Greenewald, K., Sattigeri, P., Wornell, G., and Ghosh, S. Thermometer: towards universal cali-bration for large language models. In Proceedings of the 41st International Conference on Machine Learning , pp. 44687–44711, 2024. Shi, F., Chen, X., Misra, K., Scales, N., Dohan, D., Chi, E., Sch ¨arli, N., and Zhou, D. Large language models can be easily distracted by irrelevant context. In Proceedings of the 40th International Conference on Machine Learning ,pp. 31210–31227, 2023. Sun, L., Huang, Y., Wang, H., Wu, S., Zhang, Q., Gao, C., Huang, Y., Lyu, W., Zhang, Y., Li, X., et al. Trustllm: Trustworthiness in large language models. CoRR , 2024. Talmor, A., Herzig, J., Lourie, N., and Berant, J. Com-monsenseQA: A question answering challenge targeting commonsense knowledge. In Burstein, J., Doran, C., and Solorio, T. (eds.), Proceedings of the 2019 Conference of the North American Chapter of the Association for Com-putational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers) , pp. 4149–4158, Min-neapolis, Minnesota, June 2019. Association for Compu-tational Linguistics. doi: 10.18653/v1/N19-1421. URL 
+
+https://aclanthology.org/N19-1421/ .Thirunavukarasu, A. J., Ting, D. S. J., Elangovan, K., Gutier-rez, L., Tan, T. F., and Ting, D. S. W. Large language models in medicine. Nature medicine , 29(8):1930–1940, 2023. Tian, K., Mitchell, E., Zhou, A., Sharma, A., Rafailov, R., Yao, H., Finn, C., and Manning, C. D. Just ask for calibration: Strategies for eliciting calibrated confi-dence scores from language models fine-tuned with hu-man feedback. In Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing ,pp. 5433–5442, 2023. Ulmer, D., Gubri, M., Lee, H., Yun, S., and Oh, S. J. Calibrating large language models us-ing their generations only. In Annual Meeting of the Association for Computational Linguistics ,2024. URL https://api.semanticscholar. org/CorpusId:268358242 .Wang, X., Wei, J., Schuurmans, D., Le, Q. V., Chi, E. H., Narang, S., Chowdhery, A., and Zhou, D. Self-consistency improves chain of thought reasoning in lan-guage models. In The Eleventh International Conference on Learning Representations , 2023. Wang, Y., Shi, H., Han, L., Metaxas, D., and Wang, H. Blob: Bayesian low-rank adaptation by backpropagation for large language models. In Globerson, A., Mackey, L., Belgrave, D., Fan, A., Paquet, U., Tomczak, J., and Zhang, C. (eds.), Advances in Neural Information Pro-cessing Systems , volume 37, pp. 67758–67794. Curran Associates, Inc., 2024. doi: 10.52202/079017-2164. URL https://proceedings.neurips. cc/paper_files/paper/2024/file/ 7d53575463291ea6b5a23cf6e571f59b-Paper-Conference. pdf .Wang, Y., Xu, Z., Huang, Y., Gao, C., Wu, S., Ye, J., Chen, X., Chen, P.-Y., and Zhang, X. Breaking focus: Contex-tual distraction curse in large language models. In Will Synthetic Data Finally Solve the Data Access Problem? ,2025. URL https://openreview.net/forum? id=V121wGnPwU .Wightman, G. P., DeLucia, A., and Dredze, M. Strength in numbers: Estimating confidence of large language models by prompt agreement. In The Third Workshop 
+
+13 CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+on Trustworthy Natural Language Processing , pp. 326, 2023. Williams, A., Nangia, N., and Bowman, S. A broad-coverage challenge corpus for sentence understanding through inference. In Walker, M., Ji, H., and Stent, A. (eds.), Proceedings of the 2018 Conference of the North American Chapter of the Association for Com-putational Linguistics: Human Language Technologies, Volume 1 (Long Papers) , pp. 1112–1122, New Orleans, Louisiana, June 2018. Association for Computational Linguistics. doi: 10.18653/v1/N18-1101. URL https: //aclanthology.org/N18-1101/ .Xiong, M., Hu, Z., Lu, X., Li, Y., Fu, J., He, J., and Hooi, B. Can llms express their uncertainty? an empirical evaluation of confidence elicitation in llms, 2024. URL 
+
+https://arxiv.org/abs/2306.13063 .Yang, A., Li, A., Yang, B., Zhang, B., Hui, B., Zheng, B., Yu, B., Gao, C., Huang, C., Lv, C., Zheng, C., Liu, D., Zhou, F., Huang, F., Hu, F., Ge, H., Wei, H., Lin, H., Tang, J., Yang, J., Tu, J., Zhang, J., Yang, J., Yang, J., Zhou, J., Zhou, J., Lin, J., Dang, K., Bao, K., Yang, K., Yu, L., Deng, L., Li, M., Xue, M., Li, M., Zhang, P., Wang, P., Zhu, Q., Men, R., Gao, R., Liu, S., Luo, S., Li, T., Tang, T., Yin, W., Ren, X., Wang, X., Zhang, X., Ren, X., Fan, Y., Su, Y., Zhang, Y., Zhang, Y., Wan, Y., Liu, Y., Wang, Z., Cui, Z., Zhang, Z., Zhou, Z., and Qiu, Z. Qwen3 technical report, 2025. URL https: //arxiv.org/abs/2505.09388 .Yang, A. X., Robeyns, M., Wang, X., and Aitchison, L. Bayesian low-rank adaptation for large language models. In The Twelfth International Conference on Learning Representations , 2024. URL https://openreview. net/forum?id=FJiUyzOF1m .Zadrozny, B. and Elkan, C. Transforming classifier scores into accurate multiclass probability estimates. In Pro-ceedings of the Eighth ACM SIGKDD International Con-ference on Knowledge Discovery and Data Mining , KDD ’02, pp. 694–699, New York, NY, USA, 2002. Associa-tion for Computing Machinery. ISBN 158113567X. doi: 10.1145/775047.775151. URL https://doi.org/ 10.1145/775047.775151 .Zellers, R., Holtzman, A., Bisk, Y., Farhadi, A., and Choi, Y. Hellaswag: Can a machine really finish your sentence? In Proceedings of the 57th Annual Meeting of the Asso-ciation for Computational Linguistics , pp. 4791–4800, 2019. Zhang, X., Zhao, J., and LeCun, Y. Character-level convolu-tional networks for text classification. Advances in neural information processing systems , 28, 2015. Zhou, Z., Jin, T., Shi, J., and Li, Q. Steerconf: Steer-ing llms for confidence elicitation. arXiv preprint arXiv:2503.02863 , 2025. 14 CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+A. C ALI DIST Algorithm 
+
+In this section, we show the structure of our framework in Algorithm 1. 
+
+Algorithm 1 Framework for Confidence Calibration via Distraction (C ALI DIST )
+
+1: Input: Dataset S, model M , distractor style T , distractor count per class m ≥ 1, hyperparameters α, β .2: Output: Calibrated confidence scores C for all samples. 3: Initialize C ← [] .4: for each sample (x, y ) ∈ S do 
+
+5: πo ← CreatePrompt (x) (//Create original prompt from input) 6: ˆy, p ← M. predict (πo)
+
+7: Let C be the set of all class labels. 8: Initialize distracted prompts ΠD ← [] .9: for each ci ∈ C where ci̸ = ˆ y do 
+
+10: for j = 1 to m do 
+
+11: dj ← GenerateDistractor (ci, T )
+
+12: πdj ← πo ⊕ dj
+
+13: Append πdj to ΠD
+
+14: end for 
+
+15: end for 
+
+16: Initialize ˜Y ← [] (distracted predictions), P ′ ← [] (//distracted confidences). 17: for each πdj ∈ ΠD do 
+
+18: ˜ydj , p ′ 
+
+> j
+
+← M. predict (πdj )
+
+19: Append ˜ydj to ˜Y
+
+20: Append p′ 
+
+> j
+
+to P ′
+
+21: end for 
+
+22: k ← | ΠD |
+
+23: δ ← p − 1
+
+> k
+
+Pkj=1 p′ 
+
+> j
+
+(//Confidence Instability) 24: μ ← 1
+
+> k
+
+Pkj=1 I(˜ ydj̸ = ˆ y) · p′ 
+
+> j
+
+(//Prediction Instability) 25: ϵ ← 1 × 10 −10 
+
+26: λraw ← 1−μδ+ϵ //Reliability Score 27: λ ← MinMax (λraw ) × 10 //Normalization using held-out validation set 28: σ ← 11+exp( −β(λ−α)) (//Scaling Factor) 29: Conf σ ← σ × p
+
+30: Append Conf σ to C
+
+31: end for 
+
+32: return C
+
+B. Theoretical Grounding of Parameterized Sigmoid 
+
+We motivate the formulation of Equation (5) by drawing a parallel with Empirical Risk Minimization (ERM) and demon-strating that our approach is mathematically isomorphic to Platt Scaling (Platt et al., 1999), the standard method for post-hoc calibration. 
+
+B.1. Significance of the Sigmoid Link 
+
+Our objective is to map a continuous reliability score λ (derived from behavioral consistency) to a probability of correctness, 
+
+g(λ) = P (Y = 1 |λ). Theoretically, this is a binary probability estimation problem. • GLM Framework: Under the framework of Generalized Linear Models (GLMs), the sigmoid function is the canonical link function for the Bernoulli distribution (McCullagh, 2019). This justifies the use of the logistic curve over other potential scaling functions. • Proper Scoring Rules: To learn the optimal mapping, we minimize the Brier Score. A fundamental theorem of calibration theory states that minimizing a strictly proper scoring rule (such as Brier or Log-Loss) recovers the true conditional probability distribution (Gneiting & Raftery, 2007). Thus, C ALI DIST is grounded in standard statistical estimation: optimizing a valid probability estimator via a proper loss 15 CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+function. 
+
+B.2. Equivalence to Platt Scaling 
+
+The use of the parameters α and β in our parameterized sigmoid formulation is structurally identical to Platt Scaling. • Standard Platt Scaling: P (y|x) = 11+exp( A·f (x)+ B)
+
+• CALI DIST Formulation: g(λ) = 11+exp( −β(λ−α)) = 11+exp( −βλ +βα )
+
+By setting the linear coefficients A = −β and the bias term B = βα , our method is mathematically equivalent to Platt Scaling. 
+
+B.3. The Role of α and β in Saturation Control 
+
+While structurally equivalent, our specific parameterization ( α, β ) is necessary to handle the domain of our behavioral feature λ:• α (Bias Correction / Centering): A standard sigmoid is centered at 0. However, our reliability scores λ are normalized to the positive domain [0 , 10] . Without adjustment, a standard sigmoid would be saturated (output ≈ 1.0) for nearly all inputs. The learned parameter α shifts the sigmoid’s inflection point to the dataset-specific decision boundary, centering the active region of the function over the density of the data. • β (Variance Scaling): This parameter controls the steepness of the curve, effectively learning the sensitivity of the model’s correctness to changes in stability. By learning (α, β ) on a validation set, C ALI DIST automatically adapts to the specific difficulty and stability distribution of the target task. 
+
+C. Demonstration of C ALI DIST Using Three Cases 
+
+To provide a clear intuition for how the C ALI DIST framework operates, we present a series of walkthroughs that cover key behavioral scenarios. For these examples, we assume the sigmoid function is parameterized with α = 2 .0 and β = 1 .0 for illustrative purposes. 
+
+Case 1: The Overconfident but Unstable Model. This scenario describes a model that is easily distracted and frequently changes its prediction, but remains highly confident in its (often incorrect) new answers. • Conditions: Initial Confidence p = 0 .9; High Prediction Instability μ = 0 .95 ; Mean Distracted Confidence 1
+
+> k
+
+P p′ 
+
+> j
+
+=0.95 .• Calculation: 
+
+δ = |0.9 − 0.95 | = 0 .05 
+
+λ = 1 − 0.95 0.05 + ϵ ≈ 1.0
+
+σ(λ) = 11 + exp( −1.0 × (1 .0 − 2.0)) ≈ 0.27 
+
+Conf σ = 0 .27 × 0.9 ≈ 0.24 
+
+• Analysis: Despite a small confidence drop ( δ), the extremely high prediction instability ( μ) leads to a very low reliability score ( λ). The framework correctly applies a heavy penalty .16 CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+Case 2: The Robust and Stable Model. This is the ideal scenario where the model is confident, resists distraction, and maintains its certainty. • Conditions: Initial Confidence p = 0 .9; Low Prediction Instability μ = 0 .05 ; Mean Distracted Confidence 1
+
+> k
+
+P p′ 
+
+> j
+
+=0.9.• Calculation: 
+
+δ = |0.9 − 0.9| = 0 .0
+
+λ = 1 − 0.05 0.0 + ϵ → ∞ 
+
+σ(λ) → 1.0
+
+Conf σ ≈ 1.0 × 0.9 = 0 .9
+
+• Analysis: With near-zero instability in both prediction and confidence, λ becomes very large. The framework correctly applies virtually no penalty .
+
+Case 3: The Shaken but Stubborn Model. This model does not change its answer but becomes very uncertain when faced with distractors. • Conditions: Initial Confidence p = 0 .9; Low Prediction Instability μ = 0 .1; Mean Distracted Confidence 1
+
+> k
+
+P p′ 
+
+> j
+
+=0.4.• Calculation: 
+
+δ = |0.9 − 0.4| = 0 .5
+
+λ = 1 − 0.10.5 + ϵ = 1 .8
+
+σ(λ) = 11 + exp( −1.0 × (1 .8 − 2.0)) ≈ 0.45 
+
+Conf σ = 0 .45 × 0.9 ≈ 0.41 
+
+• Analysis: Although the prediction is stable (low μ), the large drop in confidence ( δ) is a significant sign of unreliability. The framework applies a moderate penalty .
+
+D. Baselines 
+
+This section provides a detailed description of the baseline methods used for comparison in our experiments. For all consistency-based methods, we use N = 15 forward passes per sample to generate a distribution of responses. 
+
+D.1. Temperature Scaling (TS) 
+
+Temperature Scaling is a post-hoc calibration method for white-box models that require access to logits (Guo et al., 2017). It rescales the logit vector z by a single, learnable scalar parameter T > 0 before the softmax function is applied. The calibrated probability PTS (y|x) for a class y is given by: 
+
+PTS (y|x) = exp( zy /T )
+
+PCi=1 exp( zi/T )
+
+The temperature T is optimized on a held-out validation set by minimizing the Negative Log-Likelihood (NLL). A value of 
+
+T > 1 “softens” the probability distribution, reducing overconfidence. This method provides a strong, statistically-grounded baseline for models where logits are available. 17 CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+D.2. Self-Consistency 
+
+Self-Consistency is a multi-pass method that leverages stochastic sampling to improve the reliability of LLM predictions (Wang et al., 2023). For a given prompt, we perform N stochastic forward passes using a non-zero temperature ( T = 1 .5) to generate a diverse set of responses {y1, y 2, . . . , y N }. The final prediction is determined by a majority vote over this set. The confidence score is defined as the normalized frequency of the most-voted answer. For example, if a prediction yi appears 12 out of 15 times, its Self-Consistency confidence is 12 /15 = 0 .8.
+
+D.3. Entropy-based Consistency 
+
+This method uses the diversity of responses from multiple stochastic forward passes as a proxy for model uncertainty. After generating a set of N responses, we first calculate the probability distribution p over the k unique answers. The Shannon entropy H of this distribution is then calculated using the formula: 
+
+H(p) = −
+
+> k
+
+X
+
+> i=1
+
+pi log 2(pi)
+
+Since high entropy signifies high uncertainty (many different answers), the confidence score is defined as the inverse of the normalized entropy: Confidence = 1 − H(p)log 2(|Unique Answers |)
+
+A low-entropy (consistent) set of answers results in a high confidence score. 
+
+D.4. Vanilla and Verbalized Confidence 
+
+These serve as our uncalibrated baselines to measure the absolute improvement of calibration methods. • Vanilla Confidence: For a single forward pass, this is the model’s raw output probability for its top prediction. For white-box models, it is the maximum value from the softmax output; for black-box models, it is the token log-probability provided by the API. • Verbalized Confidence: This is the confidence score obtained by prompting the model to state its certainty in natural language (e.g., “...Mention your confidence level in your answer (0-100)%”). The numerical value is extracted from the single-pass response and normalized. 
+
+E. Distractor Styles 
+
+E.1. Assertion-Style Distractors 
+
+Assertion-style distractors append an authoritative but misleading statement to the original prompt. For each class label 
+
+ci ∈ C where ci̸ = ˆ y, we construct a distractor di as follows: 
+
+di = s ⊕ ci
+
+Where s ∈ S = {I think the answer should be, I read online the answer is, I vaguely remember the answer is, My teacher tells me the answer is, The textbook shows that the answer is, An expert says that the answer is, Latest research shows that the answer is, Wikipedia claims that the answer is, I am 80% sure the answer is, I am pretty sure the answer is, Undoubtedly the answer is, With my 100% confidence the answer is }, chosen randomly. This directly challenges the model with a plausible but incorrect alternative presented as a fact. For example, in the MNLI task, an assertion style distractor using the 
+
+contradiction label would be of the form: “My teacher says the answer is (b) Sentence2 is definitely incorrect about the situation or event in Sentence1 and contradicts Sentence1.” 
+
+E.2. Probe-Style Distractors 
+
+Probe-style distractors challenge the model’s certainty by posing a direct question. Instead of asserting a false answer, this method probes the model’s conviction. For each class label ci ∈ C where ci̸ = ˆ y, the distractor di is formulated as: 
+
+di = “Do you think the answer could be ” ⊕ ci ⊕ “?” 18 CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+This style tests whether the model’s reasoning is stable enough to resist a direct suggestion of an alternative. For example, a probe-style distractor in the MNLI task using the contradiction label would be: “Do you think the answer could be (b) Sentence2 is definitely incorrect about the situation or event in Sentence1 and contradicts Sentence1?” 
+
+E.3. Sample-Corruption-Style Distractors 
+
+Sample-Corruption distractors directly modify the input data x within the prompt πo to create a new, corrupted input x′.This is the most integrated form of distraction, as it alters the problem statement itself. The implementation is task-specific: • NLI Tasks (MNLI, MSciNLI): For an input x = ( premise , hypothesis ), we corrupt the hypothesis. For each target incorrect class ci̸ = ˆ y, we form a corrupted hypothesis hypothesis ′ 
+
+> i
+
+= hypothesis ⊕ “ Sentence 2 ⊕ ci ⊕ s Sentence 1” .The new input is x′ 
+
+> i
+
+= ( premise , hypothesis ′
+
+> i
+
+). For example, if we want to corrupt the hypthesis of a sample in MNLI using contradiction as a distractor, the new hypotheis ′ 
+
+> i
+
+would be “hypothesis ⊕ This sentence is definitely incorrect about the situation or event in Sentence1 and contradicts Sentence1.” • Multiple-Choice Tasks (HellaSwag, CSQA, AQuA): For an input with a context and a set of options {o1, . . . , o n},we corrupt one of the incorrect options. For each option oi where i̸ = ˆy, we create a corrupted option o′ 
+
+> i
+
+=
+
+oi ⊕ “ This event should happen next” or “ This should be the most likely answer” . The new input x′ 
+
+> i
+
+contains this corrupted option in place of the original. • Topic Classification (Yahoo Answers): For an input question, the sample is corrupted by appending the statement “Given this context, the question belongs to the category ” followed by an incorrect class label ci̸ = ˆ y.• Paraphrase Detection (PPDB): For an input x = ( sentence 1, sentence 2), we corrupt the second sentence based on the opposite of the original prediction ˆy. If ˆy corresponds to the label “paraphrase”, the corrupted input has the text “This sentence is not a paraphrase of sentence1” appended to sentence 2, and vice-versa. 
+
+F. Prompt Template 
+
+The prompt template for each of our prompting strategies is shown below. For brevity, we only show the prompt templates for the MSciNLI task. The other tasks follow a similar template, the only difference being the context provided (e.g., Sentence and Options for HellaSwag, Question and associated context for Yahoo Answers, etc.) The {options } variable is a placeholder that is replaced with potential answer choices for each dataset; we show the value of {options } for the MSciNLI task:                                            
+
+> a. Sentence1 generalizes, specifies or has an equivalent meaning with Sentence2. b. Sentence1 presents the reason, cause, or condition for the result or conclusion made Sentence2. c. Sentence2 mentions acomparison, criticism, juxtaposition, or alimitation of something said in Sentence1. d. Sentence1 and Sentence2 are independent.
+
+Sentence1 and Sentence2 refer to the premise and hypothesis of the sample we prompt on. fewshot sentence1 and fewshot sentence2 refer to the premise and hypothesis of the first fewshot example used inside the prompt to promote in-context learning. correct option corresponds to the correct response corresponding to the prior fewshot example. For Multi-step prompting, we replace multistep explanation 1 with a step-by-step explanation behind the response, assigning a random confidence value to each step. Following is an example of what a Multistep prompt looks like for the MSciNLI task:                                                                                                                               
+
+> Consider the following two sentences: Sentence1: We used aconfiguration similar to the one prescribed in [14] for an Ethernet switch. Sentence2: when using RSTP switches, our configuration has two differences from that in [14]. Based on only the information available in these two sentences, which of the following options is true? Think step by step, mention your confidence level in each step (0-100)%, and mention your overall confidence level in your answer (0-100)%. a. Sentence1 generalizes, specifies or has an equivalent meaning with Sentence2. b. Sentence1 presents the reason, cause, or condition for the result or conclusion made Sentence2. c. Sentence2 mentions acomparison, criticism, juxtaposition, or alimitation of something said in Sentence1. d. Sentence1 and Sentence2 are independent. Assistant: Sentence1 mentions that the configuration for ethernet switch is similar to the one mentioned in [14]. Confidence: 55%
+
+19 CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+However, Sentence2 contrasts this fact by stating that there are two differences in the configuration of the switches when compared to [14]. Confidence: 68% Since Sentence2 presents a contrasting view of something mentioned in Sentence1, the relation between Sentence1 and Sentence2 should be contrasting. Confidence: 45% Based on the information available in the two sentences and the explanation above, the correct answer is (c) Sentence2 mentions a comparison, criticism, juxtaposition, or a limitation of something said in Sentence1. Overall Confidence: 60% // Include one example for each label in a similar manner, then append the actual inferencing sentence pairs in the prompt. 
+
+For our assertion-style distractor, we adopt the vanilla prompt used across the different tasks presented in this paper and augment it with misleading hints to distract the model. An excerpt of the distractor prompt for the MSciNLI task is as follows: 
+
+Consider the following two sentences: Sentence1: We used a configuration similar to the one prescribed in [14] for an Ethernet switch. Sentence2: when using RSTP switches, our configuration has two differences from that in [14]. Based on only the information available in these two sentences, which of the following options is true? Think step by step, mention your confidence level in each step (0-100)%, and mention your overall confidence level in your answer (0-100)%. a. Sentence1 generalizes, specifies or has an equivalent meaning with Sentence2. b. Sentence1 presents the reason, cause, or condition for the result or conclusion made Sentence2. c. Sentence2 mentions a comparison, criticism, juxtaposition, or a limitation of something said in Sentence1. d. Sentence1 and Sentence2 are independent. Hint: An expert says the answer is (b) Sentence1 presents the reason, cause, or condition for the result or conclusion made Sentence2. Note that the hint is only for your reference. Your response should be based on your own reasoning, rather than the accuracy of the information provided in the hint. Assistant: Sentence1 mentions that the configuration for ethernet switch is similar to the one mentioned in [14]. Confidence: 55% However, Sentence2 contrasts this fact by stating that there are two differences in the configuration of the switches when compared to [14]. Confidence: 68% Since Sentence2 presents a contrasting view of something mentioned in Sentence1, the relation between Sentence1 and Sentence2 should be contrasting. Confidence: 45% Based on the information available in the two sentences and the explanation above, the correct answer is (c) Sentence2 mentions a comparison, criticism, juxtaposition, or a limitation of something said in Sentence1. Overall Confidence: 60% // Include one example for each label in a similar manner, and append a misleading hint with each few-shot exemplar. Finally, append the actual inferencing sentence pairs in the prompt. 
+
+For our probe-style distractor, we adopt a similar method as assertion-style, only replacing the hint provided: 
+
+Consider the following two sentences: Sentence1: We used a configuration similar to the one prescribed in [14] for an Ethernet switch. Sentence2: when using RSTP switches, our configuration has two differences from that in [14]. Based on only the information available in these two sentences, which of the following options is true? Think step by step, mention your confidence level in each step (0-100)%, and mention your overall confidence level in your answer (0-100)%. a. Sentence1 generalizes, specifies or has an equivalent meaning with Sentence2. b. Sentence1 presents the reason, cause, or condition for the result or conclusion made Sentence2. c. Sentence2 mentions a comparison, criticism, juxtaposition, or a limitation of something said in Sentence1. d. Sentence1 and Sentence2 are independent. Hint: Do you think the answer could be (b) Sentence1 presents the reason, cause, or condition for the result or conclusion made Sentence2? Elaborate. Note that the hint is only for your reference. Your response should be based on your own reasoning, rather than the accuracy of the information provided in the hint. Assistant: Sentence1 mentions that the configuration for ethernet switch is similar to the one mentioned in [14]. Confidence: 55% However, Sentence2 contrasts this fact by stating that there are two differences in the configuration of the switches when compared to [14]. Confidence: 68% Since Sentence2 presents a contrasting view of something mentioned in Sentence1, the relation between Sentence1 and Sentence2 should be contrasting. Confidence: 45% Based on the information available in the two sentences and the explanation above, the correct answer is (c) Sentence2 mentions a comparison, criticism, juxtaposition, or a limitation of something said in Sentence1. Overall Confidence: 60% // Include one example for each label in a similar manner, and append a misleading hint with each few-shot exemplar. Finally, append the actual inferencing sentence pairs in the prompt. 
+
+Finally, for sample-corruption-style distractor, we corrupt the hypothesis of the sentence pair as follows: 
+
+Consider the following two sentences: Sentence1: We used a configuration similar to the one prescribed in [14] for an Ethernet switch. Sentence2: when using RSTP switches, our configuration has two differences from that in [14]. This sentence mentions a comparison, criticism, juxtaposition, or a limitation of something said in Sentence1. 
+
+20 CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction                                                                                                                                                                                                                                                    
+
+> Based on only the information available in these two sentences, which of the following options is true? Think step by step, mention your confidence level in each step (0-100)%, and mention your overall confidence level in your answer (0-100)%. a. Sentence1 generalizes, specifies or has an equivalent meaning with Sentence2. b. Sentence1 presents the reason, cause, or condition for the result or conclusion made Sentence2. c. Sentence2 mentions acomparison, criticism, juxtaposition, or alimitation of something said in Sentence1. d. Sentence1 and Sentence2 are independent. Hint: An expert says the answer is (b) Sentence1 presents the reason, cause, or condition for the result or conclusion made Sentence2. Note that the hint is only for your reference. Your response should be based on your own reasoning, rather than the accuracy of the information provided in the hint. Assistant: Sentence1 mentions that the configuration for ethernet switch is similar to the one mentioned in [14]. Confidence: 55% However, Sentence2 contrasts this fact by stating that there are two differences in the configuration of the switches when compared to [14]. Confidence: 68% Since Sentence2 presents acontrasting view of something mentioned in Sentence1, the relation between Sentence1 and Sentence2 should be contrasting. Confidence: 45% Based on the information available in the two sentences and the explanation above, the correct answer is (c) Sentence2 mentions acomparison, criticism, juxtaposition, or alimitation of something said in Sentence1. Overall Confidence: 60% // Corrupt each exemplar hypothesis using one of the labels of the task. Include one few-shot exemplar for each label in a similar manner. Finally, append the actual inferencing sentence pairs in the prompt.
+
+G. Details about C ALI DIST Variants 
+
+CALI DIST is implemented in several variants based on two primary axes: the confidence elicitation method and the distractor style. Confidence scores are obtained in two ways. The default approach uses the model’s output probabilities, either calculated from logits for white-box models or derived from token log-probabilities when available from black-box APIs. The second approach, verbalized confidence, prompts the model to state its certainty directly. While necessary for fully restricted APIs, we also apply this variant to our open-source models to demonstrate its general applicability across all model types. For the distractor style, we experiment with three semantic types: Assertion (As.), Probe (Pr.), and Sample-Corruption (Sa.). For CaliDist (As.), we use m = 2 distractors per class for each sample. We specify the configuration used in our results. For example, CaliDist (As.) refers to the default probability-based confidence with an assertion-style distractor, while the verbalized variant is denoted as CaliDist Verbalized (As.). 
+
+H. Discussion on Evaluation Metrics 
+
+Expected Calibration Error (ECE) measures the discrepancy between a model’s average confidence and its actual accuracy. It is calculated by partitioning predictions into M confidence bins and taking a weighted average of the absolute difference between the accuracy and confidence of each bin (Guo et al., 2017). A lower ECE indicates a better-calibrated model whose confidence scores more faithfully represent its correctness. Additionally, we report the Brier Score (BS), which is equivalent to the mean squared error between the predicted probabilities and the actual outcomes (Brier, 1950). The Brier Score is a comprehensive metric that simultaneously measures both calibration and resolution (the model’s ability to distinguish between positive and negative cases), with lower scores being better. 
+
+I. Implementation Details 
+
+I.1. Hyperparameter Tuning for α and β
+
+The sigmoid scaling parameters, α and β, are crucial for the performance of the C ALI DIST framework. For each model, dataset, and distractor style combination, we determined the optimal values by performing an extensive grid search over a held-out validation set. Consistent with our theoretical derivation (Appendix B), which establishes the sigmoid as the canonical link minimizing a strictly proper scoring rule, the objective of the search is to find the parameter combination that minimizes the Brier Score (BS). We note that empirically, minimizing the Expected Calibration Error (ECE) yields statistically indistinguishable parameters. The search space for each parameter was defined as follows: • Shift parameter α: 100 candidates linearly spaced in the range [−5.0, 5.0] .21 CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+• Scale parameter β: 100 candidates linearly spaced in the range [0 .1, 5.0] .The optimal values found through this process were then used to report the final test set results. 
+
+Normalization Protocol. To map the raw reliability scores ( λraw ) to the normalized domain [0 , 10] required by the parameterized sigmoid, we utilize Min-Max normalization. The normalization bounds, λmin and λmax , are estimated exclusively from the held-out validation set, consistent with the optimization of α and β. During inference on the test set, any λraw values falling outside these pre-computed bounds are clipped to the range [0,10] before being passed to the sigmoid. This protocol ensures a fully inductive inference pipeline, allowing for immediate, single-sample calibration in online settings without reliance on batch statistics. Regarding the size of the held-out validation set, we experimented with different sizes (e.g., 50, 100, 200, 400 samples) and report the calibration gains using a 200-sample set in the paper. We observed that for smaller sets, the ECE increases, whereas for larger sets, it plateaus. 
+
+I.2. Model and Environment Details 
+
+All experiments involving open-source models were conducted on a single NVIDIA A5000 GPU with 24 GB of VRAM. The model checkpoints and associated tokenizers for Llama-3.1 8B, Qwen-3 8B, Phi-4-mini, and Gemma-3 4B were loaded from their official repositories on the Hugging Face Hub. Proprietary models, including GPT-4o mini and Gemini 2.0 Flash, were accessed via their official APIs. 
+
+I.3. Baseline Decoding Parameters 
+
+For the consistency-based baselines, which require stochastic sampling to generate diverse outputs, we used different decoding strategies based on model accessibility. • For open-source LLMs, we used nucleus sampling with a setting of ‘top k=50‘ and ‘top p=0.95‘. • For proprietary LLMs, where ‘top k‘ and ‘top p‘ cannot always be set together, we used a ‘temperature=1.5‘ to ensure a sufficiently diverse set of generated responses for the consistency calculation. 
+
+Table 9. Comparison of C ALI DIST with four baselines across seven datasets and two open-source LLMs. Confidence used for all baselines except for Consistency, Entropy, and FSD are logit-based confidence scores. Metrics are given by ×10 2.                                                                                                                                                                                                                                                                                        
+
+> LLM Metric MSciNLI MNLI PPDB Yahoo HellaSwag CSQA AQUA Average ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓
+> PHI -4-MINI
+> 3.8B
+> Temperature Scaling 18.05 26.00 1.85 16.82 7.46 17.29 8.83 18.57 3.50 18.65 4.57 16.38 12.25 17.54 8.07 18.75 Vanilla 30.22 32.77 8.05 17.66 15.82 19.14 20.43 22.72 8.80 19.31 11.13 17.73 18.93 18.58 16.20 21.13 Consistency 32.93 35.23 9.70 18.53 17.01 20.00 23.21 24.08 11.69 20.96 11.52 25.67 5.93 13.60 16.00 22.58 Entropy 27.23 32.67 28.09 28.65 21.03 22.69 17.20 21.68 25.23 27.64 20.46 30.34 26.33 23.27 23.65 26.71 FSD 26.07 32.60 15.16 21.69 17.45 20.29 18.45 21.79 13.48 22.43 14.65 20.19 14.19 17.51 17.06 22.36 CaliDist (As.) 5.14 22.90 3.02 16.99 4.06 16.81 4.25 19.69 5.75 18.90 2.21 16.49 5.97 15.11 4.34 18.13 CaliDist (Pr.) 3.57 23.10 3.40 17.03 3.90 16.69 5.58 18.84 6.09 18.93 2.89 16.62 9.64 14.99 5.01 18.03 CaliDist (Sa.) 2.89 22.68 3.68 17.31 6.95 16.73 7.79 18.94 5.78 18.91 3.35 16.58 6.15 13.99 5.23 17.88 GEMMA -3 4B
+> Temperature Scaling 52.61 52.16 38.47 38.61 27.02 27.39 33.27 33.01 41.60 41.73 23.87 24.18 10.07 15.77 32.42 33.26 Vanilla 53.90 53.66 40.22 40.16 27.81 28.14 34.00 34.03 44.68 44.55 25.44 25.43 19.69 19.55 35.11 35.07 Consistency 53.99 53.84 40.21 40.25 27.79 28.24 33.83 34.00 44.64 44.55 25.54 25.58 13.80 18.25 34.26 34.96 Entropy 53.18 53.22 39.75 39.90 28.93 28.87 33.93 33.92 43.32 43.79 25.48 25.53 23.46 23.11 35.44 35.48 FSD 53.39 53.45 39.80 39.98 28.37 28.43 33.92 33.92 43.61 44.05 25.49 25.53 15.85 19.04 34.35 34.91 CaliDist (As.) 2.60 25.27 6.45 24.51 7.91 20.47 6.80 21.11 2.89 24.69 2.32 18.75 2.96 12.26 4.56 21.01 CaliDist (Pr.) 10.31 24.95 3.71 23.29 6.61 20.21 5.82 19.93 2.38 23.97 2.55 17.36 5.91 13.08 5.33 20.40 CaliDist (Sa.) 1.52 23.97 5.77 24.10 7.66 19.41 5.74 20.57 3.08 24.08 2.51 18.32 4.49 10.83 4.40 20.18
+
+J. Additional Results 
+
+J.1. Calibration Performance on Smaller-Scale LLMs 
+
+To verify the generalizability of our framework across changing parameter scales, we evaluate C ALI DIST on two prominent compact architectures: Phi-4-mini (3.8B) and Gemma-3 (4B). Table 9 presents the logit-based calibration results across seven distinct classification benchmarks. The empirical results demonstrate that C ALI DIST consistently scales down effectively, outperforming strong baselines such as Temperature Scaling, Self-Consistency, Entropy, and FSD. On average, C ALI DIST 
+
+variants yield the lowest ECE and Brier Score for both models. Remarkably, on Gemma-3 (4B), which displays severe 22 CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction 
+
+Table 10. Comparison of C ALI DIST with the verbalized confidence method using two open-source LLMs. Metrics are given by ×10 2.                                                                                                                        
+
+> LLM Metric MNLI PPDB Yahoo HellaSwag AQUA Average ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓ECE ↓BS ↓
+> PHI -4-MINI
+> 3.8B  Verbalized 24.73 24.98 15.86 24.50 10.64 21.95 14.57 24.89 27.28 26.63 18.62 24.59 CaliDist verbalized (As.) 22.44 26.09 15.81 24.63 3.53 20.76 1.62 22.93 15.81 22.63 11.84 23.41 CaliDist verbalized (Pr.) 19.91 27.08 15.15 24.43 4.58 20.85 1.63 22.87 15.22 22.26 11.30 23.50 CaliDist verbalized (Sa.) 19.77 24.63 14.44 24.48 5.63 21.07 1.12 22.71 13.76 22.16 10.94 23.01
+> GEMMA -3
+> 4B  Verbalized 26.50 30.42 12.77 22.58 23.11 34.03 32.38 35.64 19.65 22.59 22.88 29.05 CaliDist verbalized (As.) 17.86 27.92 12.98 22.79 8.85 20.83 11.95 26.21 16.13 19.85 13.55 23.52 CaliDist verbalized (Pr.) 19.26 29.31 13.52 22.70 13.49 20.80 9.60 25.55 18.55 20.97 14.88 23.87 CaliDist verbalized (Sa.) 11.98 25.72 12.29 22.89 7.56 20.53 15.53 27.98 16.42 19.86 12.76 23.40
+
+uncalibrated overconfidence in its vanilla state (Average ECE of 35.11%), C ALI DIST (Sa.) successfully compresses the average calibration error down to 4.40%. Similarly, Table 10 illustrates our performance in simulated black-box scenarios utilizing verbalized confidence elicitation. Across five standard benchmarks, C ALI DIST verbalized variants reliably minimize calibration errors compared to the uncalibrated verbalized baseline, reducing the average ECE from 18.62% to 10.94% for Phi-4-mini and from 22.88% to 12.76% for Gemma-3. Combined, these findings provide robust empirical evidence that evaluating behavioral stability under contextual pressure remains an exceptionally strong and dependable calibration signal regardless of the underlying model’s parameter scale. Assertion    
+
+> Probe
+> Sample Corruption
+> 0
+> 1
+> 2
+> 3
+> 4
+> 5
+> 6
+> 7
+> Average ECE (  ) 6.24
+> 5.55 5.79
+> 5.24 5.15 5.28
+> Llama-3.1
+> (Avg. over CSQA and MSciNLI datasets)
+> Assertion
+> Probe
+> Sample Corruption
+> 2.20
+> 5.77
+> 4.03
+> 1.83
+> 4.54
+> 3.84
+> Qwen-3
+> (Avg. over CSQA and MSciNLI datasets)
+
+Impact of (Confidence Instability) Formulation     
+
+> Distractor Style
+> Our Approach: | pmean( p)| Alternative: max(0, pmin( p))
+
+Figure 5. Impact of different formulations of Confidence Instability δ
+
+J.2. Impact of Confidence Instability ( δ) Formulation. 
+
+We also investigate the formulation of the confidence instability metric, δ. Our proposed method calculates this as the absolute difference between the original confidence and the mean of the distracted confidences δ = |p − mean (p′)|. We compare this against a more conservative “worst-case” alternative that measures the drop from the original confidence to the minimum distracted confidence δalt = max (0 , p − mean (p′)) . As shown in Figure 5, our proposed formulation consistently outperforms the alternative. For both Llama-3.1 and Qwen-3, the current formulation using the mean results in a lower ECE across all distractor styles. This suggests that the average confidence shift is a more robust and representative signal of a model’s overall stability than its single worst performance. While the worst-case formulation is more sensitive to a single point of failure, our results indicate that the mean provides a more balanced and effective signal for calibration. 
+
+J.3. Impact of the Number of Distractors on Calibration. 
+
+We analyze the sensitivity of C ALI DIST to the number of distractors generated per class, denoted by m, using Assertion-style distractors for this experiment. As shown in Figure 6, the relationship between the number of distractors and calibration performance is non-monotonic and demonstrates diminishing returns. While increasing m can sometimes further reduce ECE, there is often an optimal point after which performance may degrade. Crucially, these results demonstrate that even the most efficient setting of m = 1 provides a substantial calibration improvement. 
+
+K. Extensibility to Open-ended Complex Reasoning (GSM8K) 
+
+While the primary focus of this work is classification, the C ALI DIST methodology extends naturally to open-ended complex reasoning tasks. To demonstrate this capability, we applied our framework to the GSM8K dataset (Cobbe et al., 2021) using assertion-style distractors. These distractors introduce irrelevant numerical information in the range of the originally 23 CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction m=1 m=2 m=3          
+
+> 0
+> 5
+> 10
+> 15
+> 20
+> 25
+> ECE (  )
+> 8.02 5.75 6.45
+> Llama-3.1 - MSciNLI
+> m=1 m=2 m=3 m=4
+> 0.0
+> 2.5
+> 5.0
+> 7.5
+> 10.0
+> 12.5
+> 8.19
+> 4.73 4.81 4.32
+> Llama-3.1 - CSQA
+> Impact of the Number of Distractors (m) on Calibration
+> (Using Assertion-Style Distractors)
+> Number of Distractors per Class (m)
+> Original ECE (Uncalibrated) CaliDist ECE ECE Trend
+
+Figure 6. Impact of number of distractors 
+
+Table 11. Performance on GSM8K using assertion-style distractors. C ALI DIST significantly reduces ECE compared to consistency and entropy-based baselines. Best results are in bold .
+
+LLM Metric ECE ↓ BS ↓
+
+LLAMA -3.1 8B 
+
+Vanilla 16.71 16.80 Consistency 6.12 7.83 
+
+Entropy 21.13 16.70 FSD 13.19 11.73 CaliDist (As.) 5.51 14.13 
+
+QWEN -3 8B 
+
+Vanilla 10.48 10.48 Consistency 6.97 6.91 Entropy 6.78 6.75 FSD 6.18 6.53 
+
+CaliDist (As.) 4.28 7.16 
+
+predicted answer using assertion-style distractors designed to potentially disrupt the model’s arithmetic reasoning chain. Our experiments reveal that C ALI DIST successfully identifies brittle reasoning chains by measuring stability against these numerical distractors. As shown in Table 11, our method achieves substantial reductions in ECE compared to baselines for both Llama-3.1 and Qwen-3. This demonstrates that even in multi-step logical reasoning tasks, behavioral stability serves as a robust proxy for correctness. 24

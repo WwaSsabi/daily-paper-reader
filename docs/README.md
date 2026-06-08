@@ -6,83 +6,71 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-07
-- 运行时间：2026-06-07 20:53:06 UTC
+- 最新运行日期：2026-06-08
+- 运行时间：2026-06-08 21:14:19 UTC
 - 运行状态：成功
-- 本次总论文数：21
-- 精读区：10
+- 本次总论文数：17
+- 精读区：6
 - 速读区：11
 
 ### 今日简报（AI）
-今日处理21篇论文，精读10篇，重点聚焦高效RAG与策略蒸馏两大方向。最值得关注的是《Efficient RAG with Intent-Aware Retrieval and Semantics-Preserving Chunking》和《Trust Region On-Policy Distillation》，分别提出检索增强生成的质量提升方法和强化学习稳定训练技巧。建议普通读者优先精读这两篇，并可顺带速读《LazyAttention》中延迟位置编码的RAG效率优化思路。
-- 详情：[/202606/07/README](/202606/07/README)
+今日17篇论文聚焦大语言模型数据自动生成与自适应检索，其中《DataEvolver》和《Agent-Orchestrated Adaptive RAG》分别以9.0/8.0分领跑精读榜单。建议优先关注DataEvolver的多层级自进化数据准备方法，以及Agent调度的结构化/多跳检索对比研究。下一步可尝试将自动数据增强与自适应RAG结合，以提升LLM在真实场景中的回答质量。
+- 详情：[/202606/08/README](/202606/08/README)
 
 ### 精读区论文标签
-1. [Efficient RAG with Intent-Aware Retrieval and Semantics-Preserving Chunking](/202606/07/2606.01240v1-efficient-rag-with-intent-aware-retrieval-and-semantics-preserving-chunking)  
+1. [DataEvolver: Automatic Data Preparation for Large Language Models through Multi-Level Self-Evolving](/202606/08/2606.07001v1-dataevolver-automatic-data-preparation-for-large-language-models-through-multi-level-self-evolving)  
    标签：评分：9.0/10、query:ml-llm
-   evidence：直接关于大语言模型检索增强生成
-2. [Trust Region On-Policy Distillation](/202606/07/2606.01249v1-trust-region-on-policy-distillation)  
-   标签：评分：9.0/10、query:ml-llm
-   evidence：用于高效LLM后训练的策略蒸馏技术
-3. [BenchEvolver: Frontier Task Synthesis via Solution-Centric Evolution](/202606/07/2606.01286v1-benchevolver-frontier-task-synthesis-via-solution-centric-evolution)  
-   标签：评分：9.0/10、query:ml-llm
-   evidence：直接关于大语言模型基准评估
-4. [CRePE: Convolution-aware Relative Importance in Post-training Pruning with Efficient Search](/202606/07/2606.01544v1-crepe-convolution-aware-relative-importance-in-post-training-pruning-with-efficient-search)  
-   标签：评分：9.0/10、query:ml-llm
-   evidence：大语言模型后训练剪枝
-5. [Do Value Vectors in Deep Layers Need Context from the Residual Stream?](/202606/07/2606.02780v1-do-value-vectors-in-deep-layers-need-context-from-the-residual-stream)  
-   标签：评分：9.0/10、query:ml-llm
-   evidence：Transformer深层值向量
-6. [TANDEM: Bi-Level Data Mixture Optimization with Twin Networks](/202606/07/2606.04401v1-tandem-bi-level-data-mixture-optimization-with-twin-networks)  
-   标签：评分：9.0/10、query:ml-llm
-   evidence：使用孪生网络优化LLM训练数据混合比例
-7. [Dynamic Infilling Anchors for Format-Constrained Generation in Diffusion Large Language Models](/202606/07/2606.04535v1-dynamic-infilling-anchors-for-format-constrained-generation-in-diffusion-large-language-models)  
-   标签：评分：9.0/10、query:ml-llm
-   evidence：扩散大型语言模型
-8. [Cartridges at Scale: Training Modular KV Caches over Large Document Collections](/202606/07/2606.04557v1-cartridges-at-scale-training-modular-kv-caches-over-large-document-collections)  
-   标签：评分：9.0/10、query:ml-llm
-   evidence：直接关于大语言模型长上下文训练
-9. [Self-supervised User Profile Generation for Personalization](/202606/07/2606.05336v1-self-supervised-user-profile-generation-for-personalization)  
-   标签：评分：9.0/10、query:ml-llm
-   evidence：通过用户画像实现大语言模型个性化
-10. [Domain-Adapted Small Language Models with Hybrid Post-Processing: Achieving Cost-Efficient, Low-Latency Multi-Label Structured Prediction via LoRA Fine-Tuning on Scarce Data](/202606/07/2606.05781v1-domain-adapted-small-language-models-with-hybrid-post-processing-achieving-cost-efficient-low-latency-multi-label-structured-prediction-via-lora-fine-tuning-on-scarce-data)  
-   标签：评分：9.0/10、query:ml-llm
-   evidence：针对领域特定结构化预测微调的小语言模型
+   evidence：自动数据准备用于大语言模型训练
+2. [Agent-Orchestrated Adaptive RAG: A Comparative Study on Structured and Multi-Hop Retrieval](/202606/08/2606.05658v1-agent-orchestrated-adaptive-rag-a-comparative-study-on-structured-and-multi-hop-retrieval)  
+   标签：评分：8.0/10、query:ml-llm
+   evidence：面向LLM的自适应RAG框架
+3. [Learning to Route LLMs from Implicit Cost-Performance Preferences via Meta-Learning](/202606/08/2606.06178v1-learning-to-route-llms-from-implicit-cost-performance-preferences-via-meta-learning)  
+   标签：评分：8.0/10、query:ml-llm
+   evidence：通过元学习进行大语言模型路由
+4. [Skip a Layer or Loop It? Learning Program-of-Layers in LLMs](/202606/08/2606.06574v1-skip-a-layer-or-loop-it-learning-program-of-layers-in-llms)  
+   标签：评分：8.0/10、query:ml-llm
+   evidence：LLM推理的动态层程序
+5. [Improving Cross-Lingual Factual Recall via Consistency-Driven Reinforcement Learning](/202606/08/2606.06586v1-improving-cross-lingual-factual-recall-via-consistency-driven-reinforcement-learning)  
+   标签：评分：8.0/10、query:ml-llm
+   evidence：基于强化学习和监督微调的大模型跨语言事实召回
+6. [Data-Constrained Language Model Pretraining: Improved Regularization and Scaling Laws](/202606/08/2606.06888v1-data-constrained-language-model-pretraining-improved-regularization-and-scaling-laws)  
+   标签：评分：8.0/10、query:ml-llm
+   evidence：数据受限下语言模型预训练的规范化与缩放律
 
 ### 速读区论文标签
-1. [KletterMix: Climbing Toward High-Quality German Pretraining Data](/202606/07/2606.03773v1-klettermix-climbing-toward-high-quality-german-pretraining-data)  
+1. [TALAN: Task-Aligned Latent Adaptation Networks for Targeted Post-Training of Large Language Models](/202606/08/2606.06902v1-talan-task-aligned-latent-adaptation-networks-for-targeted-post-training-of-large-language-models)  
    标签：评分：8.0/10、query:ml-llm
-   evidence：为语言模型构建高质量德语预训练数据
-2. [LazyAttention: Efficient Retrieval-Augmented Generation with Deferred Positional Encoding](/202606/07/2606.04302v1-lazyattention-efficient-retrieval-augmented-generation-with-deferred-positional-encoding)  
+   evidence：大型语言模型后训练
+2. [SigmaScale: LLM Compression with SVD-based Low-Rank Decomposition and Learned Scaling Matrices](/202606/08/2606.07098v1-sigmascale-llm-compression-with-svd-based-low-rank-decomposition-and-learned-scaling-matrices)  
    标签：评分：8.0/10、query:ml-llm
-   evidence：改进Transformer注意力机制
-3. [Stepwise Reasoning Enhancement for LLMs via External Subgraph Generation](/202606/07/2606.04454v1-stepwise-reasoning-enhancement-for-llms-via-external-subgraph-generation)  
-   标签：评分：8.0/10、query:ml-llm
-   evidence：使用知识图谱增强LLM推理
-4. [Reducing Hallucinations in Complex Question Answering using Simple Graph-based Retrieval-Augmented Generation (long version)](/202606/07/2606.05901v1-reducing-hallucinations-in-complex-question-answering-using-simple-graph-based-retrieval-augmented-generation-long-version)  
-   标签：评分：8.0/10、query:ml-llm
-   evidence：通过基于图的RAG减少LLM幻觉
-5. [OCC-RAG: Optimal Cognitive Core for Faithful Question Answering](/202606/07/2606.00683v1-occ-rag-optimal-cognitive-core-for-faithful-question-answering)  
+   evidence：基于SVD与学习缩放矩阵的LLM压缩
+3. [ProbeScale: Probing Analysis to Optimize Neural Scaling Laws for Efficient Small Language Model Inference](/202606/08/2606.01806v1-probescale-probing-analysis-to-optimize-neural-scaling-laws-for-efficient-small-language-model-inference)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：基于RAG的小语言模型实现忠实问答
-6. [Reasoning over Grammar: Can Synthetic Linguistic Reasoning Traces Enhance Low-Resource Machine Translation?](/202606/07/2606.03782v1-reasoning-over-grammar-can-synthetic-linguistic-reasoning-traces-enhance-low-resource-machine-translation)  
+   evidence：通过探针分析实现小语言模型高效推理
+4. [E2LLM: Towards Efficient LLM Serving in Heterogeneous Edge/Fog Environments](/202606/08/2606.03770v1-e2llm-towards-efficient-llm-serving-in-heterogeneous-edgefog-environments)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：利用大语言模型和语言推理的低资源机器翻译
-7. [A Training-Free Mixture-of-Agents Framework for Multi-Document Summarization using LLMs and Knowledge Graphs](/202606/07/2606.03867v1-a-training-free-mixture-of-agents-framework-for-multi-document-summarization-using-llms-and-knowledge-graphs)  
+   evidence：在边缘/雾环境中高效部署LLM
+5. [Beyond Retrieval: Learning Compact User Representations for Scalable LLM Personalization](/202606/08/2606.04547v1-beyond-retrieval-learning-compact-user-representations-for-scalable-llm-personalization)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：基于LLM和知识图谱的多文档摘要
-8. [LLM Compression with Jointly Optimizing Architectural and Quantization choices](/202606/07/2606.04063v1-llm-compression-with-jointly-optimizing-architectural-and-quantization-choices)  
+   evidence：可学习用户表示用于LLM个性化
+6. [Are Large Language Models Suitable for Graph Computation? Progress and Prospects](/202606/08/2606.06865v1-are-large-language-models-suitable-for-graph-computation-progress-and-prospects)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：联合优化架构和量化以压缩LLM
-9. [The Word and the Way: Strategies for Domain-Specific BERT Pre-Training in German Medical NLP](/202606/07/2606.03250v1-the-word-and-the-way-strategies-for-domain-specific-bert-pre-training-in-german-medical-nlp)  
+   evidence：关于LLM在图计算中的全面综述
+7. [Auditing Training Data in Domain-adapted LLMs: LoRA-MINT](/202606/08/2606.06946v1-auditing-training-data-in-domain-adapted-llms-lora-mint)  
+   标签：评分：7.0/10、query:ml-llm
+   evidence：针对微调LLM的成员推断测试
+8. [OffQ: Taming Structured Outliers in LLM Quantization by Offsetting](/202606/08/2606.07116v1-offq-taming-structured-outliers-in-llm-quantization-by-offsetting)  
+   标签：评分：7.0/10、query:ml-llm
+   evidence：通过偏移技术处理LLM量化中的异常值
+9. [Multilingual Long-Form Speech Instruction Following: KIT's Submission to IWSLT 2026](/202606/08/2606.04730v1-multilingual-long-form-speech-instruction-following-kits-submission-to-iwslt-2026)  
    标签：评分：6.0/10、query:ml-llm
-   evidence：面向医学NLP的领域特定BERT预训练策略
-10. [Efficient ASR Training with Conversations that Never Happened](/202606/07/2606.03957v1-efficient-asr-training-with-conversations-that-never-happened)  
+   evidence：基于LLM的多语言语音指令跟随数据增强
+10. [CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction](/202606/08/2606.05799v1-calidist-calibrating-large-language-models-via-behavioral-robustness-to-distraction)  
    标签：评分：6.0/10、query:ml-llm
-   evidence：使用LLM生成对话用于ASR训练
-11. [MorphoQuant: Modality-Aware Quantization for Omni-modal Large Language Models](/202606/07/2606.04349v1-morphoquant-modality-aware-quantization-for-omni-modal-large-language-models)  
+   evidence：通过抗分心行为鲁棒性校准LLM
+11. [Modular Monolingual Adaptation using Pretrained Language Models](/202606/08/2606.06738v1-modular-monolingual-adaptation-using-pretrained-language-models)  
    标签：评分：6.0/10、query:ml-llm
-   evidence：多模态LLM的模态感知量化
+   evidence：预训练语言模型在低资源语言的模块化适配
 
 
 <div class="dpr-home-promo-card">
