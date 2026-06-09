@@ -6,71 +6,71 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-08
-- 运行时间：2026-06-08 21:14:19 UTC
+- 最新运行日期：2026-06-09
+- 运行时间：2026-06-09 21:22:56 UTC
 - 运行状态：成功
 - 本次总论文数：17
 - 精读区：6
 - 速读区：11
 
 ### 今日简报（AI）
-今日17篇论文聚焦大语言模型数据自动生成与自适应检索，其中《DataEvolver》和《Agent-Orchestrated Adaptive RAG》分别以9.0/8.0分领跑精读榜单。建议优先关注DataEvolver的多层级自进化数据准备方法，以及Agent调度的结构化/多跳检索对比研究。下一步可尝试将自动数据增强与自适应RAG结合，以提升LLM在真实场景中的回答质量。
-- 详情：[/202606/08/README](/202606/08/README)
+今日共处理17篇论文，精读6篇，重点聚焦大模型微调中的数据选择与优化方法。最值得关注的是《HARP》和《Minibatch Selection》，分别从数据分组与梯度匹配角度提升微调效率。建议读者优先阅读这两篇，可直接降低LLM微调的计算开销。
+- 详情：[/202606/09/README](/202606/09/README)
 
 ### 精读区论文标签
-1. [DataEvolver: Automatic Data Preparation for Large Language Models through Multi-Level Self-Evolving](/202606/08/2606.07001v1-dataevolver-automatic-data-preparation-for-large-language-models-through-multi-level-self-evolving)  
+1. [HARP: Efficient Data Selection for Finetuning Large Language Models](/202606/09/2606.07690v1-harp-efficient-data-selection-for-finetuning-large-language-models)  
    标签：评分：9.0/10、query:ml-llm
-   evidence：自动数据准备用于大语言模型训练
-2. [Agent-Orchestrated Adaptive RAG: A Comparative Study on Structured and Multi-Hop Retrieval](/202606/08/2606.05658v1-agent-orchestrated-adaptive-rag-a-comparative-study-on-structured-and-multi-hop-retrieval)  
+   evidence：针对大语言模型微调的高效数据选择方法
+2. [Minibatch Selection via Partition Matroid Constrained Gradient Matching](/202606/09/2606.07954v1-minibatch-selection-via-partition-matroid-constrained-gradient-matching)  
+   标签：评分：9.0/10、query:ml-llm
+   evidence：训练大语言模型，小批量选择，梯度匹配
+3. [ConSteer-RL: Steering Reasoning Capabilities in Large Language Models via Confidence-Aware Reinforcement Learning](/202606/09/2606.08088v1-consteer-rl-steering-reasoning-capabilities-in-large-language-models-via-confidence-aware-reinforcement-learning)  
+   标签：评分：9.0/10、query:ml-llm
+   evidence：大语言模型，强化学习，推理能力
+4. [The Amplifying Mirror: Locating and Steering the Partisan Direction inside a Large Language Model](/202606/09/2606.08792v1-the-amplifying-mirror-locating-and-steering-the-partisan-direction-inside-a-large-language-model)  
+   标签：评分：9.0/10、query:ml-llm
+   evidence：研究大语言模型中的政党方向，使用监督线性探针
+5. [Language-Aware Token Boosting: LLM Language Confusion Reduction Without Tuning](/202606/09/2606.08994v1-language-aware-token-boosting-llm-language-confusion-reduction-without-tuning)  
+   标签：评分：9.0/10、query:ml-llm
+   evidence：解决大语言模型语言混淆，提出无微调提升方法
+6. [When New Generators Arrive: Lifelong Machine-Generated Text Attribution via Ridge Feature Transfer](/202606/09/2606.05626v1-when-new-generators-arrive-lifelong-machine-generated-text-attribution-via-ridge-feature-transfer)  
    标签：评分：8.0/10、query:ml-llm
-   evidence：面向LLM的自适应RAG框架
-3. [Learning to Route LLMs from Implicit Cost-Performance Preferences via Meta-Learning](/202606/08/2606.06178v1-learning-to-route-llms-from-implicit-cost-performance-preferences-via-meta-learning)  
-   标签：评分：8.0/10、query:ml-llm
-   evidence：通过元学习进行大语言模型路由
-4. [Skip a Layer or Loop It? Learning Program-of-Layers in LLMs](/202606/08/2606.06574v1-skip-a-layer-or-loop-it-learning-program-of-layers-in-llms)  
-   标签：评分：8.0/10、query:ml-llm
-   evidence：LLM推理的动态层程序
-5. [Improving Cross-Lingual Factual Recall via Consistency-Driven Reinforcement Learning](/202606/08/2606.06586v1-improving-cross-lingual-factual-recall-via-consistency-driven-reinforcement-learning)  
-   标签：评分：8.0/10、query:ml-llm
-   evidence：基于强化学习和监督微调的大模型跨语言事实召回
-6. [Data-Constrained Language Model Pretraining: Improved Regularization and Scaling Laws](/202606/08/2606.06888v1-data-constrained-language-model-pretraining-improved-regularization-and-scaling-laws)  
-   标签：评分：8.0/10、query:ml-llm
-   evidence：数据受限下语言模型预训练的规范化与缩放律
+   evidence：对大型语言模型生成的文本进行终身归因
 
 ### 速读区论文标签
-1. [TALAN: Task-Aligned Latent Adaptation Networks for Targeted Post-Training of Large Language Models](/202606/08/2606.06902v1-talan-task-aligned-latent-adaptation-networks-for-targeted-post-training-of-large-language-models)  
+1. [Domain-Adapted Small Language Models with Hybrid Post-Processing: Achieving Cost-Efficient, Low-Latency Multi-Label Structured Prediction via LoRA Fine-Tuning on Scarce Data](/202606/09/2606.05781v2-domain-adapted-small-language-models-with-hybrid-post-processing-achieving-cost-efficient-low-latency-multi-label-structured-prediction-via-lora-fine-tuning-on-scarce-data)  
    标签：评分：8.0/10、query:ml-llm
-   evidence：大型语言模型后训练
-2. [SigmaScale: LLM Compression with SVD-based Low-Rank Decomposition and Learned Scaling Matrices](/202606/08/2606.07098v1-sigmascale-llm-compression-with-svd-based-low-rank-decomposition-and-learned-scaling-matrices)  
+   evidence：使用LoRA微调小型LLM在稀缺数据上实现结构化预测
+2. [Rewrite to Translate, Translate to Reward: Reinforcement Learning for Source Rewriting in Machine Translation](/202606/09/2606.08011v1-rewrite-to-translate-translate-to-reward-reinforcement-learning-for-source-rewriting-in-machine-translation)  
    标签：评分：8.0/10、query:ml-llm
-   evidence：基于SVD与学习缩放矩阵的LLM压缩
-3. [ProbeScale: Probing Analysis to Optimize Neural Scaling Laws for Efficient Small Language Model Inference](/202606/08/2606.01806v1-probescale-probing-analysis-to-optimize-neural-scaling-laws-for-efficient-small-language-model-inference)  
+   evidence：大语言模型，机器翻译，强化学习
+3. [TLRD: Teaching LLMs to Reason over Tabular Data with Tri-Level Rationale Distillation](/202606/09/2606.08295v1-tlrd-teaching-llms-to-reason-over-tabular-data-with-tri-level-rationale-distillation)  
+   标签：评分：8.0/10、query:ml-llm
+   evidence：通过理由蒸馏教大语言模型推理表格数据
+4. [CATPO: Critique-Augmented Tree Policy Optimization](/202606/09/2606.08346v1-catpo-critique-augmented-tree-policy-optimization)  
+   标签：评分：8.0/10、query:ml-llm
+   evidence：通过树结构强化学习和批评增强提升大语言模型推理
+5. [TrustMargin: Training-Free Arbitration between Parametric Memory and Retrieved Evidence in Large Language Models](/202606/09/2606.08397v1-trustmargin-training-free-arbitration-between-parametric-memory-and-retrieved-evidence-in-large-language-models)  
+   标签：评分：8.0/10、query:ml-llm
+   evidence：无训练仲裁LLM的参数记忆与检索证据
+6. [Beyond Linear Activation Steering: Invertible Latent Transformations for Controlling LLM Behavior](/202606/09/2606.08454v1-beyond-linear-activation-steering-invertible-latent-transformations-for-controlling-llm-behavior)  
+   标签：评分：8.0/10、query:ml-llm
+   evidence：大语言模型，激活引导，行为控制
+7. [Beyond English benchmarks: clinical llm evaluation in Brazilian Portuguese](/202606/09/2606.07853v1-beyond-english-benchmarks-clinical-llm-evaluation-in-brazilian-portuguese)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：通过探针分析实现小语言模型高效推理
-4. [E2LLM: Towards Efficient LLM Serving in Heterogeneous Edge/Fog Environments](/202606/08/2606.03770v1-e2llm-towards-efficient-llm-serving-in-heterogeneous-edgefog-environments)  
+   evidence：跨语言临床大语言模型评估基准
+8. [MC-PDD: Masked Corpus-Level Pretraining Data Detection for Black-Box Large Language Models](/202606/09/2606.07996v1-mc-pdd-masked-corpus-level-pretraining-data-detection-for-black-box-large-language-models)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：在边缘/雾环境中高效部署LLM
-5. [Beyond Retrieval: Learning Compact User Representations for Scalable LLM Personalization](/202606/08/2606.04547v1-beyond-retrieval-learning-compact-user-representations-for-scalable-llm-personalization)  
+   evidence：使用掩码预测检测黑盒LLM的预训练数据
+9. [Enhancing AI Interpretability and Safety through Localised Architectures](/202606/09/2606.07998v1-enhancing-ai-interpretability-and-safety-through-localised-architectures)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：可学习用户表示用于LLM个性化
-6. [Are Large Language Models Suitable for Graph Computation? Progress and Prospects](/202606/08/2606.06865v1-are-large-language-models-suitable-for-graph-computation-progress-and-prospects)  
+   evidence：局部化机器学习与深度神经网络的可解释性对比
+10. [SAGE: An LLM-driven Self Reflective Agentic Framework for Fraud Detection](/202606/09/2606.08146v1-sage-an-llm-driven-self-reflective-agentic-framework-for-fraud-detection)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：关于LLM在图计算中的全面综述
-7. [Auditing Training Data in Domain-adapted LLMs: LoRA-MINT](/202606/08/2606.06946v1-auditing-training-data-in-domain-adapted-llms-lora-mint)  
-   标签：评分：7.0/10、query:ml-llm
-   evidence：针对微调LLM的成员推断测试
-8. [OffQ: Taming Structured Outliers in LLM Quantization by Offsetting](/202606/08/2606.07116v1-offq-taming-structured-outliers-in-llm-quantization-by-offsetting)  
-   标签：评分：7.0/10、query:ml-llm
-   evidence：通过偏移技术处理LLM量化中的异常值
-9. [Multilingual Long-Form Speech Instruction Following: KIT's Submission to IWSLT 2026](/202606/08/2606.04730v1-multilingual-long-form-speech-instruction-following-kits-submission-to-iwslt-2026)  
+   evidence：大语言模型驱动的多智能体欺诈检测框架
+11. [ReadingMachine: A Computational Methodology for Structured Corpus Reading and Large-Scale Synthesis](/202606/09/2606.07753v1-readingmachine-a-computational-methodology-for-structured-corpus-reading-and-large-scale-synthesis)  
    标签：评分：6.0/10、query:ml-llm
-   evidence：基于LLM的多语言语音指令跟随数据增强
-10. [CaliDist: Calibrating Large Language Models via Behavioral Robustness to Distraction](/202606/08/2606.05799v1-calidist-calibrating-large-language-models-via-behavioral-robustness-to-distraction)  
-   标签：评分：6.0/10、query:ml-llm
-   evidence：通过抗分心行为鲁棒性校准LLM
-11. [Modular Monolingual Adaptation using Pretrained Language Models](/202606/08/2606.06738v1-modular-monolingual-adaptation-using-pretrained-language-models)  
-   标签：评分：6.0/10、query:ml-llm
-   evidence：预训练语言模型在低资源语言的模块化适配
+   evidence：利用LLM进行结构化语料库阅读与综合
 
 
 <div class="dpr-home-promo-card">

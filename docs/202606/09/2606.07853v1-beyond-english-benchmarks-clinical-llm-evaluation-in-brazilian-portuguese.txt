@@ -1,0 +1,734 @@
+Title: Beyond English benchmarks: clinical llm evaluation in Brazilian Portuguese
+
+URL Source: https://arxiv.org/pdf/2606.07853v1
+
+Published Time: Tue, 09 Jun 2026 00:17:54 GMT
+
+Number of Pages: 33
+
+Markdown Content:
+# BEYOND ENGLISH BENCHMARKS : CLINICAL LLM EVALUATION IN BRAZILIAN PORTUGUESE 
+
+Giordano de Pinho Souza 
+
+Federal University of Rio de Janeiro Toronto Metropolitan University Toronto, CA 
+
+giordano@ufrj.br 
+
+Glaucia Melo 
+
+Toronto Metropolitan University Toronto, CA 
+
+glaucia@torontomu.ca 
+
+Josefino Cabral Melo Lima 
+
+Federal University of Rio de Janeiro Rio de Janeiro, RJ 
+
+clima@nce.ufrj 
+
+Daniel Schneider 
+
+Federal University of Rio de Janeiro Rio de Janeiro, BR 
+
+schneider@ufrj.br 
+
+# ABSTRACT 
+
+Large Language Models are transforming the support for clinical decision and their application in real scenarios. Yet, most benchmarks are conducted in English, and cross-lingual evaluation is needed to tackle the language gaps in global access. We introduce ClinicalBr, the first bilingual benchmark for clinical decision built from real Brazilian case reports. The corpus contains 2,892 cases drawn from 28 SciELO medical journals, spanning 18 specialties, and is structured as parallel Portuguese–English pairs. Each case supports four evaluation tasks: diagnosis retrieval, differential diagnosis, exam recommendation, and treatment planning. We evaluate four models: MedGemma-27B, Sabiá-4, DeepSeek-R1, and o3-mini, across both languages. The central finding is that the Portuguese–English performance gap is task-dependent, not general. In diagnosis retrieval, English yields a consistent advantage across all models, with +7.5–12.1 accuracy points. This advantage disappears in differential diagnosis, exam recommendation, and treatment planning, where confidence intervals cross zero for most models and Portuguese completeness scores are marginally higher. Brazilian-endemic conditions proved easier than the full corpus, not harder, indicating that tropical presentations are adequately represented in current pre-training. Exam recommendation was the hardest task across all models and both languages, with F1 scores below 0.10, well below the differential diagnosis ceiling of 0.20–0.27. 
+
+Keywords large language models · cross-lingual evaluation · clinical Decision Support · medical benchmarks 
+
+# 1 Introduction 
+
+The advancement of LLMs has shown increasing capabilities in healthcare, improving natural language understanding to aid clinical decision-making [ 1, 2 , 3]. Language models can decompose problems step by step and, on specific benchmark tasks, match or surpass clinicians. Because these models encode vast clinical knowledge, they perform well on structured clinical decision tasks such as diagnosis and question answering. However, this performance has been established almost entirely in English. The benchmarks that define the field were draw from English-language licensing exams [4], while most clinical care worldwide occurs in other languages, on records written in those languages. Most existing medical benchmarks are English-language and built on licensing-exam multiple-choice questions [ 5, 6, 7 , 8, 9]. Both choices limit what such benchmarks can measure. Licensing exams test textbook knowledge against a fixed answer key, but clinical practice is local: disease prevalence, available diagnostic tests, and treatment guidelines differ by country. A model that scores well on US-derived exams has not thereby been shown to reason over the epidemiological profile and clinical constraints a physician faces elsewhere. Outside English, the benchmarks 
+
+> arXiv:2606.07853v1 [cs.CL] 5 Jun 2026
+
+Souza et al. needed to test this are scarce. In the Brazilian context, a few Portuguese-language medical benchmarks have recently appeared [ 10 , 11 , 12 , 13 , 14 ], but they largely inherit the same exam-derived, multiple-choice format and so leave the central question — whether models reason over local clinical cases or only retrieve familiar facts — unanswered. Cross-lingual evaluation is needed because language gaps are tied to fairness and global access. Models are still trained mainly on high-resource languages, which leaves them less prepared for mid- and low-resource languages that are important in real-world care. Recent work links these gaps to broader corpus fairness problems, including geographic, cultural, and socio-economic bias [ 15 , 16 ]. For these reasons, multilingual healthcare benchmarks are not just a technical nice-to-have; they are a basic requirement for valid evaluation. New benchmark efforts are explicitly motivated by the need to reflect the multilingual reality of medicine, broaden coverage beyond English and beyond narrow text-only tasks, and better judge whether medical LLMs are safe and useful across populations rather than only in English-speaking contexts [2, 17] To adress this, we proposed ClinicalBr, a benchmark designed to evaluate the clinical capabilites of LLMs within the Brazilian Context. ClinicalBr pairs 2,892 real Brazilian case reports in Portuguese and English across four open-ended clinical tasks, diagnosis retrieval, differential diagnosis, exam recommendation, and treatment planning. Among all cases, we span more than 15 types of bodies and disorders, with 219 cases focused on Tropical Diseases. ClinicalBr is primarily focused on reflecting Brazilian cases and guidelines. We make three contributions: • We show that the cross-lingual performance gap in clinical LLMs is confined to single-answer retrieval and disappears under structured reasoning, a dissociation the prevailing English multiple-choice benchmarks cannot detect. • We show this pattern is consistent with knowledge overlap rather than reasoning ability: the gap tracks how retrieval-anchored a model is, and conditions sparse in English corpora do not behave as a knowledge deficit would predict. • We release ClinicalBR, a bilingual PT/EN benchmark of real Brazilian case reports spanning four open-ended clinical tasks, together with its paired-difference evaluation protocol, for measuring cross-lingual clinical competence. 
+
+# 2 Related Work 
+
+2.1 Medical Benchmarks for LLMs 
+
+The evaluation of LLM efficacy in medicine has evolved from static knowledge testing toward the analysis of complex clinical competencies. Traditionally, performance was measured through medical licensing examinations, such as the USMLE and CHMLE, which form the basis of widely cited datasets like MedQA and MedMCQA [ 18 , 19 ]. This approach was consolidated by benchmark families such as MultiMedQA, which combines multiple sources of professional, research, and consumer health questions to test medical competence in a manner analogous to student assessment [ 3 ]. Although effective for measuring the mastery of standardized facts, these multiple-choice-based benchmarks have shown limitations, especially with the emergence of advanced reasoning models that have rendered these traditional challenges less rigorous [20]. In light of this saturation, recent research has shifted toward benchmarks that prioritize clinical reasoning in real-world scenarios, moving away from an exclusive reliance on academic exams. Consequently, platforms focused on specific subdomains have emerged—such as medical calculators and X-ray visual interpretation—alongside denser datasets like Medbullets and RareArena, which utilize broader data sources to simulate daily clinical practice [ 21 ]. In this context, it is observed that the failure of traditional benchmarks lies in the insufficient evaluation of diagnostic capability, which requires complex reasoning over multidimensional patient records. To fill this gap, DiagnosisArena has emerged as a proposal designed to comprehensively evaluate diagnostic reasoning within simulated clinical environments [6]. Parallel to this, medical evaluation has expanded beyond the question-and-answer (QA) format, encompassing tasks such as clinical summarization, information extraction, and predictive decision support. Resources such as MIMIC-III, MIMIC-IV, and ClinicalBench allow models to be tested on practical tasks, including treatment recommendations and report generation [ 22 ]. Finally, it is common practice to also evaluate medical models on general benchmarks, such as MMLU-Pro, to ensure that refinement in a specialized domain does not compromise the model’s general logic and reasoning capabilities [9]. 2ClinicalBr 
+
+2.2 LLMs applied to Healthcare 
+
+The integration of Large Language Models (LLMs) in the healthcare sector has resulted in a shift towards a more interactive and reasoning-based clinical AI, moving beyond traditional algorithms to dynamic systems capable of answering complex medical questions and retrieving specialized knowledge. Specialized models, such as Med-PaLM 2, have demonstrated the ability to handle professional-level medical examinations and provide detailed explanations for physicians, students, and patients [ 3 , 23 ]. This capability extends to clinical decision support, where LLMs are increasingly used to suggest diagnoses, optimize treatment plans, and reason about patient cases through the analysis of longitudinal data from Electronic Health Records (EHR) [ 24 , 25 ]. By mimicking human clinical reasoning, these models assist in transforming raw data into actionable insights, although researchers argue that their current role is better suited for supervised assistance than autonomous practice, due to ongoing concerns about factual grounding and safety [26, 27]. Beyond direct clinical reasoning, LLMs have become important in optimizing the administrative and documentation burdens that characterize modern medicine. One of the most successful applications involves the automated sum-marization of physician-patient dialogs, radiology reports, and discharge records, often producing results that expert reviewers judge to be superior to human-written notes in terms of clarity and conciseness [ 28 , 29 ]. Furthermore, these models serve as a bridge between unstructured clinical narratives and structured data systems, performing automated ICD coding and medical named entity recognition [ 30 ]. This structured extraction is vital for hospital management and large-scale biomedical research, enabling the synthesis of vast amounts of literature and clinical trial data into living systematic reviews [ 31 ]. The future trend in this area points toward multimodal medical foundation models that integrate diverse data streams, including text, medical images, and genomics [ 32 , 33 ]. These generalist systems are being developed to perform sophisticated tasks, such as the interpretation of chest X-rays and cross-modal data retrieval, effectively acting as comprehensive assistants across various medical specialties [ 34 , 35 ]. Additionally, LLMs are expanding their role into patient-facing functions, providing health education, triage support, and mental health assistance, thereby increasing accessibility to medical knowledge [ 36 ]. However, as these models move closer to routine clinical care, the literature emphasizes that addressing ethical challenges — specifically regarding algorithmic bias, data privacy, and the potential for hallucinations — remains a prerequisite for their widespread adoption [37]. 
+
+# 3 Methodology 
+
+We introduce ClinicalBr , the first benchmark designed to evaluate the capabilities of state-of-the-art large language models (LLMs) in the Brazilian medical context. ClinicalBr is made from cases with medical diagnosis, treatment planning, and exam recommendation. Our benchmark integrates real-world clinical case scenarios collected from 28 Brazilian medical journals, ensuring that all cases reflect the country’s distinct epidemiological profile, local clinical guideline adherence, and regional care recommendation practices. The whole evaluation is built and evaluated by a two-stage pipeline: A constructed masked cases with 2 languages from cases from the scielo open acess case reports, followed by four evaluation scoring in diagnosis accuracy, differential diagnosis, exam selection and treatment planning, applied to four chosen models (Sabiá-4, o3-mini, medgemma and deepseek-r1. The whole pipeline is sumarrized in Figure 1. 
+
+∆( EN − PT ) rather than two independent means. 3Souza et al. Table 1: Pipeline Attrition and Corpus Classification 
+
+A. Pipeline Attrition 
+
+Discovered cases (unfiltered) 7,177 Stage 1 — Year, publication type & duplicate filter 3,452 Stage 2 — Case type classification 2,983 Stage 3 — Single-patient filter 2,892 
+
+Stage 4 — Final corpus 2,892 B. Case Type (Clinical Focus) 
+
+Diagnosis 853 Therapeutic / Treatment 744 Both (Diagnosis and Treatment) 1,304 
+
+C. Top DeCS Anatomy [A] (Body Systems) 
+
+Cardiovascular System [A07] 597 Musculoskeletal System [A02] 525 Integumentary System (Skin, Hair, Nails) [A16] 475 Nervous System [A08] 294 Sense Organs [A09] 257 Respiratory System [A04] 230 Urogenital System [A05] 177 Digestive System [A03] 169 
+
+D. Top DeCS Disease [C] (Pathology) 
+
+Infections [C01] 710 Neoplasms [C04] 559 Cardiovascular Diseases [C14] 391 Skin and Connective Tissue Diseases [C17] 192 Musculoskeletal Diseases [C05] 168 Eye Diseases [C11] 151 Nervous System Diseases [C10] 143 Congenital, Hereditary, and Neonatal Abnormalities [C16] 118 
+
+E. Tropical / Endemic 
+
+Total tropical-tagged cases 219 Endemic to Brazil 124 Neglected Tropical Diseases (NTD) 84 Arboviruses 25 
+
+F. Top Tropical Diseases 
+
+Tuberculosis 71 Leprosy (Hansen’s Disease) 25 Toxoplasmosis 24 Chagas Disease 21 Dengue 16 Paracoccidioidomycosis 16 Cutaneous Leishmaniasis 12 Visceral Leishmaniasis 11 Chikungunya 7Schistosomiasis 7
+
+G. Masked Evaluation Inputs 
+
+Diagnosis-only cases 851 Treatment-only cases 2,041 Exam-selection cases 851 Cases with both (Ambos) 1,303 4ClinicalBr 
+
+3.1 Corpus construction 
+
+The first phase for discovering all the documents to parse was to find the ID of all the 28 medical related journals. After finding the IDs, we used the SciELO ArticleMeta API to fetch all the metadata from the papers. Article metadata was filtered to the case-report document type and year, and the full text was retrieved through Firecrawl [ 38 ]. A 2 stage filtered then happeneded to improve the quality of the corpus. Stage 1 filtered each article as a clinical case report related to the diagnosis or therapeutic process with the Prompt 9.1. As we screened all the cases, multi-patient cases were identified. To prevent the inclusion of cases that could mislead the results of the LLMs, we did the Stage 2 of filtering using an LLM with the Prompt 9.4. Afterall, all cases were classified in thier predoment type between diagnosis, treatment and diagnosis-treatment (both) with the Prompt 9.1 in the end we had 853 diagnosis cases, 744 therapeutic cases and 1,304. Per-stage counts and the type distribution of the resulting corpus are in Table 1. Every filtered case was parsed into a structured JSON schema patient case that follows 3 main structures. Diagnosis related were made with Prompt 9.1 , treatment related were made with Prompt 9.1 and for Diagnosis and Treatment cases, the structure were made with Prompt 9.1 The model-facing version of each case masks the diagnostic answer by stripping the entire diagnosis section and, where applicable, the final-diagnosis field within the "presentation" field. Because the gold label or its acronyms occasionally surfaces inside "presentation" and "exams" (e.g. titles, framing sentences, or verdict clauses around investigations), we conducted a leakege verification that matches of the gold label and its acronym variants with [REDIGIDO] , and additionally drops verdict clauses gated on a long gold-token co-occurrence. 
+
+3.2 Model panel 
+
+• MedGemma-27B [39 ], is the text-only, 27-billion-parameter variant of Google’s open MedGemma collection, a dense decoder-only transformer built on the Gemma-3 backbone whose language component is further trained on a broad corpus of medical text and question–answer data. MedGemma is a collection of Gemma 3 variants trained for performance on medical text and image comprehension, making it our domain-specialised, English-centric reference point. • Sabiá-4 [ 40 ], is the latest closed-source model in Maritaca AI’s Sabiá family of Brazilian-Portuguese LLMs. It is a Transformer-based system whose exact parameter count is not publicly disclosed, developed through a multi-stage pipeline of continued pre-training on Portuguese and Brazilian legal corpora, long-context extension, instruction tuning, and preference alignment. • DeepSeek-R1 [ 41 ], is a 671-billion-parameter mixture-of-experts transformer post-trained with large-scale rule-based reinforcement learning to elicit explicit reasoning. • o3-mini [ 42 ], is a closed-source reasoning model from OpenAI’s o-series, included as a frontier closed-weight reasoning baseline. I 
+
+3.3 Diagnosis Accuracy 
+
+For the diagnosis task, each benchmark model receives a masked case consisting of only with the "presentation" and "exam" sections and is asked to return the most likely diagnosis considering the full case. Each prediction is then paired with the reference diagnsosis from the original case. The evaluation is done by a LLM-as-judge by gpt-oss-120b 
+
+with the Prompt 9.3 that graded binary if it’s correct or incorrect with a short justification. The reported metric is the mean accuracy and the headline quantity is ∆( EN − PT ) with a paired per-case bootstrap 95% . Diagnosis was scored on n=2 ,135 cases paired across both languages. 
+
+3.4 Differential diagnosis and Exam Recommendation 
+
+For the differential diagnosis task, each benchmark model receives a masked case "diagnosis" and is asked to return The differential-diagnosis with the prompt 9.4. This prompt elicits a differential diagnoses — initial candidate list, systematic evaluation against the case, step-by-step exclusion, and a justified final diagnosis — and returns the candidate list as a structured array. The exam-recommendation task asks each model to recommend the diagnostic work-up for a masked case using the prompt 9.2. Acting as the ordering physician, the model lists the complementary tests it would request — constrained to be specific (e.g., "abdominal CT with contrast" rather than "imaging") and justified by the clinical picture, and returns them as a structured object grouped into four categories: laboratory, imaging, pathology, and other. 5Souza et al. The scoring proceeds by entity-linking both the model and the gold lists to the UMLS Metathesaurus [ 43 ]. Each diagnosis string is embedded with SapBERT-XLMR [ 44 ], a multilingual SAP-tuned encoder that places PT and EN surface forms in a common biomedical space, so EN predictions can be linked and matched by inner product against a FAISS-CPU IndexFlatIP index restricted to disease semantic types. Precision, Recall and F1 scores are computed over the resulting CUI sets, with depth-2 hierarchical credit: a predicted CUI counts as a hit if it is in the gold set, an ancestor of a gold CUI, or a descendant of a gold CUI under the UMLS CHD/RN relations. 
+
+3.5 Treatment 
+
+For the treatment task, each model receives a masked output and is asked to write a treatment plan in free-form. We selected 3 different judges ( Qwen-2.5-72B, LLaMA 3.3 70B and Gpt-oss-120b) was chosen to represent 3 types of model architechture and training, in order to decrease the bias for any given judgement. Every judge is shown the case, the proposed treatment, and the reference treatment, and returns three 1–5 scores: • Accuracy : whether the proposed interventions are clinically correct given the diagnosis and case context; • Completeness : whether the response covers the components present in the gold treatment • Clarity : whether the response is written in a clinically usable, standard format. The composite score reported is the mean of the three axes, divided by 5 so that it sits on a [0 , 1] scale comparable to the other tasks. 
+
+3.6 Data Leakage 
+
+The pre-training of all the models is extremelly broad, spanning across all the years that the related cases were published, what can cause the model to memorize the answers and achieve higher scores in the benchmark. To tackle this limitation, we conducted a standard year stratification test. For each model and language, we computed the main diagnosis accuracy for each year, between 2015 and 2024. Every accuracy measure is uniform across the four models. 
+
+Figure 1: Accuracy in All cases 
+
+# 4 Results 
+
+4.1 The Benchmark 
+
+ClinicalBr is a Brazilian Portuguese clinical decision benchmark built from the SciELO Online Library. This library covers open-access academic literature from countries across South America. In this work, we use the SciELO Brazil collection of Medicine Journals, which consists of several case-report-type papers containing real information about how real clinical cases were developed. The primary language of the papers is Portuguese, however, some journals are English-based, even when reporting Brazilian cases. The benchmark covers four stages of the clinical reasoning process: differential diagnosis, diagnosis retrieval, exam recommendation, and treatment planning. Each case has a complete version and a masked version according to the evaluation settings. For example, when evaluating diagnosis, the "diagnosis" section is removed from the structured case. Additionally, all cases are structured as parallel pairs in Portuguese and English to enable a clear cross-lingual comparison, the translation process is detailed in the methodology section. To construct the benchmark, we employ a 6ClinicalBr six-step pipeline that creates a final corpus of 2,892 cases from the SciELO medical journals, spanning more than 18 medical specialties. The corpus undergoes five filtering stages to ensure its coherence and reliability within the medical domain. 
+
+4.1.1 Data Composition 
+
+For each case in our benchmark, there is a structured file with four fields extracted from the original case-report-type paper. The body of the file is represented by: "presentation" (e.g, clinical data, patient data, family history, past medication), "exams" (e.g, laboratory, imaging), "diagnosis" (the accurate final diagnosis of the case), "treatment" (The treatment plan with their outcomes and intervention). Considering all of the cases, not all of them are focused on diagnosis or treatment, some have only one focused area. For the final evaluation setting the benchmark had 853 diagnosis-only cases, 744 treatment-only cases, and 1,303 cases tagged "both" (both diagnostic and therapeutic focused). Portuguese and English cases are equal by construction, the pipeline was the same, preserving all the information in the four-field structure (Table 1) 
+
+4.1.2 Evaluation settings 
+
+The benchmark is designed to be a open-ended questioning reasoning for the models. There are no closed questions. Each case is accompanied by the answer extracted in the original paper, which is labeled as the reference answer. In some cases, the reference answer is clear and direct, such as in the diagnosis retrieval, in other cases, the reference answer is used as a support to compare with the model predicted answer. The rationale is that in healthcare, treatment and exam recommendation rarely has a single correct answer. All evaluation is conducted in two separate language settings, Portuguese and english. A second evaluation is done specific to tropical countries such as Brazil. Table 4.2. The following are the specifications for each type of evaluation. • Diagnosis retrieval: The model receives a masked case, only the clinical presentation and exam results, with diagnosis and treatment removed. The reference answer is the diagnosis stated in the original paper. Performance is measured by accuracy against that reference. • Differential diagnosis: The model receives the same masked case. The reference answer is a differential diagnosis list generated by a model that had access to the full case. Performance is measured by comparison to that list. • Exam recommendation: The model receives the same masked case. The reference answer is the set of exams documented in the full case. Each predicted exam is mapped to a UMLS CUI using SapBERT-XLMR, and performance is measured by F1 against the reference set. • Treatment planning: The model receives the masked case with the diagnosis revealed and treatment removed. The reference answer is the treatment described in the original paper. Performance is scored by an LLM-as-judge on three rubric metrics: completeness, accuracy, and clarity. 
+
+4.1.3 Evaluation metrics 
+
+The model’s performance is evaluated through three domain-specific tasks. First, Diagnosis Accuracy is assessed as the accuracy of the predicted answer against the reference answer in the extracted diagnostic field, with a LLM-as-judge. The judge verifies for semantically similar diagnoses and scores with 1 or 0. Second, for Differential Diagnosis and Exam recommendation, we used feature extraction on the generated answer and match them with their UMLS CUI, then we matched the reference answer with the UMLS CUI. We then compare with 3 metrics: precision, recall, and F1. Finally, for Treatment Planning, a mean of three LLM-as-judge scores spanning 1–5 on a Likert scale (accuracy, completeness, and clarity) is normalized to a [0,1] scale. Treatment Accuracy measures the factual correctness of recommended elements, acting as a precision metric when comparing to the reference answer . Treatment Completeness functions as a recall metric for the treatment space, comparing to the ground truth response. Treatment Clarity evaluates the clarity and organization of the output for usage in clinical contexts. For this rubric we used the prompt 9.3 
+
+4.2 Diagnosis: english language improve accuracy 
+
+Table 4.2 quantify the diagnostic advantage of English over Portuguese. Across n=2 ,135 paired masked cases, all four models score higher in English: MedGemma-27B +0 .121 accuracy [+0 .099 , +0 .143] , Sabiá-4 +0 .107 [+0 .086 , +0 .128] , DeepSeek-R1 +0 .075 [+0 .053 , +0 .096] , and o3-mini +0 .081 [+0 .061 , +0 .104] . Every confi-dence interval excludes zero. The advantage is largest for the most language-anchored models (MedGemma, Sabiá-4) and smallest for the strongest reasoners (DeepSeek-R1, o3-mini), consistent with the hypothesis that the gap reflects lexical/knowledge overlap with predominantly English biomedical pre-training rather than reasoning ability. 7Souza et al. Task Model n PT (95% CI) EN (95% CI) ∆ EN −PT (95% CI) Diagnosis MedGemma-27B 2135 0.401 [0.381, 0.422] 0.523 [0.501, 0.543] 0.121 [0.099, 0.143] Sabiá-4 2135 0.434 [0.412, 0.454] 0.541 [0.518, 0.562] 0.107 [0.086, 0.128] DeepSeek-R1 2135 0.541 [0.521, 0.563] 0.615 [0.594, 0.637] 0.075 [0.053, 0.096] o3-mini 2135 0.558 [0.537, 0.579] 0.639 [0.618, 0.660] 0.081 [0.061, 0.104] Diff diagnosis MedGemma-27B 2117 0.205 [0.198, 0.212] 0.229 [0.221, 0.237] 0.024 [0.016, 0.032] Sabiá-4 2124 0.218 [0.210, 0.225] 0.214 [0.206, 0.222] -0.003 [-0.011, 0.005] DeepSeek-R1 2128 0.267 [0.258, 0.275] 0.250 [0.241, 0.258] -0.017 [-0.025, -0.009] o3-mini 2038 0.243 [0.234, 0.252] 0.238 [0.230, 0.246] -0.005 [-0.013, 0.003] Exam selection MedGemma-27B 842 0.039 [0.033, 0.046] 0.027 [0.022, 0.033] -0.012 [-0.019, -0.005] Sabiá-4 842 0.044 [0.038, 0.049] 0.032 [0.027, 0.037] -0.012 [-0.019, -0.005] DeepSeek-R1 842 0.053 [0.047, 0.060] 0.040 [0.035, 0.045] -0.013 [-0.020, -0.007] o3-mini 842 0.019 [0.014, 0.025] 0.015 [0.011, 0.019] -0.004 [-0.010, 0.001] Treatment MedGemma-27B 2024 0.807 [0.802, 0.811] 0.780 [0.775, 0.784] -0.027 [-0.032, -0.023] Sabiá-4 2024 0.822 [0.818, 0.825] 0.808 [0.805, 0.812] -0.013 [-0.016, -0.010] DeepSeek-R1 2024 0.836 [0.833, 0.839] 0.814 [0.811, 0.817] -0.022 [-0.025, -0.019] o3-mini 2024 0.837 [0.834, 0.840] 0.821 [0.818, 0.824] -0.016 [-0.019, -0.013] 
+
+4.3 Differential diagnosis 
+
+Figure 2: Comparison Figure 2 shows the evaluation of the four models in the differential diagnosis evaluation of all cases. The differential diagnosis here aims to determine whether the predicted diagnoses fall within the correct space when compared to a differential diagnosis extracted from the text. We did 2 distint recall evaluation, one with the inclusion of the correct reference diagnosis and the other against any Differential Diagnosis. DeepSeek-R1 and o3-mini show a clear advantage. Both are the most accurate models for finding the best diagnosis, reaching Recall @5 inc ≈ 0.45 in Portuguese and English, whereas Sabiá-4 and MedGemma-27B scored in the [0.28– 0.34] range in the first Figure. The middle figure (Recall@5 against any differential Diagnosis) is much higher than the left panel (against the included gold) across all models. This indicates that the models possess a general capability to recall probable differential diagnoses in both languages; they are highly recall-driven but not necessarily precise, which is exactly why the F1@5 scores on the right collapse to the 0.2–0.27 range. When it comes to the comparison between languages, the top-tier models perform essentially identically; DeepSeek-R1 and o3-mini are language-invariant on this task (Figure 4). In contrast, MedGemma-27B is the only model with a visible performance gap from PT to EN, which highlights the benefits of language alignment consistent with it being an English-centric medical model. 8ClinicalBr 
+
+Figure 3: Comparison 
+
+4.4 Exam Recommendation 
+
+Figure 4: Precision, recall, and F1 in all exam recommendation cases The exam recommendation evaluation is by far the worst score on all of the axis evaluated, where the maximum score is below 0.175. The read of the figure shows the precision -recall tradeoff, with overall performance much lower than DDx. The key differentiator between models is list length. The reference case standarts average 6.6 exams, but the models diverge widely: Sabiá-4 predicts 19.1, DeepSeek-R1 13.6, MedGemma-27B 10.3, and o3-mini 5.6, the only model within the clinically plausible range. • Precision panel: o3 - mini outperforms the other models ( 0.09) due to its conservative approach, yielding fewer guesses and a higher hit rate. Sabiá-4 and DeepSeek-R1 are penalized for over-prediction. • Recall panel: Sabiá - 4 leads, followed closely by DeepSeek -R1, because generating a larger list (e.g., 19 items) naturally captures more of the gold standard through higher volume. Conversely, o3 -mini’s shorter list caps its recall at approximately 0.08. • F1 panel: The two distinct strategies achieve a near-tie at 0.08; Sabiá - 4 succeeds via output volume, while o3 -mini succeeds via selectivity, approaching the threshold from opposite directions. DeepSeek -R1 ranks just below them, whereas MedGemma-27B clearly performs the worst across all metrics. F1 scores peak below 0.10. Compared to the DDx F1@5 range of 0.20–0.27, exam selection proves substantially harder than generating a diagnosis. The action space for exam recommendation is larger and comprises a wider array of 9Souza et al. options, a clinical workup involves a menu of dozens of plausible tests. Consequently, a model may select a clinically reasonable exam that simply does not match the specific choice made by the clinicians. Regarding language variance, English yields better results than Portuguese for three of the four models in terms of F1 score. Sabiá - 4 (0.076 → 0.088), DeepSeek - R1 (0.070 → 0.081), and MedGemma - 27B (0.054 → 0.059) all perform better in English. Only o3 - mini demonstrates language invariance (0.077 ≈ 0.076). While this performance gap is modest ( 1–1.5 F1 percentage points), it remains consistent across all models except o3-mini. 
+
+4.5 Treatment Planning 
+
+Figure 5: Treatment subscores The treatment evaluation constitutes the final component of our benchmark assessment. In this task, LLM judges evaluate open-ended responses rather than applying a binary right-or-wrong check. Because relying on a single judge can introduce systematic bias and variations stemming from model training, we employed three distinct judges: Qwen-2.5-72B, Llama-3.3-70B, and gpt-oss-120B. These judges scored responses across three dimensions: accuracy, completeness, and clarity. In total, the panel generated 16,300 scores. We present these results as a 3 × 3 grid in Figure 5, from which three primary findings emerge. First, o3-mini achieved the highest accuracy, reaching a consensus mean of 0.766. However, it fell short in completeness, dropping to 0.674 and ranking third behind Sabiá-4 and DeepSeek-R1. Consistent with our observations in the differential diagnosis task, the model that generates the most clinically accurate treatments is not necessarily the one that produces the most comprehensive plan. Second, DeepSeek-R1 exhibited a contrasting performance profile. It scored highly in completeness, with a mean of 0.661, but ranked second in accuracy. It consistently generated longer treatment plans that incorporated diverse clinical perspectives. Third, the clarity metric failed to differentiate the models significantly, all evaluated models produced clear, well-organized plans. This uniformity reflects a recurrent bias: when models generate longer outputs, judges tend to award higher clarity scores. Conversely, the primary drivers of low clarity scores were the inclusion of vague medical jargon and disorganized formatting. Notably, accuracy and completeness exhibited the strongest dependence on the reference treatment, which also corresponded to the greatest variance among judge scores. Disagreements between the model and 10 ClinicalBr the reference treatment most frequently occurred when the model failed to predict the identical drug or a highly relevant component of the treatment plan. When analyzing cross-lingual performance, accuracy scores remained closely matched, with models scoring between 0.72 and 0.77 in both languages. The absolute difference between English and Portuguese performance fell within 
+
+±0.005 , and every confidence interval included zero. For completeness, models scored between 0.62 and 0.66 in Portuguese, compared to 0.59 to 0.65 in English. While three of the four models demonstrated a nominal advantage in Portuguese, this variance was not statistically significant. Ultimately, cross-checking with multiple judges reveals that the treatment task does not exhibit a robust Portuguese advantage. Instead, the language effect here is minimal, highly sensitive to the choice of LLM judge, and confined to a single specific criterion model combination rather than representing a systemic pattern. Figure 6 illustrates this trend: eight of the treatment data points cluster near the zero line, with only MedGemma-27B’s completeness interval leaning significantly toward the Portuguese side. 
+
+Figure 6: Treatment forest 
+
+4.6 Brazilian-endemic Cases                                                             
+
+> Diagnosis (accuracy) DDx (CUI F1) Model Lang Total Tropical ∆Total Tropical ∆
+> o3-mini PT 0.558 0.606 +0 .048 0.236 0.257 +0 .021
+> EN 0.639 0.648 +0 .008 0.231 0.234 +0 .002
+> DeepSeek-R1 PT 0.541 0.601 +0 .061 0.263 0.275 +0 .013
+> EN 0.615 0.642 +0 .027 0.245 0.240 −0.004
+> Sabiá-4 PT 0.434 0.513 +0.079 0.214 0.250 +0.036
+> EN 0.541 0.580 +0 .039 0.212 0.230 +0 .018
+> MedGemma-27B PT 0.401 0.446 +0 .044 0.201 0.228 +0.027
+> EN 0.523 0.601 +0.078 0.225 0.255 +0.030
+
+Table 2: Mean diagnosis accuracy and DDx F1 on the total corpus vs the 219-case tropical/endemic subset. We next asked whether Brazilian-endemic conditions, in which English biomedical training data are sparsest, behave differently from the corpus as a whole. Restricting the evaluation to the 219 SciELO cases tagged as tropical desiese 11 Souza et al. from Brazil (Table 2), every model–language pair scored at least as well on the tropical subset as on the full corpus, with the largest lifts in Portuguese diagnosis accuracy (+7.9+7.9 +7.9 percentage points for Sabiá-4, +6.1+6.1 +6.1 for DeepSeek-R1, and +4.8+4.8 +4.8 for GPT-o3-mini). Tropical cases were therefore systematically easier, consistent with their presentations (dengue, leishmaniasis, Chagas, schistosomiasis) being well represented in pre-training. When it comes to the PT–EN difference forest plot, Fig. 7 shows that there is no clear advantage with respect to language. Most confidence intervals overlap zero, except for MedGemma, which is mostly fine-tuned on English corpora. 
+
+Figure 7: Tropical Forest 
+
+# 5 Discussion 
+
+Cross-lingual gaps between language models can become a safety concern when they are utilized in a clinical decision support tool. Language models are used daily to provide accessible care information and support for users and healthcare workers, but when it comes to their implementation in critical scenarios, language performance needs to be evaluated. Our results showed that across all four models, English language diagnosis retrieval was better than Portuguese by a margin of more than 10% in most cases (MedGemma-27B +0.121 [+0.099, +0.143]; Sabiá-4 +0.107 [+0.086, +0.128]; DeepSeek-R1 +0.075 [+0.053, +0.096]; o3-mini +0.081 [+0.061, +0.104]), and the confidence interval excluded zero in every case. This gap was the largest for the more training language-anchored models, MedGemma-27B and Sabiá-4, and the gap was smallest for the reasoning models, DeepSeek-R1 and o3-mini. This raises a question: most hospitals and care institutions only have data in their own language about their patients, and translation can be a hard task, what does that mean for the millions of patients across the country? 
+
+The cross-lingual difference stops when the task is not only accuracy. When evaluation changed from simple accuracy to other metrics, such as Recall and F1, there was no longer a practical English advantage. For differential diagnosis reasoning, the difference between the languages’ confidence interval crossed zero in 3 of 4 models. When it comes to exam selection, the results showed a slight advantage across some models for Portuguese. Reading again the first diagnosis claim, when it comes to a precise final answer, the English language has a clear advantage that does not generalize to tasks that require more reasoning and recalling more than one correct answer. 
+
+Models can recall the right diagnosis without being able to prioritize them. As stated in the last paragraph, all models perform well at gathering the most probable answers regardless of language. In the differential diagnosis evaluation, recall ranked against the suggested answer was high, in the range of 0.8, but when it comes to ranking with the correct diagnosis first, the F1 drops to 0.20–0.27. This matters for deployment in real clinical settings: the model has a great ability to recall all the possible answers, but the human-in-the-loop factor is still imperative to maintain safety for the final clinical decision. On top of that, reasoning models tend to be more precise in terms of the correct final diagnosis. 
+
+Using AI to recommend medical tests is where current models are the furthest away from actually being useful for healthcare teams. The F1 score never exceeded 0.1 among all of the models in any language, less than half of the differential diagnosis ceiling. Against an extracted standard from the cases, with an average of 6.6 exams, the models that proposed a higher number of exams tended to score higher. Sabiá-4 proposed 19.1, DeepSeek-R1 13.6, and 12 ClinicalBr MedGemma-27B 10.3, while only o3-mini stayed in the clinically plausible range at 5.6. o3-mini performed best on precision by ordering conservatively. In a real clinical scenario, particularly in underdeveloped countries, more exams means more money the patient would have to spend; in these cases, models that recommend more exams increase the cognitive load of the practitioner and can decrease their efficiency. 
+
+Brazilian-endemic conditions were easier, not harder, for models. We anticipated that tropical and neglected diseases that are less represented in English-centric corpora would expose more errors in the clinical decision benchmark. However, the opposite held: every model in both languages scored as well on the 219-case subset as on the full corpus. The largest gains were in Portuguese diagnosis accuracy (+7.9 points for Sabiá-4, +6.1 for DeepSeek-R1, +4.8 for o3-mini). Tropical diseases such as dengue, leishmaniasis, and Chagas are well documented in global English and biomedical text, so they are well represented in pre-training. 
+
+The treatment-task language difference is an artifact of the judge, not a property of the models. All treatment evaluation used three judges. Under Qwen, Portuguese plans scored higher, but this did not survive the switch to Llama-3.3-70B or the stricter gpt-oss-120B. Pooled into a consensus, the gap collapses: accuracy stays within ±0.005 between languages with every confidence interval crossing zero, and the small Portuguese edge in completeness (0.62–0.66 vs. 0.59–0.65) is not significant for any model. As Figure 7 shows, the treatment deltas cluster on the zero line, with only MedGemma-27B’s completeness leaning toward Portuguese, and as the English-centric model, it is the least likely to drive a true Portuguese advantage, confirming this residual as judge variance. The implication is methodological: on open-ended tasks, a single-judge protocol would have reported a Portuguese advantage that a multi-judge protocol reveals as an artifact of one grader’s scoring tendencies. 
+
+# 6 Conclusion 
+
+We introduce ClinicalBr, the first bilingual benchmark for clinical reasoning built from real Brazilian Case Reports. Spanning across more than eighteen specialties and structured as Portuguese and English pairs, it evaluated frontier models on diagnosis retrieval, differential diagnosis, exam recommendation and treatment planning under a design framework that distinguishes case difficulty from the language effect. Our central finding is that the difference between the languages is a matter of knowledge retrieval and not reasoning of cases. English is the language that improves the best answers for single accuracy on diagnosis. Weaker models benefit the most from switching to English because they rely more on retrieval when compared to reasoning models that rely on the reasoning process before the answer. Yet, this advantage disappears the moment the task shifts to more structured reasoning for recommendations in the case. Differential diagnosis, exam selection, and treatment planning show Portuguese to be at least the equal of English, and Brazilian-endemic conditions proved easier rather than harder despite being the content least represented in English-centric corpora. 
+
+# Acknowledgments 
+
+This work was supported in part by Mitacs and the Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES). Code and data will be made publicly available upon acceptance. 
+
+# References 
+
+[1] Wayne Xin Zhao, Kun Zhou, Junyi Li, Tianyi Tang, Xiaolei Wang, Yupeng Hou, Yingqian Min, Beichen Zhang, Junjie Zhang, Zican Dong, Yifan Du, Chen Yang, Yushuo Chen, Zhipeng Chen, Jinhao Jiang, Ruiyang Ren, Yifan Li, Xinyu Tang, Zikang Liu, Peiyu Liu, Jian-Yun Nie, and Ji-Rong Wen. A Survey of Large Language Models, 2023. Version Number: 13. [2] Pengcheng Qiu, Chaoyi Wu, Xiaoman Zhang, Weixiong Lin, Haicheng Wang, Ya Zhang, Yanfeng Wang, and Weidi Xie. Towards building multilingual language model for medicine. Nature Communications , 15(1):8384, September 2024. [3] Karan Singhal, Shekoofeh Azizi, Tao Tu, S. Sara Mahdavi, Jason Wei, Hyung Won Chung, Nathan Scales, Ajay Tanwani, Heather Cole-Lewis, Stephen Pfohl, Perry Payne, Martin Seneviratne, Paul Gamble, Chris Kelly, Abubakr Babiker, Nathanael Schärli, Aakanksha Chowdhery, Philip Mansfield, Dina Demner-Fushman, Blaise Agüera y Arcas, Dale Webster, Greg S. Corrado, Yossi Matias, Katherine Chou, Juraj Gottweis, Nenad Tomasev, Yun Liu, Alvin Rajkomar, Joelle Barral, Christopher Semturs, Alan Karthikesalingam, and Vivek Natarajan. Large language models encode clinical knowledge. Nature , 620(7972):172–180, August 2023. 13 Souza et al. [4] Ankit Pal, Logesh Kumar Umapathi, and Malaikannan Sankarasubbu. MedMCQA: A Large-scale Multi-Subject Multi-Choice Dataset for Medical domain Question Answering. In Proceedings of the Conference on Health, Inference, and Learning , pages 248–260. PMLR, April 2022. [5] Pengcheng Qiu, Chaoyi Wu, Shuyu Liu, Yanjie Fan, Weike Zhao, Zhuoxia Chen, Hongfei Gu, Chuanjin Peng, Ya Zhang, Yanfeng Wang, and Weidi Xie. Quantifying the reasoning abilities of LLMs on clinical cases. Nature Communications , 16(1):9799, November 2025. [6] Yakun Zhu, Zhongzhen Huang, Linjie Mu, Yutong Huang, Wei Nie, Jiaji Liu, Shaoting Zhang, Pengfei Liu, and Xiaofan Zhang. DiagnosisArena: Benchmarking Diagnostic Reasoning for Large Language Models, May 2025. arXiv:2505.14107 [cs]. [7] Rahul K. Arora, Jason Wei, Rebecca Soskin Hicks, Preston Bowman, Joaquin Quiñonero-Candela, Foivos Tsimpourlas, Michael Sharman, Meghan Shah, Andrea Vallone, Alex Beutel, Johannes Heidecke, and Karan Singhal. HealthBench: Evaluating Large Language Models Towards Improved Human Health, May 2025. arXiv:2505.08775 [cs]. [8] Yuxin Zuo, Shang Qu, Yifei Li, Zhangren Chen, Xuekai Zhu, Ermo Hua, Kaiyan Zhang, Ning Ding, and Bowen Zhou. MedXpertQA: Benchmarking Expert-Level Medical Reasoning and Understanding, June 2025. arXiv:2501.18362 [cs]. [9] Yubo Wang, Xueguang Ma, Ge Zhang, Yuansheng Ni, Abhranil Chandra, Shiguang Guo, Weiming Ren, Aaran Arulraj, Xuan He, Ziyan Jiang, Tianle Li, Max Ku, Kai Wang, Alex Zhuang, Rongqi Fan, Xiang Yue, and Wenhu Chen. MMLU-Pro: A More Robust and Challenging Multi-Task Language Understanding Benchmark, November 2024. arXiv:2406.01574 [cs]. [10] Henrique Godoy. Alvorada-Bench: Can Language Models Solve Brazilian University Entrance Exams?, August 2025. arXiv:2508.15835 [cs]. [11] João Vitor Mariano Correia, Pedro Henrique Alves de Castro, Gabriel Lino Garcia, Pedro Henrique Paiola, and João Paulo Papa. Class of LLMs: Benchmarking Large Language Models on the Brazilian National Medical Examination. In Marlo Souza, Iria de Dios-Flores, Diana Santos, Larissa Freitas, Jackson Wilke da Cruz Souza, and Eugénio Ribeiro, editors, Proceedings of the 17th International Conference on Computational Processing of Portuguese (PROPOR 2026) - Vol. 2 , pages 101–111, Salvador, Brazil, April 2026. Association for Computational Linguistics. [12] César Augusto Madid Truyts, Amanda Gomes Rabelo, Gabriel Mesquita de Souza, Daniel Scaldaferri Lages, Adriano José Pereira, Uri Adrian Prync Flato, Eduardo Pontes dos Reis, Joaquim Edson Vieira, Paulo Sergio Panse Silveira, and Edson Amaro Junior. Zero-shot performance of selected large language and multimodal models on the 2023 Brazilian Portuguese medical residency exam. Scientific Reports , March 2026. [13] João Victor Bruneti Severino, Pedro Angelo Basei de Paula, Matheus Nespolo Berger, Filipe Silveira Loures, Solano Amadori Todeschini, Eduardo Augusto Roeder, Maria Han Veiga, Murilo Guedes, and Gustavo Lenci Marques. Benchmarking open-source large language models on Portuguese Revalida multiple-choice questions. 
+
+BMJ Health & Care Informatics , 32(1):e101195, February 2025. [14] Gabriel Lino Garcia, João Renato Ribeiro Manesco, Pedro Henrique Paiola, Pedro Henrique Crespan Ribeiro, Ana Lara Alves Garcia, and João Paulo Papa. A Step Forward for Medical LLMs in Brazilian Portuguese: Establishing a Benchmark and a Strong Baseline. In 2025 IEEE 38th International Symposium on Computer-Based Medical Systems (CBMS) , pages 214–219, June 2025. ISSN: 2372-9198. [15] Yiqiao Jin, Mohit Chandra, Gaurav Verma, Yibo Hu, Munmun De Choudhury, and Srijan Kumar. Better to Ask in English: Cross-Lingual Evaluation of Large Language Models for Healthcare Queries. In Proceedings of the ACM Web Conference 2024 , WWW ’24, pages 2627–2638, New York, NY, USA, May 2024. Association for Computing Machinery. [16] Jiageng Wu, Bowen Gu, Ren Zhou, Kevin Xie, Doug Snyder, Yixing Jiang, Valentina Carducci, Richard Wyss, Rishi J. Desai, Emily Alsentzer, Leo Anthony Celi, Adam Rodman, Sebastian Schneeweiss, Jonathan H. Chen, Santiago Romero-Brufau, Kueiyu Joshua Lin, and Jie Yang. BRIDGE: Benchmarking Large Language Models for Understanding Real-world Clinical Practice Text, March 2026. arXiv:2504.19467 [cs.CL]. [17] Hongwei Ji, Xiaofei Wang, Ching-Hui Sia, Jonathan Yap, Soo Teik Lim, Andie Hartanto Djohan, Yaowei Chang, Ning Zhang, Mengqi Guo, Fuhai Li, Zhi Wei Lim, Ya Xing Wang, Bin Sheng, Tien Yin Wong, Susan Cheng, Khung Keong Yeo, and Yih-Chung Tham. Large language model comparisons between English and Chinese query performance for cardiovascular prevention. Communications Medicine , 5(1):177, May 2025. [18] Qiao Jin, Bhuwan Dhingra, Zhengping Liu, William Cohen, and Xinghua Lu. PubMedQA: A Dataset for Biomedi-cal Research Question Answering. In Kentaro Inui, Jing Jiang, Vincent Ng, and Xiaojun Wan, editors, Proceedings 
+
+14 ClinicalBr 
+
+of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP) , pages 2567–2577, Hong Kong, China, November 2019. Association for Computational Linguistics. [19] Di Jin, Eileen Pan, Nassim Oufattole, Wei-Hung Weng, Hanyi Fang, and Peter Szolovits. What Disease does this Patient Have? A Large-scale Open Domain Question Answering Dataset from Medical Exams, September 2020. arXiv:2009.13081 [cs]. [20] Harsha Nori, Mayank Daswani, Christopher Kelly, Scott Lundberg, Marco Tulio Ribeiro, Marc Wilson, Xiaoxuan Liu, Viknesh Sounderajah, Jonathan Carlson, Matthew P. Lungren, Bay Gross, Peter Hames, Mustafa Suleyman, Dominic King, and Eric Horvitz. Sequential Diagnosis with Language Models, June 2025. arXiv:2506.22405 [cs] version: 1. [21] Hanjie Chen, Zhouxiang Fang, Yash Singla, and Mark Dredze. Benchmarking Large Language Models on Answering and Explaining Challenging Medical Questions, February 2024. [22] Lawrence K. Q. Yan, Qian Niu, Ming Li, Yichao Zhang, Caitlyn Heqi Yin, Cheng Fei, Benji Peng, Ziqian Bi, Pohsun Feng, Keyu Chen, Tianyang Wang, Yunze Wang, Silin Chen, Ming Liu, Junyu Liu, Xinyuan Song, Riyang Bao, Zekun Jiang, and Ziyuan Qin. Large Language Model Benchmarks in Medical Tasks, November 2025. arXiv:2410.21348 [cs]. [23] Prashila Dullabh, Courtney Zott, Nicole Gauthreaux, Caroline Peterson, Kistein Monkhouse, and Dean F Sittig. Integrating Generative Artificial Intelligence into Patient-Centered Clinical Decision Support: A Viewpoint on Research and Practice Considerations. [24] Yixiang Qu, Yifan Dai, Shilin Yu, Pradham Tanikella, Travis Schrank, Trevor Hackman, Didong Li, and Di Wu. Enhancing LLMs with Smart Preprocessing for EHR Analysis, April 2025. arXiv:2412.02868 [cs]. [25] Sully F. Chen, Anton Alyakin, Andreas Seas, Eunice Yang, Joanne J. Choi, Jin Vivian Lee, Amelia L. Chen, Pranav I. Warman, Rochelle T. Bitolas, Robert J. Steele, Daniel A. Alber, and Eric K. Oermann. LLM-assisted systematic review of large language models in clinical medicine. Nature Medicine , 32(3):1152–1159, March 2026. [26] Metty Paul, Leandros Maglaras, Mohamed Amine Ferrag, and Iman Almomani. Digitization of healthcare sector: A study on privacy and security concerns. ICT Express , 9(4):571–588, August 2023. [27] Karim Abouelmehdi, Abderrahim Beni-Hssane, Hayat Khaloufi, and Mostafa Saadi. Big data security and privacy in healthcare: A Review. Procedia Computer Science , 113:73–80, 2017. [28] Brian Wong and Kaito Tanaka. High-Fidelity Pseudo-label Generation by Large Language Models for Training Robust Radiology Report Classifiers, May 2025. arXiv:2505.01693 [cs]. [29] Dave Van Veen, Cara Van Uden, Louis Blankemeier, Jean-Benoit Delbrouck, Asad Aali, Christian Bluethgen, Anuj Pareek, Malgorzata Polacin, Eduardo Pontes Reis, Anna Seehofnerová, Nidhi Rohatgi, Poonam Hosamani, William Collins, Neera Ahuja, Curtis P. Langlotz, Jason Hom, Sergios Gatidis, John Pauly, and Akshay S. Chaudhari. Adapted large language models can outperform medical experts in clinical text summarization. Nature Medicine , 30(4):1134–1142, April 2024. [30] Yihan Lin, Zhirong Bella Yu, and Simon Lee. A Case Study Exploring the Current Landscape of Synthetic Medical Record Generation with Commercial LLMs, April 2025. [31] Shreya Johri, Jaehwan Jeong, Benjamin A. Tran, Daniel I. Schlessinger, Shannon Wongvibulsin, Leandra A. Barnes, Hong-Yu Zhou, Zhuo Ran Cai, Eliezer M. Van Allen, David Kim, Roxana Daneshjou, and Pranav Rajpurkar. An evaluation framework for clinical use of large language models in patient interaction tasks. Nature Medicine , 31(1):77–86, January 2025. [32] Yueming Jin, Junde Wu, Chang Han Low, and Yueming Jin. MedAgent-Pro: Towards Evidence-Based Multi-Modal Medical Diagnosis via Reasoning Agentic Workflow, March 2025. [33] Khaled Saab, Jan Freyberg, Chunjong Park, Tim Strother, Yong Cheng, Wei-Hung Weng, David G. T. Barrett, David Stutz, Nenad Tomasev, Anil Palepu, Valentin Liévin, Yash Sharma, Roma Ruparel, Abdullah Ahmed, Elahe Vedadi, Kimberly Kanada, Cian Hughes, Yun Liu, Geoff Brown, Yang Gao, Sean Li, S. Sara Mahdavi, James Manyika, Katherine Chou, Yossi Matias, Avinatan Hassidim, Dale R. Webster, Pushmeet Kohli, S. M. Ali Eslami, Joëlle Barral, Adam Rodman, Vivek Natarajan, Mike Schaekermann, Tao Tu, Alan Karthikesalingam, and Ryutaro Tanno. Advancing Conversational Diagnostic AI with Multimodal Reasoning, May 2025. arXiv:2505.04653 [cs]. [34] Peng Xia, Jinglu Wang, Yibo Peng, Kaide Zeng, Zihan Dong, Xian Wu, Xiangru Tang, Hongtu Zhu, Yun Li, Linjun Zhang, Shujie Liu, Yan Lu, and Huaxiu Yao. MMEDAGENT-RL: OPTIMIZING MULTI-AGENT COL-LABORATION FOR MULTIMODAL MEDICAL REASON-. 2026. 15 Souza et al. [35] Xinlu Zhang, Chenxin Tian, Xianjun Yang, Lichang Chen, Zekun Li, and Linda Ruth Petzold. AlpaCare:Instruction-tuned Large Language Models for Medical Application, March 2025. arXiv:2310.14558 [cs]. [36] Suhana Bedi, Hejie Cui, Miguel Fuentes, Alyssa Unell, Michael Wornow, Juan M. Banda, Nikesh Kotecha, Timothy Keyes, Yifan Mai, Mert Oez, Hao Qiu, Shrey Jain, Leonardo Schettini, Mehr Kashyap, Jason Alan Fries, Akshay Swaminathan, Philip Chung, Fateme Nateghi, Asad Aali, Ashwin Nayak, Shivam Vedak, Sneha S. Jain, Birju Patel, Oluseyi Fayanju, Shreya Shah, Ethan Goh, Dong-han Yao, Brian Soetikno, Eduardo Reis, Sergios Gatidis, Vasu Divi, Robson Capasso, Rachna Saralkar, Chia-Chun Chiang, Jenelle Jindal, Tho Pham, Faraz Ghoddusi, Steven Lin, Albert S. Chiou, Christy Hong, Mohana Roy, Michael F. Gensheimer, Hinesh Patel, Kevin Schulman, Dev Dash, Danton Char, Lance Downing, Francois Grolleau, Kameron Black, Bethel Mieso, Aydin Zahedivash, Wen-wai Yim, Harshita Sharma, Tony Lee, Hannah Kirsch, Jennifer Lee, Nerissa Ambers, Carlene Lugtu, Aditya Sharma, Bilal Mawji, Alex Alekseyev, Vicky Zhou, Vikas Kakkar, Jarrod Helzer, Anurang Revri, Yair Bannett, Roxana Daneshjou, Jonathan Chen, Emily Alsentzer, Keith Morse, Nirmal Ravi, Nima Aghaeepour, Vanessa Kennedy, Akshay Chaudhari, Thomas Wang, Sanmi Koyejo, Matthew P. Lungren, Eric Horvitz, Percy Liang, Mike Pfeffer, and Nigam H. Shah. MedHELM: Holistic Evaluation of Large Language Models for Medical Tasks, June 2025. arXiv:2505.23802 [cs]. [37] David Restrepo, Chenwei Wu, Zhengxu Tang, Zitao Shuai, Thao Nguyen Minh Phan, Jun-En Ding, Cong-Tinh Dao, Jack Gallifant, Robyn Gayle Dychiao, Jose Carlo Artiaga, André Hiroshi Bando, Carolina Pelegrini Barbosa Gracitelli, Vincenz Ferrer, Leo Anthony Celi, Danielle Bitterman, Michael G. Morley, and Luis Filipe Nakayama. Multi-OphthaLingua: A Multilingual Benchmark for Assessing and Debiasing LLM Ophthalmological QA in LMICs. Proceedings of the AAAI Conference on Artificial Intelligence , 39(27):28321–28330, April 2025. [38] Firecrawl. Firecrawl - The API to search, scrape, and interact with the web at scale. [39] Andrew Sellergren, Sahar Kazemzadeh, Tiam Jaroensri, Atilla Kiraly, Madeleine Traverse, Timo Kohlberger, Shawn Xu, Fayaz Jamil, Cían Hughes, Charles Lau, Justin Chen, Fereshteh Mahvar, Liron Yatziv, Tiffany Chen, Bram Sterling, Stefanie Anna Baby, Susanna Maria Baby, Jeremy Lai, Samuel Schmidgall, Lu Yang, Kejia Chen, Per Bjornsson, Shashir Reddy, Ryan Brush, Kenneth Philbrick, Mercy Asiedu, Ines Mezerreg, Howard Hu, Howard Yang, Richa Tiwari, Sunny Jansen, Preeti Singh, Yun Liu, Shekoofeh Azizi, Aishwarya Kamath, Johan Ferret, Shreya Pathak, Nino Vieillard, Ramona Merhej, Sarah Perrin, Tatiana Matejovicova, Alexandre Ramé, Morgane Riviere, Louis Rouillard, Thomas Mesnard, Geoffrey Cideron, Jean-bastien Grill, Sabela Ramos, Edouard Yvinec, Michelle Casbon, Elena Buchatskaya, Jean-Baptiste Alayrac, Dmitry Lepikhin, Vlad Feinberg, Sebastian Borgeaud, Alek Andreev, Cassidy Hardin, Robert Dadashi, Léonard Hussenot, Armand Joulin, Olivier Bachem, Yossi Matias, Katherine Chou, Avinatan Hassidim, Kavi Goel, Clement Farabet, Joelle Barral, Tris Warkentin, Jonathon Shlens, David Fleet, Victor Cotruta, Omar Sanseviero, Gus Martins, Phoebe Kirk, Anand Rao, Shravya Shetty, David F. Steiner, Can Kirmizibayrak, Rory Pilgrim, Daniel Golden, and Lin Yang. MedGemma Technical Report, April 2026. arXiv:2507.05201 [cs]. [40] Thiago Laitz, Thales Sales Almeida, Hugo Abonizio, Roseval Malaquias Junior, Giovana Kerche Bonás, Marcos Piau, Celio Larcher, Ramon Pires, and Rodrigo Nogueira. Sabiá-4 Technical Report, March 2026. arXiv:2603.10213 [cs]. [41] DeepSeek-AI, Daya Guo, Dejian Yang, Haowei Zhang, Junxiao Song, Peiyi Wang, Qihao Zhu, Runxin Xu, Ruoyu Zhang, Shirong Ma, Xiao Bi, Xiaokang Zhang, Xingkai Yu, Yu Wu, Z. F. Wu, Zhibin Gou, Zhihong Shao, Zhuoshu Li, Ziyi Gao, Aixin Liu, Bing Xue, Bingxuan Wang, Bochao Wu, Bei Feng, Chengda Lu, Chenggang Zhao, Chengqi Deng, Chenyu Zhang, Chong Ruan, Damai Dai, Deli Chen, Dongjie Ji, Erhang Li, Fangyun Lin, Fucong Dai, Fuli Luo, Guangbo Hao, Guanting Chen, Guowei Li, H. Zhang, Han Bao, Hanwei Xu, Haocheng Wang, Honghui Ding, Huajian Xin, Huazuo Gao, Hui Qu, Hui Li, Jianzhong Guo, Jiashi Li, Jiawei Wang, Jingchang Chen, Jingyang Yuan, Junjie Qiu, Junlong Li, J. L. Cai, Jiaqi Ni, Jian Liang, Jin Chen, Kai Dong, Kai Hu, Kaige Gao, Kang Guan, Kexin Huang, Kuai Yu, Lean Wang, Lecong Zhang, Liang Zhao, Litong Wang, Liyue Zhang, Lei Xu, Leyi Xia, Mingchuan Zhang, Minghua Zhang, Minghui Tang, Meng Li, Miaojun Wang, Mingming Li, Ning Tian, Panpan Huang, Peng Zhang, Qiancheng Wang, Qinyu Chen, Qiushi Du, Ruiqi Ge, Ruisong Zhang, Ruizhe Pan, Runji Wang, R. J. Chen, R. L. Jin, Ruyi Chen, Shanghao Lu, Shangyan Zhou, Shanhuang Chen, Shengfeng Ye, Shiyu Wang, Shuiping Yu, Shunfeng Zhou, Shuting Pan, S. S. Li, Shuang Zhou, Shaoqing Wu, Shengfeng Ye, Tao Yun, Tian Pei, Tianyu Sun, T. Wang, Wangding Zeng, Wanjia Zhao, Wen Liu, Wenfeng Liang, Wenjun Gao, Wenqin Yu, Wentao Zhang, W. L. Xiao, Wei An, Xiaodong Liu, Xiaohan Wang, Xiaokang Chen, Xiaotao Nie, Xin Cheng, Xin Liu, Xin Xie, Xingchao Liu, Xinyu Yang, Xinyuan Li, Xuecheng Su, Xuheng Lin, X. Q. Li, Xiangyue Jin, Xiaojin Shen, Xiaosha Chen, Xiaowen Sun, Xiaoxiang Wang, Xinnan Song, Xinyi Zhou, Xianzu Wang, Xinxia Shan, Y. K. Li, Y. Q. Wang, Y. X. Wei, Yang Zhang, Yanhong Xu, Yao Li, Yao Zhao, Yaofeng Sun, Yaohui Wang, Yi Yu, Yichao Zhang, Yifan Shi, Yiliang Xiong, Ying He, Yishi Piao, Yisong Wang, Yixuan Tan, Yiyang Ma, Yiyuan Liu, Yongqiang Guo, Yuan Ou, Yuduan Wang, Yue Gong, Yuheng Zou, Yujia 16 ClinicalBr He, Yunfan Xiong, Yuxiang Luo, Yuxiang You, Yuxuan Liu, Yuyang Zhou, Y. X. Zhu, Yanhong Xu, Yanping Huang, Yaohui Li, Yi Zheng, Yuchen Zhu, Yunxian Ma, Ying Tang, Yukun Zha, Yuting Yan, Z. Z. Ren, Zehui Ren, Zhangli Sha, Zhe Fu, Zhean Xu, Zhenda Xie, Zhengyan Zhang, Zhewen Hao, Zhicheng Ma, Zhigang Yan, Zhiyu Wu, Zihui Gu, Zijia Zhu, Zijun Liu, Zilin Li, Ziwei Xie, Ziyang Song, Zizheng Pan, Zhen Huang, Zhipeng Xu, Zhongyu Zhang, and Zhen Zhang. DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning. Nature , 645(8081):633–638, September 2025. arXiv:2501.12948 [cs.CL]. [42] Introducing OpenAI o3 and o4-mini. [43] Unified Medical Language System (UMLS). [44] Fangyu Liu, Ivan Vuli´ c, Anna Korhonen, and Nigel Collier. Learning Domain-Specialised Representations for Cross-Lingual Biomedical Entity Linking, May 2021. arXiv:2105.14398 [cs.CL]. 17 Souza et al. 
+
+# 7 Suplementary 
+
+7.1 Qualitative Case Study 
+
+In this section, we are gonna walk one real case through each of the four tasks, contrasting the two strongest reasoners, DeepSeek-R1 and o3-mini, against the ground truth extracted from the source report. Each case is drawn directly from the corpus, and every cell is reproduced verbatim from the records: the case description is the structured case as stored in our corpus, and the model outputs are the exact predictions and judge verdicts scored in Section 4. How each table is structured. Every case is laid out as one table (Tables 4–7) with a narrow row-label column on the left. The upper block holds the shared reference answer in rows, which span the full width of the table because they are common to both models. The lower block opens with a two-column band — DeepSeek-R1 on the left, o3-mini on the right — under which each subsequent row places the two models’ outputs side by side for the same field, so a reader can compare them line for line. The shared reference answer in rows are: • Case ID: the SciELO article identifier of the case report. • Category: the case classification — DeCS body-system [A] and disease [C] axes, plus whether the case is flagged tropical/endemic to Brazil and, if so, the matched program and disease. • Case Summary: the full structured presentation block of the case, verbatim and field by field — patient information, chief complaint, history of present illness, past medical history, social and family history, physical examination, and hospital course (empty fields are omitted). The masked answer (the diagnosis the model must produce) does not appear here. • Final Diagnosis: the gold diagnosis stated in the original report. • Differential Diagnosis (differential-diagnosis case only): the gold candidate list (the Portuguese reference differential of Section 3.4); the prefix "[correct]" marks the gold-confirmed entry, and the item count is given. • Ancillary Tests Split (exam case only): the ground-truth work-up, split into laboratory, imaging, pathology, and other, with the total exam count. • Treatment Planning Analysis (treatment case only): the ground-truth treatment rationale, plan, and recorded outcome from the report. 18 ClinicalBr 
+
+Case 1 — Diagnosis retrieval (Neuro-Chikungunya) Case ID S0004-282X2023001000922 
+
+Category Body system: Sistema Nervoso [A08] | Disease: Infeccoes [C01]; Doencas do Sistema Nervoso [C10] | Tropical/endemic: yes (Arbovirose: Dengue, Chikungunya, Zika) 
+
+Case Summary • Patient information : male and female sex (50% male), mean age 59 years (range 36-75 years), occupation not reported, demographic data: hospitalized patients in a tertiary hospital during outbreaks in the state of Rio Grande do Norte, Brazil • Chief complaint : neurological involvement in the context of confirmed infection • History of present illness : neurological symptoms in patients with confirmed infection, median time between symptom onset and imaging 4 weeks (range 1-6 weeks) • Past medical history : exclusion criterion: prior diagnosis of neurological diseases; patients with concurrent dengue or Zika virus infection were not included • Physical examination : clinical examination performed by neurologist, specific details not provided • Hospital course : hospitalization in a tertiary care hospital, underwent imaging studies, clinical outcome recorded at discharge 
+
+Final Diagnosis (gold) 
+
+Neuro-Chikungunya 
+
+DeepSeek-R1 o3-mini Reasoning (EN) The ’clock face’ pattern on spinal cord MRI with peripheral T2 hyperintense lesions is pathognomonic for AFM. Outbreak context and exclusion of Zika/dengue support enterovirus etiology. Anterior nerve root enhancement in one case aligns with AFM’s radiculitis component. The presence of multifocal punctate T2 hyperintense lesions in both the brain and spinal cord, occurring a few weeks after a confirmed infection, is most consistent with a post-infectious, immune-mediated demyelinating process such as ADEM. 
+
+Diagnosis (EN) Acute Flaccid Myelitis due to enterovirus infection Post-infectious immune-mediated demyelination (ADEM/acute transverse myelitis spectrum) 
+
+Judge verdict (EN) incorrect (0) incorrect (0) 
+
+DeepSeek-R1 — PT result (cross-lingual) 
+
+Complicações neurológicas por infecção por Chikungunya (mielite e encefalite) — judged correct (1) 
+
+Table 3: 19 Souza et al. 
+
+Case 2 — Differential diagnosis (Sweet syndrome) Case ID S0004-27492015000100014 
+
+Category Body system: Sistema Musculoesqueletico [A02]; Sistema Digestorio [A03] | Disease: Doencas da Pele e do Tecido Conjuntivo [C17]; Oftalmopatias [C11] | Tropical/endemic: no 
+
+Case Summary • Patient information : female, 46 years • Chief complaint : painful redness on both arms and the right hand, oral mucosal lesions, arthralgia (initial presentation); red and painful left eye (late presentation) • History of present illness : Initial: 7-day history of painful redness on both arms and the right hand, oral mucosal lesions that appeared and regressed during this period, and arthralgia. Late (5 months after the initial episode): complaint of a red and painful left eye lasting 10 days, without active dermatologic lesions at the time. Pain worsened with eye movements. • Physical examination : Initial physical exam: red erythematous papules and vesicles on the right hand, between the fingers, and on the bilateral distal extensor areas of the upper limbs. Late ocular exam: uncorrected visual acuity of 10/10 in both eyes. Intraocular pressure of 15 mmHg in the right eye and 16 mmHg in the left eye. Elevated and hyperemic scleral area (10 × 5 mm, with surrounding episcleral injection) on the nasal side of the left eye; peripheral ulcerative keratitis adjacent to nodular scleritis. No signs of anterior chamber inflammation. Posterior segment exam without abnormalities in the left eye; nasal retina with mild pigmentary changes in the right eye. • Hospital course : The patient was admitted by the rheumatology service to investigate the etiology of the arthralgia. She was referred to multiple specialties (otolaryngology, hematology, cardiology, rheumatology, neurology) for investigation of respiratory tract infection, hematologic neoplasm, cardiac involvement, arthralgia, and central nervous system involvement. 
+
+Final Diagnosis (gold) 
+
+Sweet syndrome 
+
+Differential Diagnosis (gold list) 
+
+[correct] Síndrome de Sweet (dermatose neutrofílica febril aguda); Vasculite cutânea leucocitoclástica; Pyoderma gangrenosum; Doença de Behçet; Granulomatosis com poliangiite (Wegener); Lúpus eritematoso sistêmico; Artrite reumatoide; Infecção bacteriana ou viral sistêmica; Neoplasia hematológica (ex.: leucemia mieloide aguda); Reação a fármacos; Esclerite idiopática (11 items) 
+
+DeepSeek-R1 o3-mini Predicted DDx Granulomatosis with polyangiitis (GPA); Behçet’s disease; Reactive arthritis; Sweet’s syndrome; Sarcoidosis (5 items) Behçet’s disease; Sweet syndrome (acute febrile neutrophilic dermatosis); Rheumatoid arthritis (3 items) 
+
+Recalled gold dx? yes yes 
+
+Table 4: 20 ClinicalBr 
+
+Case 3 — Exam recommendation (Lepromatous leprosy) Case ID S0365-05962016000500673 
+
+Category Body system: Sistema Nervoso [A08]; Sistema Tegumentar (Pele, Cabelo e Unhas) [A16] | Disease: Infeccoes [C01]; Condicoes Patologicas, Sinais e Sintomas [C23] | Tropical/endemic: yes (DTN: Hanseníase) 
+
+Case Summary • Patient information : woman, 36 years old, born and raised in Juazeiro - BA • Chief complaint : ulcers on the lower limbs • History of present illness : two years ago she presented edema and paresthesia in the lower limbs, accompanied by facial infiltration and hoarseness. Two months after the initial manifestations, ulcers appeared on the lower limbs. She was seen in medical consultations and referred to the vascular surgeon, with a diagnosis of stasis ulcers. Topical treatment was maintained without clinical improvement. Due to the morbidity of the ulcerative lesions, she began receiving disability benefits. • Past medical history : not mentioned • Social history : not mentioned • Family history : not mentioned • Physical examination : hoarseness, characteristic facial infiltration involving eyebrows and ears, madarosis, edema in the hands and lower limbs, large anterior and medium-sized ulcers on both legs, desquamation of the feet. Peripheral nerves not palpable. • Hospital course : not mentioned 
+
+Final Diagnosis (gold) 
+
+lepromatous leprosy 
+
+Ancillary Tests Split (gold) 
+
+Laboratory : Hemograma; Urinálise; Função hepática; Função renal; Raspado intradérmico 
+
+Imaging : Tomografia computadorizada (6 exams) 
+
+DeepSeek-R1 o3-mini Requested exams Laboratory : Complete blood count (CBC); Erythrocyte sedimentation rate (ESR); C-reactive protein (CRP); Liver function tests (ALT, AST, ALP, bilirubin); Renal function tests (creatinine, BUN); Antinuclear antibody (ANA); Anti-dsDNA antibody; Antineutrophil cytoplasmic antibodies (ANCA); Anti-PGL-1 IgM serology (leprosy); VDRL; FTA-ABS; HIV antibody test 
+
+Imaging : Chest X-ray; X-ray of lower limbs (to assess for osteomyelitis) 
+
+Pathology : Skin biopsy from ulcer edge for histopathology; Skin biopsy for acid-fast bacilli stain (Fite-Faraco); Mycobacterial culture; Fungal culture; Bacterial culture; PCR for Mycobacterium leprae DNA 
+
+Other : Slit-skin smear for acid-fast bacilli; Laryngoscopy (to evaluate hoarseness) (22 exams) 
+
+Laboratory : Slit-skin smear for acid-fast bacilli (using Fite-Faraco staining); Anti-phenolic glycolipid-1 (anti-PGL-1) antibody serology 
+
+Pathology : Skin biopsy from an active lesion with histopathologic examination and Fite-Faraco stain 
+
+Other : PCR testing for Mycobacterium leprae on skin tissue (4 exams) 
+
+Table 5: 21 Souza et al. 
+
+Case 4 — Treatment planning (Laryngeal amyloidosis) Case ID S1808-86942015000200219 
+
+Category Body system: Sistema Respiratorio [A04]; Sistema Digestorio [A03] | Disease: Otorrinolaringopatias [C09]; Doencas do Sistema Imunitario [C20] | Tropical/endemic: no 
+
+Case Summary • Patient information : female sex, 35 years old, black, native and resident of São Paulo/SP • Chief complaint : odynophagia (worse on the right), throat clearing, pharyngeal globus and dysphonia for four years • History of present illness : symptoms of odynophagia, throat clearing, pharyngeal globus and dysphonia lasting four years, without improvement with prolonged treatment with acid-reducing medication. Denied respiratory, dyspeptic or nasal symptoms • Past medical history : prolonged treatment with acid-reducing medication. Denied relevant personal history • Social history : denied smoking and alcohol use • Family history : denied relevant family history • Physical examination : hoarse voice, oroscopy and anterior rhinoscopy without abnormalities. On telelaryngoscopy: submucosal bulge in the right vestibular fold, without mobility changes, and edema/hyperemia of the interarytenoid space • Hospital course : initially hypothesized another condition, lesion excision indicated with postoperative speech therapy, performed without complications 
+
+Final Diagnosis (gold) 
+
+laryngeal amyloidosis 
+
+Treatment Planning Analysis (gold) 
+
+endoscopic surgical excision of the lesion performed, followed by postoperative speech therapy. The patient was referred for follow-up in the Rheumatology department for complete evaluation. After one year, a decision was made for semi-annual outpatient follow-up and referral back to Rheumatology. Outcome: the patient attended the outpatient clinic one year after surgery asymptomatic. [...] 
+
+DeepSeek-R1 o3-mini Treatment Reasoning (EN) 
+
+Okay, let’s tackle this case. The patient is a 35-year-old woman with a four-year history of odynophagia, throat clearing, globus sensation, and dysphonia. She didn’t improve with acid-reducing meds, which suggests that maybe GERD isn’t the main issue here. [...] Surgical excision remains the treatment of choice for localized laryngeal amyloidosis. In this case, the recommended approach is: • Surgical Procedure: Under general anesthesia, perform microlaryngoscopy with excision of the amyloid deposit from the right vestibular fold. [...] 
+
+Predicted Plan The patient’s confirmed diagnosis of laryngeal amyloidosis requires a multidisciplinary approach focusing on symptom management, prevention of recurrence, and preservation of laryngeal function. 1. [...] Surgical excision remains the treatment of choice for localized laryngeal amyloidosis. In this case, the recommended approach is: • Surgical Procedure: Under general anesthesia, perform [...] 
+
+Judge scores (3-judge mean /5) 
+
+Accuracy 3.67, Completeness 4.67, Clarity 5.00 Accuracy 5.00, Completeness 4.00, Clarity 5.00 
+
+Table 6: 22 ClinicalBr 
+
+# 8 Prompts 9 Supplementary Prompts 
+
+This appendix lists, verbatim, every prompt used in the construction and evaluation of ClinicalBr. 
+
+9.1 Corpus-construction prompts Prompt Prompt 1. Prompt for Stage-1 case-report relevance filter (Sim / Não). 
+
+You are an experienced physician. I will provide the full text of a case report. Please help me analyze whether the case report focuses primarily on the diagnostic/therapeutic process. If the report focuses on diagnosis/therapeutic planning, respond with “Yes”. If the report does not primarily address the task of diagnosis/therapeutic planning, respond with “No”. 
+
+Output format: respond ONLY in JSON with the following format: 
+
+{"verdict": "Yes" | "No", "justification": "<one sentence explaining your decision>"} 
+
+Full text of the case report: {full_text} .
+
+Prompt Prompt 2. Prompt for Stage-2 case-type classifier (Diagnostic / Therapeutic / Both). 
+
+You are an experienced physician. I will provide the full text of a case report that has already been identified as focused on diagnosis and/or therapeutic planning. 
+
+Task: classify the main focus of the case report into one of the following categories. 
+
+Diagnostic: the central challenge of the case is reaching the correct diagnosis (e.g., atypical presentation, complex differential diagnosis, decisive ancillary tests). 
+
+Therapeutic: the central challenge is the therapeutic management (e.g., treatment choice, complication man-agement, treatment response). 
+
+Both: both diagnostic reasoning and therapeutic management are substantially developed in the text. 
+
+Output format: respond ONLY in JSON with the following format: 
+
+{"type": "Diagnostic" | "Therapeutic" | "Both", "justification": "<one sentence explaining your classification>"} 
+
+Full text of the case report: {full_text} .
+
+Prompt Prompt 3. Prompt for DeCS anatomy categorisation (Hierarchy [A]). 
+
+Please categorize the body systems and anatomical structures involved in the health conditions and disease phenotypes discussed in the following case report. Use the full text provided to determine the most relevant category or categories. 
+
+Rules: 
+
+• If the structure is not listed, return “Others”. • Provide the category or categories directly, without additional words. • If there are multiple categories, separate them with \n .
+
+Categories (DeCS Hierarchy [A]): 
+
+• Body Structures [A01]; Musculoskeletal System [A02]; Digestive System [A03]; Respiratory System [A04]; Urogenital System [A05]; Endocrine System [A06]; Cardiovascular System [A07]; Nervous 
+
+23 Souza et al. System [A08]; Sense Organs [A09]; Tissues [A10]; Cells [A11]; Fluids and Secretions [A12]; Stomatog-nathic System (Mouth and Teeth) [A14]; Hemic and Lymphatic Systems (Blood and Immunological) [A15]; Integumentary System (Skin, Hair and Nails) [A16]; Embryonic Structures [A17]. 
+
+Full text of the case report: {full_text} .
+
+Prompt 
+
+Prompt 4. Prompt for DeCS disease categorisation (Hierarchy [C]). 
+
+Please categorize the diseases and symptoms discussed in the following case report. Use the full text provided to determine the most relevant category or categories from the list below. 
+
+Rules: 
+
+• If the diseases and symptoms do not fit any of the listed categories, return “Others”. • Provide the category or categories directly, without additional words. • If there are multiple categories, separate them with \n .
+
+Categories (DeCS Hierarchy [C]): 
+
+• Infections [C01]; Neoplasms [C04]; Musculoskeletal Diseases [C05]; Digestive System Diseases [C06]; Stomatognathic Diseases [C07]; Respiratory Tract Diseases [C08]; Otorhinolaryngologic Diseases [C09]; Nervous System Diseases [C10]; Eye Diseases [C11]; Urogenital Diseases [C12]; Cardiovascular Diseases [C14]; Hemic and Lymphatic Diseases [C15]; Congenital, Hereditary, and Neonatal Diseases and Abnormalities [C16]; Skin and Connective Tissue Diseases [C17]; Nutritional and Metabolic Diseases [C18]; Endocrine System Diseases [C19]; Immune System Diseases [C20]; Disorders of Environmental Origin [C21]; Animal Diseases [C22]; Pathological Conditions, Signs and Symptoms [C23]; Occupational Diseases [C24]; Chemically-Induced Disorders [C25]; Wounds and Injuries [C26]. 
+
+Full text of the case report: {full_text} .
+
+Prompt 
+
+Prompt 6. Prompt for generating diagnosis-task data from a case report (diagnosis masking). 
+
+You are an experienced physician. Extract the clinical information from the case report below into structured JSON. 
+
+Critical rule — presentation without leakage. In the presentation , NEVER mention names of diseases, syndromes, or diagnoses in any form: • “diagnosed with X”, “confirmed X”, “suspected X”, “highly suspicious for X”; • “considering X”, “hypothesis of X”, “consistent with X”, “suggestive of X”; • “to investigate X”, “to rule out X”, “carrier of X”, “history of X”. 
+
+Schema — presentation :patient_info: sex, age, occupation, relevant demographics. 
+
+chief_complaint: main complaint that prompted the visit. 
+
+history_present_illness: detailed chronological history of present illness, symptoms, progression. 
+
+past_medical_history: past medical history, comorbidities, previous surgeries. 
+
+social_history: lifestyle habits, smoking, alcohol, travel, occupational exposures. 
+
+family_history: relevant family history. 
+
+physical_exam: detailed physical examination findings. 
+
+hospital_course: clinical course during hospitalization, complications, procedures performed. 
+
+Schema — workup :
+
+24 ClinicalBr 
+
+laboratory: CBC, biochemistry, serology, cultures, inflammatory markers, renal/liver function, etc. 
+
+imaging: findings from X-ray, CT, MRI, ultrasound, echocardiogram, PET-scan, etc. 
+
+pathology: biopsy results, histopathology, immunohistochemistry, cytology. 
+
+other: other relevant ancillary tests — ECG, spirometry, endoscopy, etc. 
+
+Schema — diagnosis :diagnosis: definitive diagnosis with explanation based on clinical findings and tests that confirm it. 
+
+final_diagnosis_name: only the name of the final diagnosis, no conclusions. 
+
+Schema — treatment :intervention: treatment performed, if mentioned in the text, or null .
+
+outcome: patient outcome, if mentioned, or null .
+
+follow_up: follow-up, if mentioned, or null .Missing fields = null . Do not fabricate data. Keep medical terms in English. 
+
+Article text: {full_text} .
+
+Prompt 
+
+Prompt 7. Prompt for generating treatment-task data from a therapeutic case report (treatment masking). 
+
+You are an experienced physician. Extract the clinical information from the therapeutic case report below into structured JSON. 
+
+Critical rule — presentation without treatment leakage. In the presentation , NEVER mention information about the treatment performed: • names of medications, doses, dosages; • surgical or therapeutic procedures performed; • treatment results or outcomes; • post-treatment evolution, follow-up, prognosis. The diagnosis MUST be included in the presentation ( final_diagnosis field). The goal is for the model to receive the complete case with diagnosis, but without knowing which treatment was given. 
+
+Schema — presentation :patient_info: sex, age, occupation, relevant demographics. 
+
+chief_complaint: main complaint that prompted the visit. 
+
+history_present_illness: history of present illness with chronology, symptoms, progression. 
+
+past_medical_history: past medical history, comorbidities, previous surgeries. 
+
+allergies: known allergies, or null .
+
+social_history: lifestyle habits, smoking, alcohol, travel, occupational exposures. 
+
+family_history: relevant family history. 
+
+physical_exam: detailed physical examination findings. 
+
+final_diagnosis: definitive diagnosis of the patient. 
+
+Schema — workup :laboratory: CBC, biochemistry, serology, cultures, inflammatory markers, renal/liver function, etc. 
+
+imaging: findings from X-ray, CT, MRI, ultrasound, echocardiogram, PET-scan, etc. 
+
+pathology: biopsy results, histopathology, immunohistochemistry, cytology. 
+
+other: other relevant ancillary tests — ECG, spirometry, endoscopy, etc. 
+
+Schema — treatment :
+
+25 Souza et al. 
+
+intervention: detailed treatment description — medications with doses, dosage and duration; surgical proce-dures with technique used; complementary therapies; changes in management during treatment. 
+
+outcome: detailed outcome — treatment response, symptom resolution, post-treatment complications, follow-up test results, patient functional status. 
+
+follow_up: post-treatment follow-up — return visits, follow-up tests, long-term evolution, recurrences, thera-peutic adjustments. Missing fields = null . Do not fabricate data. Keep medical terms in English. 
+
+Article text: {full_text} .
+
+Prompt 
+
+Prompt 8. Prompt for generating joint diagnosis-and- treatment data ( Ambos ) from a case report. 
+
+You are an experienced physician. Extract the clinical information from the case report below into structured JSON, with depth in both diagnosis and treatment. 
+
+Critical rule — presentation without leakage. In the presentation , NEVER mention names of diseases / syndromes / diagnoses NOR names of treatments / medications / surgeries, in any form: • “diagnosed with X”, “suspected X”, “considering X”, “consistent with X”, “carrier of X”; • “treated with X”, “on X”, “underwent X”, “started X”. 
+
+Schema — presentation :patient_info: sex, age, occupation, relevant demographics. 
+
+chief_complaint: main complaint that prompted the visit. 
+
+history_present_illness: detailed chronological history of present illness, symptoms, progression. 
+
+past_medical_history: past medical history, comorbidities, previous surgeries. 
+
+social_history: lifestyle habits, smoking, alcohol, travel, occupational exposures. 
+
+family_history: relevant family history. 
+
+physical_exam: detailed physical examination findings. 
+
+hospital_course: clinical course before treatment, initial complications. 
+
+Schema — workup : laboratory , imaging , pathology , other .
+
+Schema — diagnosis :diagnosis: definitive diagnosis with explanation based on clinical findings and tests that confirm it. 
+
+final_diagnosis_name: only the name of the final diagnosis, no conclusions. 
+
+Schema — treatment :intervention: detailed treatment description. 
+
+outcome: detailed outcome. 
+
+follow_up: post-treatment follow-up. Missing fields = null . Do not fabricate data. Keep medical terms in English. 
+
+Article text: {full_text} .
+
+Prompt 
+
+Prompt 9. Prompt for validating the fidelity of the structured-case extraction (hallucination and com-pleteness audit). 
+
+You are a medical accuracy validator for a Portuguese clinical benchmark. You will receive (i) the original clinical case report ( {fulltext} ) and (ii) a structured JSON extraction of that case ( {structured_json} ). Verify the extraction fidelity against the fulltext. 26 ClinicalBr 
+
+Checks: Accuracy (hallucinations): every clinical claim in the structured JSON must be supported by the fulltext. Flag any fabricated or unsupported content (dates, labs, medications, findings, diagnoses that do not appear in the source). 
+
+Completeness: important clinical details present in the fulltext must be represented in the structured JSON. Flag meaningful omissions (key exam findings, pivotal lab values, relevant past medical history, treatment specifics, outcome). 
+
+Diagnosis correctness: the diagnostico.diagnostico / diagnostico.resultado_final_diagnostico 
+
+fields must match the final diagnosis stated or clearly implied in the fulltext. Do NOT check ICD-10 codes. The fulltext may be partially redacted for benchmark purposes (tokens like 
+
+[REDIGIDO] are intentional — do not treat them as errors). Minor rewording, summarization, and translation between PT / EN are acceptable. 
+
+Output format (return ONLY a JSON object; no prose, no markdown fences): 
+
+{"is_valid": true|false, "accuracy_score": 0.0-1.0, "completeness_score": 0.0-1.0, "issues": [ {"field": "path to problematic field", "issue_type": "hallucination|missing|incorrect|incomplete", "description": "concise description of the issue", "suggested_fix": "corrected value or null" }]}
+
+A case is is_valid: true only if accuracy_score ≥ 0.85 AND there are no hallucination issues. Only flag genuine problems; minor phrasing differences are acceptable. 
+
+9.2 Benchmark-inference prompts Prompt Prompt 11. Prompt for diagnosis reasoning (differential diagnosis plus final diagnosis). 
+
+You are an experienced physician who will receive a structured patient case in JSON format. Your task is to analyze all patient data to build a differential diagnosis and a final diagnosis. 
+
+Differential diagnosis process. First, based on the patient’s chief complaint and clinical information, generate an initial list of possible diseases. This list will then be systematically evaluated, comparing each disease against the patient’s symptoms, signs, and test results. Next, the rationale for including or excluding each diagnosis will be explained based on clinical evidence, highlighting the selection of diagnostic tests that help confirm or rule out specific conditions. The process involves step-by-step elimination of less likely diagnoses, culminating in the most probable diagnosis, which will be justified by clinical reasoning and the evidence supporting it. 
+
+Final diagnosis. Integrate the patient’s clinical presentation, test results, and differential diagnosis process to summarize the final diagnosis. Briefly explain the basis for the diagnosis and highlight the key factors that support this conclusion. 
+
+Diagnosis result. Present only the diagnostic result, without any further explanation. 
+
+Output format. Finalize your response with a JSON block in exactly this format: 
+
+{"differential_diagnosis": [ {"diagnosis": "...", "included": true, "justification": "..."}, 
+
+27 Souza et al. 
+
+{"diagnosis": "...", "included": false, "justification": "..."} ], "explanatory_final_diagnosis": "...", "diagnosis_result": "..." }
+
+Clinical case: {case_text} .
+
+Prompt 
+
+Prompt 12. Prompt for exam-selection reasoning (complementary work-up). 
+
+You are an experienced physician who will receive a structured patient case in JSON format. Your task is to recommend all necessary tests to pass on to another doctor who will make the diagnosis. List the complementary tests you would order now. 
+
+Rules: 
+
+• Be specific (e.g., “Abdominal CT scan with contrast”, not “imaging”). • Include only tests justified by the clinical picture. 
+
+Output format (return only the JSON object below): 
+
+{"laboratory": [], "imaging": [], "pathology": [], "other": []} 
+
+Case: {case_json} .
+
+Prompt 
+
+Prompt 13. Prompt for treatment-planning reasoning. 
+
+You are an experienced physician reasoning about a clinical case. You will receive an organized excerpt from a patient’s case. Consider all the information to complete the task. Your task is to determine the most likely treatment for this case. 
+
+Output format. Wrap the answer in <treatment>...</treatment> tags containing a detailed description of the treatment: • medications with doses, dosage regimen, and duration; • surgical procedures with technique used; • complementary therapies; • changes in management during treatment. 
+
+Case: {case_json} .
+
+Prompt 
+
+Prompt 14. Prompt for canonicalising the model’s predicted exams prior to UMLS entity linking. 
+
+You are a clinical annotator. You will receive a list of complementary exams recommended by a model, already organized into four categories: laboratory , imaging , pathology , other . Your task is to CANONICALIZE each item — not to add, remove, or reinterpret — and return the same structure in canonical form. 
+
+Canonicalization rules: 
+
+• Preserve every exam present. Do not invent new exams; do not drop exams present in the input. • If a single entry contains multiple exams, split it into one entry per exam. Examples: “Syphilis serology (VDRL/FTA-ABS) and HIV” → “VDRL serology”, “FTA-ABS test”, “HIV serology”; “Electroretinogram (ERG) and visual evoked potential (VEP)” → “Electroretinogram (ERG)”, “Visual 28 ClinicalBr evoked potential (VEP)”; “Renal function (urea and creatinine)” → “Urea”, “Creatinine”; “Lipid panel (total cholesterol, HDL, LDL, triglycerides)” → “Total cholesterol”, “HDL”, “LDL”, “Triglycerides”. • Strip justifications, clinical indications, and any explanatory text in parentheses. E.g., “High-sensitivity CRP (inflammatory marker)” → “High-sensitivity CRP”; “Brain MRI with contrast (evaluate leukodys-trophies)” → “Brain MRI with contrast”. • Keep parenthetical text ONLY when it is part of the exam name (an acronym, a sequence, or an anatomical/technical modifier), not a justification. E.g., “Erythrocyte sedimentation rate (ESR)” — keep; “Chest CT” — keep; “Complete blood count (to investigate anemia)” → “Complete blood count”. • Use the standardized English exam name. When both an acronym and a full name appear, prefer the full name (keep the acronym in parentheses if clinically useful). • Do not move exams between categories. • Do not duplicate the same canonical exam within the same category. • If a category is empty in the input, return an empty list. 
+
+Output format (return only the JSON block below; no comments, no text before or after): 
+
+{"laboratory": [], "imaging": [], "pathology": [], "other": []} 
+
+Model recommendations: {case_json} .
+
+9.3 LLM-as-judge prompts Prompt Prompt 15. Prompt for the LLM-as-judge diagnosis grader (binary correct / incorrect). 
+
+You are a medical evaluation judge. Your task is to compare a student’s diagnosis response with the correct diagnosis and evaluate the prediction. 
+
+Inputs: Correct diagnosis: {correct_diagnosis} .
+
+Student’s diagnosis: {model_diagnosis} .
+
+Evaluation criteria: Correct: the diagnosis is identical or clinically equivalent. 
+
+Incorrect: the diagnosis is wrong or unrelated to the correct one. 
+
+Output format: 
+
+{"verdict": "correct" | "incorrect", "justification": "Brief explanation in 1-2 sentences." }
+
+Prompt Prompt 16. Prompt for the LLM-as-judge treatment grader (accuracy / completeness / clarity, 1–5 Likert). 
+
+You are a medical expert evaluating a treatment plan proposed for a clinical case. Your goal is to assess how well the proposed treatment addresses the patient’s condition and compare it to the reference treatment (gold standard) in terms of accuracy, completeness, and clarity. 
+
+Inputs: Clinical case: presentation, exams, and confirmed diagnosis, provided inside <case>{{CASE}}</case> .
+
+Generated treatment: provided inside <treatment>{{TREATMENT}}</treatment> .
+
+29 Souza et al. 
+
+Reference treatment: gold standard reflecting what was actually done for the patient, provided inside 
+
+<gold_treatment>{{GOLD_TREATMENT}}</gold_treatment> .Carefully review the <treatment> in light of the <case> and compare it to the <gold_treatment> . For each of the following criteria, rate the response on a scale of 1 to 5 (1 = very poor, 5 = excellent) and provide a short justification. 
+
+Evaluation criteria: Accuracy (1–5): are the proposed interventions clinically correct for the diagnosis, case, and gold-standard context? 
+
+Completeness (1–5): does the treatment cover the components present in the gold standard? 
+
+Clarity (1–5): is the treatment written clearly and organized in a standard clinical format usable by clinicians? 
+
+Output format. Output the evaluation as a single valid JSON object matching the following structure: 
+
+{"accuracy": {"score":0, "explanation":"Explain why this score was given."}, "completeness":{"score":0, "explanation":"Explain why this score was given."}, "clarity": {"score":0, "explanation":"Explain why this score was given."} }
+
+Ensure the output is valid JSON: 
+
+• use double quotes ( ") for all keys and string values; • when quoting text or sections inside the explanations, use escaped double quotes ( \" ) to maintain valid JSON formatting; • do not include any additional information in the output. 
+
+9.4 Translation prompts Prompt Prompt 17. Prompt for Portuguese-to-English translation of full-text case reports. 
+
+You are a specialized medical translator for English. Translate the following clinical case report from Brazilian Portuguese to English. 
+
+Rules: 
+
+• Preserve all medical terminology accurately. • Maintain the original structure (section headings, paragraph breaks, markdown formatting). • Keep numerical values, measurements, drug names, and abbreviations intact. • Do not add or remove information. • Return only the translated text, without explanations. 
+
+Input format: 
+
+## Title [article title] ## Full Text [full article text] 
+
+Output format (follow exactly): 
+
+## Title [translated title] 
+
+30 ClinicalBr 
+
+## Full Text [translated full text] 
+
+Prompt 
+
+Prompt 18. Prompt for English-to-Portuguese translation of full-text case reports. 
+
+You are a medical translator specialized in Brazilian Portuguese (pt-BR). Translate the following clinical case report from English to Brazilian Portuguese. 
+
+Rules: 
+
+• Preserve all medical terminology with precision. • Maintain the original structure (section headings, paragraph breaks, markdown formatting). • Keep numerical values, measurements, drug names, and abbreviations intact. • Do not add or remove information. • Return only the translated text, without explanations. 
+
+Input format: 
+
+## Title [article title] ## Full Text [full article text] 
+
+Output format (follow exactly): 
+
+## Title [translated title] ## Full Text [translated full text] 
+
+Prompt 
+
+Prompt X. Prompt for classifying clinical case reports as single or multiple scenarios. 
+
+You are an experienced physician acting as a judge for a clinical reasoning benchmark. I will provide you with the complete text of a case report (it may be in Portuguese or English). Your task is to decide whether this report contains a single clinical scenario for evaluation or multiple clinically distinct scenarios .
+
+Criterion: 
+
+Answer “ONE” if the report fits any of the following situations: • Describes a single patient. • Describes multiple patients who essentially share the same diagnosis, the same investigation (tests, findings), and the same clinical reasoning. Since they are redundant for evaluating a model, they count as a single case. • Example: “two siblings with the same genetic mutation, same presentation, and same diagnosis” →
+
+ONE. • Example: “series of 8 patients with diabetes treated with the same protocol, all with the same outcome” 
+
+→ ONE. Answer “MULTIPLE” if the report describes two or more cases with clinically distinct presentations, diagnoses, or investigations, such that evaluating a model would require independent reasoning. • Example: “Case 1: uveal melanoma. Case 2: intraocular lymphoma” → MULTIPLE. • Example: “Patient 1 presented with symptom A and received diagnosis X; Patient 2 presented with symptom B and received diagnosis Y” → MULTIPLE. 31 Souza et al. • Example: “series of 5 cases, each with a different diagnosis” → MULTIPLE. 
+
+Attention: 
+
+• Do not use “case series” in the title as a definitive criterion. Evaluate the content. • Mentions of other cohorts in the discussion or references (e.g., “in previous studies with 30 patients. . . ”) do not make the report multiple. 
+
+Response format: 
+
+Respond only in JSON, without additional text: 
+
+{"cases": "ONE" | "MULTIPLE", "justification": "<one sentence explaining your decision, citing what determined your answer>" }
+
+Input: 
+
+# Complete text of the case report {full_text} 
+
+Prompt 
+
+Prompt. Prompt for differential diagnosis summarization of clinical case reports. As an experienced physician, you will receive a clinical case report focused on diagnosis. Your task is to: • Summarize the differential diagnosis process, including the rationale for each step and the reasons for considering or excluding specific diagnoses. • Summarize the patient’s final diagnosis. Ensure that your summaries are concise and accurate, based exclusively on the information provided in the case report. Please avoid referencing any images, tables, or other visual data (if any). If the case report is incomplete or does not meet the requirements for producing a summary, simply respond: “I cannot.” 
+
+Differential Diagnosis Process: 
+
+First, based on the patient’s chief complaint and clinical information, an initial list of possible diseases should be generated. This list will then be systematically evaluated, comparing each disease against the patient’s symptoms, signs, and test results. Next, the rationale for including or excluding each diagnosis will be explained based on clinical evidence, highlighting the selection of diagnostic tests that help confirm or rule out specific conditions. The process will involve the step-by-step elimination of less likely diagnoses, culminating in the most probable diagnosis, which will be justified by clinical reasoning and the supporting evidence. 
+
+Final Diagnosis (with explanatory details): 
+
+Integrate the patient’s clinical presentation, test results, and differential diagnosis process to summarize the final diagnosis. Briefly explain the basis of the diagnosis and highlight the key factors supporting this conclusion. 
+
+Diagnosis Result: 
+
+Present only the diagnostic result, without any further explanation. 
+
+Output format (follow exactly): 
+
+After the free-text reasoning, finalize your response with a JSON block in exactly this format: {"differential_diagnoses": [ {"diagnosis": "...", "included": true, "rationale": "..."}, {"diagnosis": "...", "included": false, "rationale": "..."} ], 
+
+32 ClinicalBr 
+
+"final_diagnosis_explanatory": "...", "diagnosis_result": "..." }
+
+Input format: 
+
+## Clinical Case {case_text} 
+
+33

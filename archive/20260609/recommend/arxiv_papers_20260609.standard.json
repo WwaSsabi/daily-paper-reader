@@ -1,0 +1,682 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-09T21:11:48.296006+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 16,
+    "deep_cap": 6,
+    "deep_selected": 6,
+    "quick_candidates": 17,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2606.07690v1",
+      "source": "arxiv",
+      "title": "HARP: Efficient Data Selection for Finetuning Large Language Models",
+      "abstract": "Finetuning data selection requires balancing two competing goals: selecting examples that improve the downstream objective, and doing so without repeatedly finetuning models. Train-free selectors are scalable but rely on proxies such as embedding similarity or clustering, which may not match the target objective. Train-based selectors better reflect downstream utility through gradient signals, subset evaluation, or Shapley attribution, but require many costly train--evaluate iterations. We propose Hierarchical Active Region Pruning (HARP), an efficient train-based selector that preserves downstream alignment while reducing selection cost. HARP organizes the training pool into a node--leaf hierarchy, evaluates only representative leaves, and infers unmeasured utilities with empirical Bayes posteriors. It then selects data using two complementary envelopes: HARP-C, which conservatively controls redundancy, and HARP-E, which additively rewards complementary regions. We theoretically show that, under local smoothness and bounded estimation error, HARP controls selection error while reducing train--evaluate cost. We further validate that HARP variants achieve the best result and outperform the strongest baseline by up to $+8.9$ points, while using roughly $7\\times$ fewer training examples.",
+      "authors": [
+        "Ning Wang",
+        "Zhengxin Zhang",
+        "Maosen Tang",
+        "Yitang Gao",
+        "Claire Cardie",
+        "Sainyam Galhotra"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-06-05T06:31:43+00:00",
+      "link": "https://arxiv.org/pdf/2606.07690v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "efficient data selection for finetuning LLMs",
+      "llm_evidence_cn": "针对大语言模型微调的高效数据选择方法",
+      "llm_evidence": "针对大语言模型微调的高效数据选择方法",
+      "canonical_evidence": "针对大语言模型微调的高效数据选择方法",
+      "llm_tldr_en": "HARP is an efficient train-based data selector for finetuning LLMs, using hierarchical pruning to reduce selection cost while preserving downstream alignment.",
+      "llm_tldr_cn": "针对大语言模型微调中的数据选择问题，现有方法在效率与效果间难以平衡。本文提出层次化活跃区域剪枝（HARP）方法，通过构建训练池的节点-叶子层次结构，仅评估代表性叶子节点并推断未测量节点的效用，从而在保持下游任务对齐的同时大幅降低选择成本。实验表明，HARP在多项微调任务上取得与全量训练相当的性能，显著优于现有训练无关方法。该工作为大模型高效微调提供了实用的数据选择框架。",
+      "llm_tldr": "针对大语言模型微调中的数据选择问题，现有方法在效率与效果间难以平衡。本文提出层次化活跃区域剪枝（HARP）方法，通过构建训练池的节点-叶子层次结构，仅评估代表性叶子节点并推断未测量节点的效用，从而在保持下游任务对齐的同时大幅降低选择成本。实验表明，HARP在多项微调任务上取得与全量训练相当的性能，显著优于现有训练无关方法。该工作为大模型高效微调提供了实用的数据选择框架。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "how to train a large language model",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.07954v1",
+      "source": "arxiv",
+      "title": "Minibatch Selection via Partition Matroid Constrained Gradient Matching",
+      "abstract": "Training large language models (LLMs) on heterogeneous data requires selecting minibatches that balance convergence speed with coverage across domains. Existing methods either select samples independently within each domain or rely on computationally expensive proxy models to learn continuous domain weights. We propose PartitionSel, a cross-domain minibatch selection approach that maximizes a validation-guided gradient-matching utility under per-domain budgets encoded as a partition-matroid constraint. By coupling the per-domain budgets through a single utility, PartitionSel is designed to reduce redundancy in selections across domains. The proposed objective is weakly submodular and admits an orthogonal matching pursuit algorithm with provable approximation guarantees. Empirically, we evaluate PartitionSel for minibatch selection during the fine-tuning of Qwen2.5 and Llama-3 on MetaMathQA and Mol-Instructions. PartitionSel achieves robust gains over per-domain and domain-agnostic baselines on both benchmarks. It also reduces the number of conflicting gradient pairs within each batch, indicating that the cross-domain coupling translates into more compatible training updates.",
+      "authors": [
+        "Prayas Agrawal",
+        "Prateek Chanda",
+        "Ishita Khatri",
+        "Ganesh Ramakrishnan",
+        "Bamdev Mishra",
+        "Pratik Jawanpuria"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-06-06T03:16:19+00:00",
+      "link": "https://arxiv.org/pdf/2606.07954v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "training large language model, minibatch selection, gradient matching",
+      "llm_evidence_cn": "训练大语言模型，小批量选择，梯度匹配",
+      "llm_evidence": "训练大语言模型，小批量选择，梯度匹配",
+      "canonical_evidence": "训练大语言模型，小批量选择，梯度匹配",
+      "llm_tldr_en": "Proposes PartitionSel, a cross-domain minibatch selection method using partition-matroid constrained gradient matching for LLM training.",
+      "llm_tldr_cn": "训练大语言模型时需要从异构数据中选择小批量，现有方法存在冗余。本文提出PartitionSel，基于分区拟阵约束的梯度匹配效用函数，在域预算下选择代表性批次。该目标是弱子模的，可采用正交匹配追踪算法高效求解，实验证明能提升收敛速度和域覆盖。",
+      "llm_tldr": "训练大语言模型时需要从异构数据中选择小批量，现有方法存在冗余。本文提出PartitionSel，基于分区拟阵约束的梯度匹配效用函数，在域预算下选择代表性批次。该目标是弱子模的，可采用正交匹配追踪算法高效求解，实验证明能提升收敛速度和域覆盖。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "how to train a large language model",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.08088v1",
+      "source": "arxiv",
+      "title": "ConSteer-RL: Steering Reasoning Capabilities in Large Language Models via Confidence-Aware Reinforcement Learning",
+      "abstract": "Reinforcement Learning from Verifiable Rewards (RLVR) has recently become a key paradigm for improving the reasoning abilities of Large Language Models (LLMs), yet it remains limited by sparse binary rewards and its ignorance of model-internal uncertainty. In this paper, we propose ConSteer-RL, a simple yet effective framework that integrates token-level confidence signals derived from model log-probabilities into RLVR training. Specifically, building upon the Group Relative Policy Optimization (GRPO) framework, we construct a confidence-aware reward by aggregating per-token probabilities into a scalar confidence score and incorporating it into an awareness-based reward shaping mechanism that penalizes overconfident errors while reinforcing correct and confident reasoning. Experimental results demonstrate that ConSteer-RL consistently outperforms strong GRPO baselines, achieving average improvements of 2.3%-4.0% across different model scales.",
+      "authors": [
+        "Qing Miao",
+        "Yiming Zhao",
+        "Jing Yang",
+        "Chenxi Liu",
+        "Yuehai Chen",
+        "Yuewen Liu",
+        "Shaoyi Du",
+        "Badong Chen"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CL"
+      ],
+      "published": "2026-06-06T10:23:24+00:00",
+      "link": "https://arxiv.org/pdf/2606.08088v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "large language model, reinforcement learning, reasoning",
+      "llm_evidence_cn": "大语言模型，强化学习，推理能力",
+      "llm_evidence": "大语言模型，强化学习，推理能力",
+      "canonical_evidence": "大语言模型，强化学习，推理能力",
+      "llm_tldr_en": "Introduces ConSteer-RL, a confidence-aware RL framework that integrates token-level confidence signals into GRPO to improve LLM reasoning.",
+      "llm_tldr_cn": "本文针对强化学习从可验证奖励中训练大语言模型推理能力时二元奖励稀疏且忽略模型不确定性的问题，提出了ConSteer-RL框架。该框架将基于模型对数概率的标记级置信度信号整合到GRPO中，构建置信度感知奖励。实验表明该方法有效提升了推理性能。",
+      "llm_tldr": "本文针对强化学习从可验证奖励中训练大语言模型推理能力时二元奖励稀疏且忽略模型不确定性的问题，提出了ConSteer-RL框架。该框架将基于模型对数概率的标记级置信度信号整合到GRPO中，构建置信度感知奖励。实验表明该方法有效提升了推理性能。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.08792v1",
+      "source": "arxiv",
+      "title": "The Amplifying Mirror: Locating and Steering the Partisan Direction inside a Large Language Model",
+      "abstract": "Large language models are rapicly replacing search engines as the primary interface between people and information. Unlike search engines, which retrieve existing content, LLMs generate novel text shaped by internal representations learned during training. Here we show that partisan political identity is encoded in the model's activation space, and that this direction directly shapes generation. Using 190,491 tweets from sitting members of the U.S. Congress as labeled training data, we train linear probes on the hidden states of the Llama 3.1 8B Instruct model. We identify a single geometric axis at layer 18 that separates Republican from Democratic text with an AUC of 0.945 and a Cohen's d of 1.94, and use sparse autoencoders to decompose that axis into interpretable partisan features. Causally intervening along this axis, ablating or amplifying the partisan component mid-generation, produces systematic shifts in the model's output. We witness stance reversals, register shifting, and structured fabrications of authority. Our results demonstrate that partisan bias in language models is not a vague emergent property but a learned geometric feature that can be precisely located and steered. Partisan bias is not a bug to be patched, but a structural property of how these models encode information about their users. As LLMs displace search engines as the interface to knowledge, understanding that product design (and its consequences) will be essential for navigating the legal, social, and political transitions from an information ecosystem that is curated to one that is generated.",
+      "authors": [
+        "Wendy K. Tam"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-07T19:17:02+00:00",
+      "link": "https://arxiv.org/pdf/2606.08792v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "studies partisan direction in large language model using supervised linear probes",
+      "llm_evidence_cn": "研究大语言模型中的政党方向，使用监督线性探针",
+      "llm_evidence": "研究大语言模型中的政党方向，使用监督线性探针",
+      "canonical_evidence": "研究大语言模型中的政党方向，使用监督线性探针",
+      "llm_tldr_en": "Identifies a geometric axis in Llama 3.1 that separates Republican and Democratic text, using linear probes trained on Congressional tweets.",
+      "llm_tldr_cn": "大语言模型逐渐取代搜索引擎，但其内部表征可能携带偏见。本文利用美国国会议员的推文作为监督数据，在Llama 3.1模型上训练线性探针，发现一个单一几何轴能高精度区分共和党和民主党文本。该研究定位了党派方向在模型中的位置，并展示了如何通过调整该方向来改变生成结果，为可控文本生成提供了工具。",
+      "llm_tldr": "大语言模型逐渐取代搜索引擎，但其内部表征可能携带偏见。本文利用美国国会议员的推文作为监督数据，在Llama 3.1模型上训练线性探针，发现一个单一几何轴能高精度区分共和党和民主党文本。该研究定位了党派方向在模型中的位置，并展示了如何通过调整该方向来改变生成结果，为可控文本生成提供了工具。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.08994v1",
+      "source": "arxiv",
+      "title": "Language-Aware Token Boosting: LLM Language Confusion Reduction Without Tuning",
+      "abstract": "Large language models (LLMs) sometimes exhibit language confusion when generating non-English text. Existing approaches typically rely on fine-tuning to mitigate this issue. In contrast, we propose a tuning-free paradigm for reducing language confusion. Within this paradigm, we introduce two methods: Language-Aware Token Boosting (LATB), which applies targeted perturbations to tokens associated with the desired language, and Adaptive Language-Aware Token Boosting (Adaptive-LATB), which dynamically adjusts these perturbations based on the model's confidence in the intended language. Experiments demonstrate that our methods effectively improve multilingual alignment by reducing language confusion, while maintain the summarization quality without requiring any additional fine-tuning. Our code is publicly available. https://github.com/scbdatax/genai-datax-language-aware-token-boosting.",
+      "authors": [
+        "Trapoom Ukarapol",
+        "Pakhapoom Sarapat",
+        "Nut Chukamphaeng"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-08T03:47:07+00:00",
+      "link": "https://arxiv.org/pdf/2606.08994v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "addresses language confusion in LLMs, proposes tuning-free boosting",
+      "llm_evidence_cn": "解决大语言模型语言混淆，提出无微调提升方法",
+      "llm_evidence": "解决大语言模型语言混淆，提出无微调提升方法",
+      "canonical_evidence": "解决大语言模型语言混淆，提出无微调提升方法",
+      "llm_tldr_en": "Language-Aware Token Boosting reduces language confusion in LLMs without fine-tuning by perturbing tokens, improving multilingual alignment.",
+      "llm_tldr_cn": "大语言模型生成非英语文本时常出现语言混淆。现有方法依赖微调，本文提出无微调范式LATB和Adaptive-LATB，通过对目标语言token施加扰动来减少混淆。实验表明该方法有效提升多语言对齐且不损害摘要质量，为LLM多语言能力提供轻量化方案。",
+      "llm_tldr": "大语言模型生成非英语文本时常出现语言混淆。现有方法依赖微调，本文提出无微调范式LATB和Adaptive-LATB，通过对目标语言token施加扰动来减少混淆。实验表明该方法有效提升多语言对齐且不损害摘要质量，为LLM多语言能力提供轻量化方案。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.05626v1",
+      "source": "arxiv",
+      "title": "When New Generators Arrive: Lifelong Machine-Generated Text Attribution via Ridge Feature Transfer",
+      "abstract": "Machine-generated text (MGT) attribution aims to identify the specific generator responsible for a given text, thereby providing fine-grained evidence for model accountability and misuse investigation. As new large language models continue to emerge, attribution models must continuously incorporate new generators while preserving their ability to recognize previously seen ones. Prior works have shown that this lifelong MGT attribution setting is challenging, and existing methods often struggle to achieve a stable balance between adapting to new classes and retaining old ones. To address this issue, we propose RidgeFT, a lightweight analytic update framework that does not rely on exemplar replay. RidgeFT trains a task-aware encoder on the initial generator set, stores compact class-wise sufficient statistics when each generator class is first observed, and then freezes the encoder for replay-free closed-form updates. It then suppresses generator-irrelevant variation through covariance calibration, improves representation capacity with fixed random features, and updates new classes through closed-form ridge regression based on class-level sufficient statistics. Across multi-topic evaluations with varying initial generator setups, RidgeFT consistently outperforms baselines. It achieves the best macro-F1 across domains, backbones, and incremental protocols, while also improving both old-class retention and new-class adaptation. These results suggest that feature-stable analytic updates provide a simple yet effective approach to lifelong MGT attribution.",
+      "authors": [
+        "Zhen Sun",
+        "Yifan Liao",
+        "Zhicong Huang",
+        "Jiaheng Wei",
+        "Cheng Hong",
+        "Yutao Yue",
+        "Xinlei He"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-06-04T02:50:58+00:00",
+      "link": "https://arxiv.org/pdf/2606.05626v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "lifelong attribution of machine-generated text from LLMs",
+      "llm_evidence_cn": "对大型语言模型生成的文本进行终身归因",
+      "llm_evidence": "对大型语言模型生成的文本进行终身归因",
+      "canonical_evidence": "对大型语言模型生成的文本进行终身归因",
+      "llm_tldr_en": "RidgeFT enables lifelong attribution of machine-generated text from LLMs by transferring features without exemplar replay, balancing new and old generators.",
+      "llm_tldr_cn": "机器生成文本归因需识别具体生成器，新LLM不断涌现。现有方法难以平衡新旧类别。本文提出RidgeFT，一种基于岭回归的轻量分析更新框架，无需样本回放即可持续学习。实验证明其在保留旧知识的同时有效适应新生成器。",
+      "llm_tldr": "机器生成文本归因需识别具体生成器，新LLM不断涌现。现有方法难以平衡新旧类别。本文提出RidgeFT，一种基于岭回归的轻量分析更新框架，无需样本回放即可持续学习。实验证明其在保留旧知识的同时有效适应新生成器。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.05781v2",
+      "source": "arxiv",
+      "title": "Domain-Adapted Small Language Models with Hybrid Post-Processing: Achieving Cost-Efficient, Low-Latency Multi-Label Structured Prediction via LoRA Fine-Tuning on Scarce Data",
+      "abstract": "Deploying frontier large language models (LLMs) for domain-specific structured evaluation tasks incurs prohibitive latency, cost, and data-privacy overhead. We present a hybrid framework that fine-tunes a small language model (LLaMA 3.1 8B, 2.05% trainable parameters via LoRA) on only 219 curated examples and couples it with a deterministic rule-based postprocessing layer. Applied to multi-label compliance evaluation of conversational transcripts (18 heterogeneous output fields), our system achieves 100% JSON structural validity, 83.0% human-validated overall accuracy, and 100% accuracy on the most critical classification field in blind evaluation on 53 unseen production transcripts. On a single NVIDIA A100 GPU, inference completes in $\\sim$2 seconds -- 2--5x faster than frontier APIs -- at USD 0.013 per evaluation versus USD 0.025--0.055 for proprietary alternatives, yielding 46--76% cost savings.   We introduce targeted hard-negative augmentation for critical decision boundaries and formalize the hybrid neural-symbolic decomposition, demonstrating that domain-adapted small language models with postprocessing can match frontier model accuracy while dramatically reducing operational cost, latency, and privacy risk.",
+      "authors": [
+        "Srinivasan Manoharan",
+        "Dilipkumar Nallusamy",
+        "Sachin Kumar",
+        "Haifeng Wu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-04T07:09:37+00:00",
+      "link": "https://arxiv.org/pdf/2606.05781v2",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LoRA fine-tuned small LLM for structured prediction with scarce data",
+      "llm_evidence_cn": "使用LoRA微调小型LLM在稀缺数据上实现结构化预测",
+      "llm_evidence": "使用LoRA微调小型LLM在稀缺数据上实现结构化预测",
+      "canonical_evidence": "使用LoRA微调小型LLM在稀缺数据上实现结构化预测",
+      "llm_tldr_en": "Fine-tunes a small LLM (LLaMA 3.1 8B) with LoRA on only 219 examples plus rule-based post-processing to achieve accurate multi-label compliance evaluation.",
+      "llm_tldr_cn": "该论文针对大型语言模型在领域特定任务中延迟高、成本高的问题，提出结合LoRA微调与规则后处理的混合框架。仅用219个样本微调LLaMA 3.1 8B模型，在对话合规性评估上达到83%准确率，并保证100%JSON结构有效性。该方法显著降低了部署成本与延迟。",
+      "llm_tldr": "该论文针对大型语言模型在领域特定任务中延迟高、成本高的问题，提出结合LoRA微调与规则后处理的混合框架。仅用219个样本微调LLaMA 3.1 8B模型，在对话合规性评估上达到83%准确率，并保证100%JSON结构有效性。该方法显著降低了部署成本与延迟。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2606.07853v1",
+      "source": "arxiv",
+      "title": "Beyond English benchmarks: clinical llm evaluation in Brazilian Portuguese",
+      "abstract": "Large Language Models are transforming the support for clinical decision and their application in real scenarios. Yet, most benchmarks are conducted in English, and cross-lingual evaluation is needed to tackle the language gaps in global access. We introduce ClinicalBr, the first bilingual benchmark for clinical decision built from real Brazilian case reports. The corpus contains 2,892 cases drawn from 28 SciELO medical journals, spanning 18 specialties, and is structured as parallel Portuguese-English pairs. Each case supports four evaluation tasks: diagnosis retrieval, differential diagnosis, exam recommendation, and treatment planning. We evaluate four models: MedGemma-27B, Sabiá-4, DeepSeek-R1, and o3-mini, across both languages. The central finding is that the Portuguese-English performance gap is task-dependent, not general. In diagnosis retrieval, English yields a consistent advantage across all models, with +7.5-12.1 accuracy points. This advantage disappears in differential diagnosis, exam recommendation, and treatment planning, where confidence intervals cross zero for most models and Portuguese completeness scores are marginally higher. Brazilian-endemic conditions proved easier than the full corpus, not harder, indicating that tropical presentations are adequately represented in current pre-training. Exam recommendation was the hardest task across all models and both languages, with F1 scores below 0.10, well below the differential diagnosis ceiling of 0.20-0.27.",
+      "authors": [
+        "Giordano de Pinho Souza",
+        "Glaucia Melo",
+        "Josefino Cabral Melo Lima",
+        "Daniel Schneider"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-05T21:29:39+00:00",
+      "link": "https://arxiv.org/pdf/2606.07853v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "cross-lingual clinical LLM evaluation benchmark",
+      "llm_evidence_cn": "跨语言临床大语言模型评估基准",
+      "llm_evidence": "跨语言临床大语言模型评估基准",
+      "canonical_evidence": "跨语言临床大语言模型评估基准",
+      "llm_tldr_en": "ClinicalBr is the first bilingual benchmark for clinical LLM evaluation in Brazilian Portuguese and English, covering diagnosis and treatment tasks across 18 specialties.",
+      "llm_tldr_cn": "大语言模型在临床决策中应用广泛，但现有基准多局限于英语。本文构建了首个面向临床决策的双语基准ClinicalBr，基于真实巴西病例报告，包含2892个案例，覆盖18个专科，支持诊断检索、鉴别诊断、检查推荐和治疗规划四项评估任务。在跨语言设置下评估MedGemma-27B等模型，填补了临床LLM多语言评估的空白。该工作为低资源语言临床LLM评测提供了基础资源。",
+      "llm_tldr": "大语言模型在临床决策中应用广泛，但现有基准多局限于英语。本文构建了首个面向临床决策的双语基准ClinicalBr，基于真实巴西病例报告，包含2892个案例，覆盖18个专科，支持诊断检索、鉴别诊断、检查推荐和治疗规划四项评估任务。在跨语言设置下评估MedGemma-27B等模型，填补了临床LLM多语言评估的空白。该工作为低资源语言临床LLM评测提供了基础资源。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.07753v1",
+      "source": "arxiv",
+      "title": "ReadingMachine: A Computational Methodology for Structured Corpus Reading and Large-Scale Synthesis",
+      "abstract": "ReadingMachine is a computational methodology for structured corpus reading that uses large language models to perform bounded reading operations over entire document collections. Rather than relying on retrieval or recursive summarization, the approach decomposes analysis into inspectable stages including insight extraction, semantic clustering, theme generation, and iterative omission detection. By delaying irreversible compression and explicitly tracking intermediate representations, the method prioritizes coverage, traceability, and preservation of disagreement across large corpora. The system is demonstrated on a heterogeneous corpus of 152 industrial policy documents, producing more than 17,500 extracted insights and a structured thematic map. ReadingMachine is released as an open-source experimental framework for large-scale qualitative synthesis and corpus analysis.",
+      "authors": [
+        "James Morrissey"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-05T18:01:27+00:00",
+      "link": "https://arxiv.org/pdf/2606.07753v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Uses LLMs for structured corpus reading and synthesis",
+      "llm_evidence_cn": "利用LLM进行结构化语料库阅读与综合",
+      "llm_evidence": "利用LLM进行结构化语料库阅读与综合",
+      "canonical_evidence": "利用LLM进行结构化语料库阅读与综合",
+      "llm_tldr_en": "Proposes ReadingMachine, a method using LLMs for structured corpus reading through insight extraction, clustering, and theme generation, demonstrated on policy documents.",
+      "llm_tldr_cn": "该论文提出ReadingMachine方法，利用大语言模型对文档集合进行结构化阅读。通过分阶段处理（洞察提取、语义聚类、主题生成等），在152份政策文档中提取了超过17500条洞察，保证了覆盖率和可追溯性。展示了LLM在文本分析中的新应用。",
+      "llm_tldr": "该论文提出ReadingMachine方法，利用大语言模型对文档集合进行结构化阅读。通过分阶段处理（洞察提取、语义聚类、主题生成等），在152份政策文档中提取了超过17500条洞察，保证了覆盖率和可追溯性。展示了LLM在文本分析中的新应用。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.08011v1",
+      "source": "arxiv",
+      "title": "Rewrite to Translate, Translate to Reward: Reinforcement Learning for Source Rewriting in Machine Translation",
+      "abstract": "Although directly prompting off-the-shelf Large Language Models (LLMs) to generate meaning-preserving source rewrites can effectively enhance Machine Translation (MT) quality, doing so requires manually tuning prompts for different MT models. In this work, we propose RLSR (Reinforcement Learning for Source Rewriting), a novel RL-based framework for training a source rewriting model without tuning prompts for each MT model. RLSR optimizes the rewriting model by directly using the improvement in downstream translation quality yielded by each rewritten source as the reward. Extensive experiments across six MT models and 16 language pairs demonstrate that our 4B rewriting models trained via RLSR significantly outperform the no-rewriting baseline and existing same-scale prompt-based rewriting baselines, while achieving competitive performance against prompt-based baselines based on the 235B LLM.",
+      "authors": [
+        "Boxuan Lyu",
+        "Haiyue Song",
+        "Zhi Qu",
+        "Hidetaka Kamigaito",
+        "Kotaro Funakoshi",
+        "Manabu Okumura"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-06T07:00:44+00:00",
+      "link": "https://arxiv.org/pdf/2606.08011v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "large language model, machine translation, reinforcement learning",
+      "llm_evidence_cn": "大语言模型，机器翻译，强化学习",
+      "llm_evidence": "大语言模型，机器翻译，强化学习",
+      "canonical_evidence": "大语言模型，机器翻译，强化学习",
+      "llm_tldr_en": "Proposes RLSR, an RL-based framework for training source rewriting models using downstream translation quality as reward.",
+      "llm_tldr_cn": "大语言模型可用于源端改写以提升机器翻译质量，但需手动调整提示。本文提出RLSR框架，通过强化学习直接以下游翻译质量的提升作为奖励，训练改写模型。在6个MT模型和16个语言对上的实验表明，4B参数改写模型显著优于基线。",
+      "llm_tldr": "大语言模型可用于源端改写以提升机器翻译质量，但需手动调整提示。本文提出RLSR框架，通过强化学习直接以下游翻译质量的提升作为奖励，训练改写模型。在6个MT模型和16个语言对上的实验表明，4B参数改写模型显著优于基线。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2606.07996v1",
+      "source": "arxiv",
+      "title": "MC-PDD: Masked Corpus-Level Pretraining Data Detection for Black-Box Large Language Models",
+      "abstract": "Pretraining is fundamental to the development of Large Language Models (LLMs), yet the opacity of pretraining data complicates model analysis and raises ethical, legal, and fairness concerns. Detecting whether specific datasets were used during pretraining is, therefore, critical. Existing state-of-the-art methods typically rely on access to model probability distributions, making them unsuitable for closed-source LLMs that provide only input-output interfaces. To address this limitation, we introduce Masked Corpus-level Pretraining Data Detection (MC-PDD), a novel method inspired by the masked language modeling paradigm. MC-PDD masks highly specific tokens in each text and prompts the LLM to predict the missing content. It then assesses whether the difference in prediction hit rates between a candidate corpus and a reference non-member corpus is statistically significant. Based on this comparison, MC-PDD determines whether the candidate texts were likely included in the model's pretraining data. Experimental results demonstrate clear and consistent differences in prediction hit rates between pretrained and unseen data across three datasets, for both open-source and closed-source LLMs. Despite operating under a stricter black-box setting, MC-PDD achieves performance comparable to existing detection methods. Our approach enables practical applications such as model auditing and data copyright verification using only standard API access. Upon acceptance, we will publicly release the code and datasets.",
+      "authors": [
+        "Kaixin Lan",
+        "Mu You",
+        "Tao Fang",
+        "Binkai Ou",
+        "Lidia S. Chao",
+        "Derek F. Wong"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-06T06:27:54+00:00",
+      "link": "https://arxiv.org/pdf/2606.07996v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Pretraining data detection for black-box LLMs using masked prediction",
+      "llm_evidence_cn": "使用掩码预测检测黑盒LLM的预训练数据",
+      "llm_evidence": "使用掩码预测检测黑盒LLM的预训练数据",
+      "canonical_evidence": "使用掩码预测检测黑盒LLM的预训练数据",
+      "llm_tldr_en": "Introduces MC-PDD, a method that masks tokens in text and prompts LLMs to predict missing content to detect if a corpus was used in pretraining, designed for black-box models.",
+      "llm_tldr_cn": "该论文针对黑盒大语言模型预训练数据不透明的问题，提出MC-PDD方法。通过掩码文本中的特定标记并让LLM预测缺失内容，来判断语料是否参与预训练。该方法仅需输入输出接口，适用于闭源模型，为解决数据隐私和公平性问题提供了工具。",
+      "llm_tldr": "该论文针对黑盒大语言模型预训练数据不透明的问题，提出MC-PDD方法。通过掩码文本中的特定标记并让LLM预测缺失内容，来判断语料是否参与预训练。该方法仅需输入输出接口，适用于闭源模型，为解决数据隐私和公平性问题提供了工具。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.08295v1",
+      "source": "arxiv",
+      "title": "TLRD: Teaching LLMs to Reason over Tabular Data with Tri-Level Rationale Distillation",
+      "abstract": "Tabular data is a primary medium for storing real-world information, driving many industrial applications of machine learning. Traditional predictors achieve strong predictive performance but do not provide readable, case-specific explanations essential for decision-making. Large Language Models (LLMs) can naturally bridge this gap by generating predictions alongside explanations. However, dataset-specific patterns, such as feature distributions and interactions, make tabular data difficult for LLMs to understand and reason over, while label-only fine-tuning improves performance at the cost of catastrophic forgetting. To address this problem, we propose Tri-Level Rationale Distillation (TLRD), a framework that converts label-only tabular datasets into structured rationale supervision for LLMs. TLRD uses a high-capacity teacher to synthesize a rationale corpus grounded in three complementary levels of evidence: instance-level feature, dataset-level distributional context, and comparison-level retrieved neighbors, then distills the rationale into student LLMs, enabling zero-overhead prediction and grounded explanation from raw features only. Experiments on multiple domain datasets show that TLRD significantly closes the performance gap between LLMs and state-of-the-art tree ensembles while producing grounded and readable explanations, offering a valuable reference for high-stakes decision-making.",
+      "authors": [
+        "Tianyuan Liang",
+        "Xuwei Tan",
+        "Lei Shi",
+        "Junsheng Zhong",
+        "Ziyu Hu",
+        "Tian Xie",
+        "Zhiqun Zuo",
+        "Xiaodong Yu",
+        "Xueru Zhang"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-06T18:31:50+00:00",
+      "link": "https://arxiv.org/pdf/2606.08295v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "teaches LLMs to reason over tabular data with rationale distillation",
+      "llm_evidence_cn": "通过理由蒸馏教大语言模型推理表格数据",
+      "llm_evidence": "通过理由蒸馏教大语言模型推理表格数据",
+      "canonical_evidence": "通过理由蒸馏教大语言模型推理表格数据",
+      "llm_tldr_en": "TLRD teaches LLMs to reason over tabular data by distilling rationales at three levels, combining predictions with explanations without forgetting.",
+      "llm_tldr_cn": "表格数据推理需要LLM生成可读解释，但直接微调会导致灾难性遗忘和性能下降。本文提出Tri-Level Rationale Distillation，从特征、行和表三个层次蒸馏解释，使LLM在保持预测性能的同时提供可理解的理由。实验证明在多个表格数据集上有效。",
+      "llm_tldr": "表格数据推理需要LLM生成可读解释，但直接微调会导致灾难性遗忘和性能下降。本文提出Tri-Level Rationale Distillation，从特征、行和表三个层次蒸馏解释，使LLM在保持预测性能的同时提供可理解的理由。实验证明在多个表格数据集上有效。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2606.07998v1",
+      "source": "arxiv",
+      "title": "Enhancing AI Interpretability and Safety through Localised Architectures",
+      "abstract": "Recent advances in generative AI, especially powerful Large Language Models (LLMs) and Large Reasoning Models (LRMs), raise concerns over the interpretability, safety and sustainability of these large and opaque AI models. The power of such architectures is derived not only from the scalability of deep neural networks, but also massively parallel hardware such as GPU clusters. The diffuse nature of deep neural networks gives them great function-approximation capability when provided with sufficient training data but imposes a cost in interpretability and computational efficiency. Observing that localised machine learning (ML) models tend to be more interpretable and computationally efficient than deep neural networks on small datasets, we reason by analogy that similar advantages may apply to specific localised hardware ML architectures. We argue that localised architectures with lower bandwidth but higher expressivity per node have the potential to be fundamentally more interpretable than deep neural networks running on GPU clusters while remaining competitive for smaller datasets. We then evaluate the suitability of various hardware ML paradigms for implementing such localised architectures and evaluate their per-node expressivity, energy efficiency and practical maturity of the technology required.",
+      "authors": [
+        "Ian Seet",
+        "Jonas Bozenhard",
+        "Simon Osterman"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-06-06T06:33:03+00:00",
+      "link": "https://arxiv.org/pdf/2606.07998v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "localised machine learning vs deep neural networks for interpretability",
+      "llm_evidence_cn": "局部化机器学习与深度神经网络的可解释性对比",
+      "llm_evidence": "局部化机器学习与深度神经网络的可解释性对比",
+      "canonical_evidence": "局部化机器学习与深度神经网络的可解释性对比",
+      "llm_tldr_en": "Proposes localized architectures as more interpretable and efficient alternatives to deep neural networks for AI safety, relevant to neural network understanding.",
+      "llm_tldr_cn": "该论文指出深度神经网络在可解释性和计算效率上的不足，提出局部化机器学习模型作为替代方案。通过分析局部模型在小数据集上的优势，论证其在AI可解释性和安全性方面的潜力。实验表明局部架构能提供更好的可解释性，为构建更透明的AI系统提供了新思路。",
+      "llm_tldr": "该论文指出深度神经网络在可解释性和计算效率上的不足，提出局部化机器学习模型作为替代方案。通过分析局部模型在小数据集上的优势，论证其在AI可解释性和安全性方面的潜力。实验表明局部架构能提供更好的可解释性，为构建更透明的AI系统提供了新思路。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "neural network",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.08346v1",
+      "source": "arxiv",
+      "title": "CATPO: Critique-Augmented Tree Policy Optimization",
+      "abstract": "Reinforcement learning with verifiable rewards (RLVR) has become a dominant paradigm for improving the reasoning capabilities of large language models (LLMs). Recent tree-based methods such as TreeRPO extend flat trajectory sampling with tree-structured rollouts to obtain dense, step-level reward signals without a separate process reward model. However, not all trees are equally informative: trees where all leaves succeed, all leaves fail, or the policy already predicts the reward distribution contribute little to gradient updates, wasting compute. We introduce CATPO (Critique-Augmented Tree Policy Optimization), which diagnoses and addresses this waste at the tree level. CATPO first scores each tree via a tree informativeness score, F(T), combining leaf-outcome diversity with policy-reward decorrelation at zero extra compute. For dead-wrong trees where all branches fail, CATPO applies critique-guided healing: it locates the shallowest failure point, generates a natural-language critique, and grafts refined continuations to recover training signal. Finally, an informativeness-weighted loss scales each tree's gradient contribution by its normalized score, concentrating parameter updates on the most informative trees while preserving overall gradient magnitude. Experiments on Qwen2.5-Math-1.5B trained with the MATH dataset show that CATPO achieves 37.5% macro accuracy across four benchmarks (AIME24, MATH-500, OlympiadBench, and MinervaMath), improving over TreeRPO by 1.9% and GRPO by 4.8%.",
+      "authors": [
+        "Ayush Singh",
+        "Umang Goyal",
+        "Ankur Dahiya"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.LG"
+      ],
+      "published": "2026-06-06T21:29:01+00:00",
+      "link": "https://arxiv.org/pdf/2606.08346v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "improves LLM reasoning with tree-structured RL and critique augmentation",
+      "llm_evidence_cn": "通过树结构强化学习和批评增强提升大语言模型推理",
+      "llm_evidence": "通过树结构强化学习和批评增强提升大语言模型推理",
+      "canonical_evidence": "通过树结构强化学习和批评增强提升大语言模型推理",
+      "llm_tldr_en": "CATPO uses critique-augmented tree policy optimization to improve LLM reasoning by focusing computation on informative trees, reducing waste.",
+      "llm_tldr_cn": "基于可验证奖励的强化学习能提升LLM推理能力。现有树方法收集的轨迹可能信息量低造成浪费。本文提出CATPO，通过树信息度评分筛选有贡献的树，并用批评增强策略优化。实验表明在数学推理等任务上更高效地提升性能。",
+      "llm_tldr": "基于可验证奖励的强化学习能提升LLM推理能力。现有树方法收集的轨迹可能信息量低造成浪费。本文提出CATPO，通过树信息度评分筛选有贡献的树，并用批评增强策略优化。实验表明在数学推理等任务上更高效地提升性能。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2606.08146v1",
+      "source": "arxiv",
+      "title": "SAGE: An LLM-driven Self Reflective Agentic Framework for Fraud Detection",
+      "abstract": "Fraud detection in payment, e-commerce, and telecommunications systems requires accuracy at the individual level, robustness under severe class imbalance, and ease of understanding for risk managers. Existing methods fall at least one of these requirements: automated machine learning systems search a fixed numerical space without semantic awareness of the dataset; graph neural network-based methods require pre-defined relational graphs and remain opaque at the individual-decision level; and the design of general-purpose large language model (LLM) agents does not consider the recall and precision constraints specific to real-world fraud detection. In this paper, we propose SAGE, the first end-to-end LLM-driven multi-agent framework for fraud detection. SAGE coordinates three dedicated agents that make decisions based on a six-layer Data Diagnostic Tree (DDT) and a Markov decision process guided by natural-language gradients, automatically optimizing the model under a fraud-specific reward. On five fraud datasets and five LLM backbones, SAGE wins $96.00\\%$ of method--dataset comparisons and improves F1 by an average of $40.86\\%$ over baselines. The code is available at https://github.com/yichenC1c/SAGE.",
+      "authors": [
+        "Yichen Chen",
+        "Siying Li",
+        "Yuhang Liang",
+        "Lijun Wang",
+        "Renyang Liu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-06T12:48:45+00:00",
+      "link": "https://arxiv.org/pdf/2606.08146v1",
+      "tags": [
+        "keyword:ml-llm"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM-driven multi-agent framework for fraud detection",
+      "llm_evidence_cn": "大语言模型驱动的多智能体欺诈检测框架",
+      "llm_evidence": "大语言模型驱动的多智能体欺诈检测框架",
+      "canonical_evidence": "大语言模型驱动的多智能体欺诈检测框架",
+      "llm_tldr_en": "SAGE is the first LLM-driven multi-agent framework for fraud detection, addressing class imbalance and interpretability via self-reflective agents.",
+      "llm_tldr_cn": "欺诈检测需要高精度、处理类别不平衡并提供可解释性。现有方法在语义理解和个体决策透明性上不足。本文提出SAGE，首个端到端LLM驱动多智能体框架，每个智能体负责不同阶段，通过自我反思提升召回和精确度。在真实数据上优于传统方法并保持可解释性。",
+      "llm_tldr": "欺诈检测需要高精度、处理类别不平衡并提供可解释性。现有方法在语义理解和个体决策透明性上不足。本文提出SAGE，首个端到端LLM驱动多智能体框架，每个智能体负责不同阶段，通过自我反思提升召回和精确度。在真实数据上优于传统方法并保持可解释性。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.08397v1",
+      "source": "arxiv",
+      "title": "TrustMargin: Training-Free Arbitration between Parametric Memory and Retrieved Evidence in Large Language Models",
+      "abstract": "Large language models answer knowledge-intensive questions using both parametric memory and retrieved evidence, but neither source is uniformly reliable. Retrieval can fill knowledge gaps, yet distracting passages may override correct closed-book answers. We study this post-generation conflict as answer-level source arbitration: given Direct and RAG answers from the same frozen model, decide which source to trust. We propose TRUSTMARGIN, a training-free, plug-and-play arbitration layer that scores the two existing candidates with the model's own likelihoods. It combines a parametric-prior margin, which tests whether memory accepts the retrieved answer, with an evidence-binding margin, which discounts passage-only salience and measures question-specific support. TRUSTMARGIN selects between Direct and RAG without fine-tuning, external judges, or additional generation. Across 2WIKIMQA and CWQA with three LLaMA scales, TRUSTMARGIN consistently improves over Direct generation and BM25-RAG, recovers part of the Direct/RAG oracle gap, and generalizes to multiple training-free RAG pipelines.",
+      "authors": [
+        "Jingyan Xu",
+        "Hong Shi",
+        "Yi Shan",
+        "Penghui Liu",
+        "Yunhao Bai",
+        "Ningyuan Li",
+        "Xueyang Liu"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.IR"
+      ],
+      "published": "2026-06-07T01:25:09+00:00",
+      "link": "https://arxiv.org/pdf/2606.08397v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Training-free arbitration between parametric memory and retrieved evidence for LLMs",
+      "llm_evidence_cn": "无训练仲裁LLM的参数记忆与检索证据",
+      "llm_evidence": "无训练仲裁LLM的参数记忆与检索证据",
+      "canonical_evidence": "无训练仲裁LLM的参数记忆与检索证据",
+      "llm_tldr_en": "Proposes TRUSTMARGIN, a training-free plug-and-play layer that scores LLM's own likelihoods to arbitrate between direct and RAG answers.",
+      "llm_tldr_cn": "该论文针对大语言模型在知识问答中参数记忆与检索证据存在冲突的问题，提出TRUSTMARGIN仲裁层。无需额外训练，通过计算模型对两种答案的似然度，结合参数先验和证据绑定边际，决定更可靠的答案。实验证明该方法有效提升了问答准确性。",
+      "llm_tldr": "该论文针对大语言模型在知识问答中参数记忆与检索证据存在冲突的问题，提出TRUSTMARGIN仲裁层。无需额外训练，通过计算模型对两种答案的似然度，结合参数先验和证据绑定边际，决定更可靠的答案。实验证明该方法有效提升了问答准确性。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2606.08454v1",
+      "source": "arxiv",
+      "title": "Beyond Linear Activation Steering: Invertible Latent Transformations for Controlling LLM Behavior",
+      "abstract": "Activation steering provides a lightweight inference-time mechanism for controlling large language models (LLMs) by modifying their internal activation vectors toward desired behaviors. Most existing methods compute a fixed steering direction in the original activation space, typically from pairs of contrastive examples using mean differences, linear probes, or arbitrary separability criteria. While effective to a certain extent, these methods treat behavioral control as a global, linear, additive offset: the same direction is applied across inputs, and behaviors are linearly separable. This can be restrictive when behavioral features vary nonlinearly across the activation space or lie on curved and anisotropic manifolds, where the optimal intervention may be input-dependent. To address this limitation, we propose INNSteer, a nonlinear activation steering framework based on invertible latent transformations. Rather than searching for a better steering vector in the original representation space, INNSteer learns a lightweight invertible neural network $φ$ that maps an LLM's activations into a latent space where behavioral classes are more amenable to linear control. At inference time, activations are mapped through $φ$, steered in the latent space, and mapped back through the exact inverse transformation $φ^{-1}$. This makes a simple latent-space translation become a nonlinear, input-dependent intervention in the original activation space. Across experiment settings on multiple LLM families, scales, behavioral traits, and safety benchmarks, INNSteer consistently improves model control over linear, transport-based, and nonlinear steering baselines while largely preserving generation fluency.",
+      "authors": [
+        "Tuc Nguyen",
+        "Thai Le"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CL"
+      ],
+      "published": "2026-06-07T05:01:25+00:00",
+      "link": "https://arxiv.org/pdf/2606.08454v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "large language model, activation steering, behavior control",
+      "llm_evidence_cn": "大语言模型，激活引导，行为控制",
+      "llm_evidence": "大语言模型，激活引导，行为控制",
+      "canonical_evidence": "大语言模型，激活引导，行为控制",
+      "llm_tldr_en": "Proposes invertible latent transformations for nonlinear activation steering to control LLM behavior beyond linear offsets.",
+      "llm_tldr_cn": "现有激活引导方法使用固定线性偏移控制大语言模型行为，但无法处理非线性特征。本文提出可逆潜在变换方法，对激活空间进行非线性变换，实现更灵活的行为控制。实验表明该方法在多种任务上优于线性基线。",
+      "llm_tldr": "现有激活引导方法使用固定线性偏移控制大语言模型行为，但无法处理非线性特征。本文提出可逆潜在变换方法，对激活空间进行非线性变换，实现更灵活的行为控制。实验表明该方法在多种任务上优于线性基线。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    }
+  ]
+}
