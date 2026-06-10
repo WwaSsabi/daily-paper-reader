@@ -1,0 +1,689 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-10T22:30:45.133736+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 13,
+    "deep_cap": 6,
+    "deep_selected": 6,
+    "quick_candidates": 12,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2606.06888v2",
+      "source": "arxiv",
+      "title": "Data-Constrained Language Model Pretraining: Improved Regularization and Scaling Laws",
+      "abstract": "Classical scaling laws for language model pretraining balance model size against training dataset size under a fixed compute budget, assuming abundant data and a single pass over the corpus. As training compute grows faster than the supply of natural language data, pretraining is likely to enter a data-constrained, compute-rich regime where models train for multiple epochs over a finite dataset. We study data-constrained pretraining along two axes, regularization and scaling. For regularization, we study masked-input regularization (MIR), an auxiliary next-token prediction loss on randomly masked inputs. MIR tests whether the random masking central to diffusion language models can benefit autoregressive pretraining without architectural changes or inference overhead. Across 72M to 1.4B parameter models, we find that MIR added on top of strong weight decay improves validation loss over autoregressive strong-weight-decay-only models, with downstream gains at 1.4B. For scaling, we propose SoftQ, a scaling law that couples model size and data size to capture their interaction under repeated data. Classical alternatives such as the Chinchilla law use an additive form that decouples these terms, making them misspecified in the data-constrained regime. We find that SoftQ fits data-constrained experiments substantially better than these alternatives, and estimates MIR's gains as equivalent to roughly 1.3 times as much unique training data. We release our code at https://github.com/yixinw-lab/dc_pretrain.",
+      "authors": [
+        "Zhiwei Xu",
+        "Shihao Wu",
+        "Hanseul Cho",
+        "Wei Hu",
+        "Yixin Wang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-05T04:10:09+00:00",
+      "link": "https://arxiv.org/pdf/2606.06888v2",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Data-constrained language model pretraining with scaling laws",
+      "llm_evidence_cn": "数据受限的语言模型预训练与缩放定律",
+      "llm_evidence": "数据受限的语言模型预训练与缩放定律",
+      "canonical_evidence": "数据受限的语言模型预训练与缩放定律",
+      "llm_tldr_en": "Studies data-constrained pretraining: proposes masked-input regularization (MIR) and derives new scaling laws for multi-epoch training on finite data.",
+      "llm_tldr_cn": "当训练数据增长慢于计算资源，模型需在多轮训练中重复使用有限数据。本文研究数据受限下预训练的正则化和缩放律。提出掩码输入正则化（MIR）作为辅助任务，并推导新的缩放定律。实验表明MIR在数据受限场景下提升性能，缩放律为未来训练提供指导。",
+      "llm_tldr": "当训练数据增长慢于计算资源，模型需在多轮训练中重复使用有限数据。本文研究数据受限下预训练的正则化和缩放律。提出掩码输入正则化（MIR）作为辅助任务，并推导新的缩放定律。实验表明MIR在数据受限场景下提升性能，缩放律为未来训练提供指导。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "how to train a large language model",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.10989v1",
+      "source": "arxiv",
+      "title": "Null-Space Constrained Low-Rank Adaptation for Response-Specified Large Language Model Unlearning",
+      "abstract": "Large language model unlearning aims to suppress designated undesirable knowledge while preserving benign capabilities. Many unlearning objectives focus on suppressing undesired answers, while recent target-guided variants specify replacement behavior but still leave update locality largely unconstrained. This paper introduces \\emph{Null-Space Constrained Response-Specified Unlearning} (NSRU), a projection-constrained low-rank framework for controlled LLM unlearning. NSRU uses an explicitly structured safe target response to specify the desired behavior for each forget query, while suppressing the original undesired content. To localize adaptation, NSRU estimates per-module retain subspaces from benign hidden representations and uses an orthogonal-projected low-rank parameterization to confine LoRA updates to the null space of the retain subspace. The resulting objective jointly optimizes safe-target learning, undesired-response suppression, and retention preservation under this constrained parameterization. We provide a local first-order analysis showing that the projected update reduces retain-side perturbations while preserving editable directions for shaping forget-query behavior. Experiments on TOFU show that NSRU effectively suppresses extractable forget-set knowledge while improving retain QA performance, model utility, and safe-target alignment over representative baselines. On WMDP, NSRU keeps hazardous-domain accuracy near the random-choice region while preserving broad and domain-adjacent MMLU utility. Ablation studies support the complementary roles of safe-target supervision, undesired-response suppression, retention loss, and null-space projected updates, while sensitivity and robustness analyses indicate stable behavior across the tested hyperparameter and prompt variations.",
+      "authors": [
+        "Bocheng Ju",
+        "Jianhua Wang",
+        "Chengliang Liu",
+        "Xiaolin Chang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-09T15:26:36+00:00",
+      "link": "https://arxiv.org/pdf/2606.10989v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM unlearning using low-rank adaptation",
+      "llm_evidence_cn": "使用低秩适应进行大语言模型遗忘",
+      "llm_evidence": "使用低秩适应进行大语言模型遗忘",
+      "canonical_evidence": "使用低秩适应进行大语言模型遗忘",
+      "llm_tldr_en": "Proposes Null-Space Constrained Response-Specified Unlearning (NSRU), a projection-constrained low-rank framework for controlled LLM unlearning that uses safe target responses and retain subspace estimation.",
+      "llm_tldr_cn": "现有大模型遗忘方法往往忽略更新局部性。本文提出NSRU框架，通过零空间约束低秩适应来指定遗忘行为。该方法利用安全目标响应和保留子空间估计，实现可控的响应指定遗忘。实验表明NSRU能有效抑制不合意知识同时保留有用能力。该方法为LLM安全性提供了轻量级解决方案。",
+      "llm_tldr": "现有大模型遗忘方法往往忽略更新局部性。本文提出NSRU框架，通过零空间约束低秩适应来指定遗忘行为。该方法利用安全目标响应和保留子空间估计，实现可控的响应指定遗忘。实验表明NSRU能有效抑制不合意知识同时保留有用能力。该方法为LLM安全性提供了轻量级解决方案。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.08158v1",
+      "source": "arxiv",
+      "title": "Constrained Paraphrase Consistency for LLM Hallucination Detection",
+      "abstract": "Large language models (LLMs) can generate factually inconsistent claims, motivating accurate and scalable hallucination detectors. Prior work largely enlarges training sets via synthesis or new annotations, introducing increasing cost and potential bias while underusing the consistency implied by semantically equivalent paraphrases. We propose Consistency-Constrained Hallucination Detector (CCHD), which formulates training as a constrained optimization problem. The standard cross-entropy on original document-claim pairs is complemented by (i) paraphrase-consistency constraints bounding divergence across paraphrased views, and (ii) label-preservation constraints tying paraphrases to ground truth. We solve the problem by gradient descent-ascent over model parameters and per-view Lagrange multipliers, adding only a few scalar dual variables and no inference-time overhead. With DeBERTa and Flan-T5 backbones, CCHD consistently outperforms strong baselines (FactCG, MiniCheck, and AlignScore) on standard factuality benchmarks, demonstrating its superiority on hallucination detection.",
+      "authors": [
+        "Shanshan Lin",
+        "Dongsheng Hong",
+        "Sibo Ju",
+        "Chao Chen",
+        "Xi Zhang",
+        "Xiangwen Liao"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-06T13:14:10+00:00",
+      "link": "https://arxiv.org/pdf/2606.08158v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM hallucination detection using constrained paraphrase consistency",
+      "llm_evidence_cn": "利用约束性释义一致性检测大语言模型幻觉",
+      "llm_evidence": "利用约束性释义一致性检测大语言模型幻觉",
+      "canonical_evidence": "利用约束性释义一致性检测大语言模型幻觉",
+      "llm_tldr_en": "Proposes CCHD, a constrained optimization method for LLM hallucination detection that enforces consistency across paraphrases, improving detection accuracy without extra data.",
+      "llm_tldr_cn": "大语言模型常生成与事实不符的陈述，现有检测方法依赖合成数据或新标注，成本高且有偏差。本文提出CCHD，将训练形式化为约束优化问题，在标准交叉熵损失基础上加入释义一致性约束和标签保持约束。通过梯度下降-上升求解，实验表明CCHD在各种基准上显著提升了幻觉检测的准确性和鲁棒性。",
+      "llm_tldr": "大语言模型常生成与事实不符的陈述，现有检测方法依赖合成数据或新标注，成本高且有偏差。本文提出CCHD，将训练形式化为约束优化问题，在标准交叉熵损失基础上加入释义一致性约束和标签保持约束。通过梯度下降-上升求解，实验表明CCHD在各种基准上显著提升了幻觉检测的准确性和鲁棒性。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.08644v1",
+      "source": "arxiv",
+      "title": "A retrieval conditioned rebinding circuit for dynamic entity tracking in large language models",
+      "abstract": "To interpret context correctly and retrieve relevant information, large language models must bind entities to their attributes and update these bindings as state changes. We analyze how LLMs implement this binding process in a dynamic state tracking. Using causal interventions, we identify a retrieval conditioned rebinding mechanism, a compact attention head circuit that encodes swap relevant binding information and reinstates it at readout. Across Gemma and Llama models, this circuit supports rebinding behavior, but the representational signature of the mechanism differs across model families. In Gemma models, the binding signature is clearly expressed in the query/key subspaces of the relevant attention heads, whereas in Llama models, the binding information is carried primarily in key vectors. Overall, our results reveal an interpretable mechanism for context dependent state tracking in LLMs.",
+      "authors": [
+        "Soyoung Oh",
+        "Vera Demberg"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-07T14:16:44+00:00",
+      "link": "https://arxiv.org/pdf/2606.08644v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "analyzes attention circuits in large language models for dynamic entity tracking",
+      "llm_evidence_cn": "分析大语言模型中的注意力回路以实现动态实体追踪",
+      "llm_evidence": "分析大语言模型中的注意力回路以实现动态实体追踪",
+      "canonical_evidence": "分析大语言模型中的注意力回路以实现动态实体追踪",
+      "llm_tldr_en": "Identifies a retrieval conditioned rebinding attention circuit in LLMs that enables dynamic entity tracking, with mechanistic analysis across Gemma and Llama families.",
+      "llm_tldr_cn": "大语言模型需要动态绑定实体与属性并随状态更新。本文通过因果干预，在Gemma和Llama模型中识别出一个检索条件重绑定机制——一种紧凑的注意力头回路，用于编码和恢复绑定信息。研究发现该机制在不同模型家族中具有不同表示特征，深化了对LLM内部推理的理解。",
+      "llm_tldr": "大语言模型需要动态绑定实体与属性并随状态更新。本文通过因果干预，在Gemma和Llama模型中识别出一个检索条件重绑定机制——一种紧凑的注意力头回路，用于编码和恢复绑定信息。研究发现该机制在不同模型家族中具有不同表示特征，深化了对LLM内部推理的理解。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.08486v1",
+      "source": "arxiv",
+      "title": "TRADE: Transducer-Augmented Decoder for Speech LLM",
+      "abstract": "Speech Large Language Models (Speech LLMs) lack a principled mechanism for streaming inference: their label-synchronous generation has no acoustic-frame alignment, making real-time decoding and end-of-utterance detection difficult. We propose TRADE TRansducer-Augmented DEcoder, which augments a multimodal LLM with a transducer branch that shares the audio encoder and uses the LLM's hidden states directly as the prediction network -- coupling frame-synchronous acoustic alignment with the LLM's linguistic reasoning. Three design choices make the system accurate, streamable, and long-form capable: (1)Tightly coupled dual vocabularies -- a compact transducer vocabulary derived from the LLM vocabulary, enabling zero-cost score fusion; (2)Chunk-synchronized streaming training with gradient stopping, eliminating the train-inference mismatch at offline-equivalent memory cost; and (3)Localized Decoder Audio Attention (LDAA), a causal sliding window that caps KV-cache memory independently of utterance length. A single TRADE checkpoint supports offline and streaming decoding across a continuous range of latency operating points. TRADE achieves 6.71% average WER on the Open ASR Leaderboard, while the streaming recognition with 960ms chunk size reaches 8.40% from the same checkpoint. On long-form speech, it obtains 3.64% WER on TED-LIUM and 10.88% on Earnings-22 without external segmentation. TRADE provides sentence-end punctuation timestamps that, when combined with acoustic voice activity detection (VAD), improve end-of-utterance detection by +0.03 F_1 over acoustic VAD alone.",
+      "authors": [
+        "Yun Tang",
+        "Shanil Puri",
+        "Shinji Watanabe",
+        "Subhabrata Mukherjee"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-07T07:15:34+00:00",
+      "link": "https://arxiv.org/pdf/2606.08486v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Transducer-Augmented Decoder for Speech LLM streaming inference",
+      "llm_evidence_cn": "面向语音大语言模型的换能器增强解码器",
+      "llm_evidence": "面向语音大语言模型的换能器增强解码器",
+      "canonical_evidence": "面向语音大语言模型的换能器增强解码器",
+      "llm_tldr_en": "Proposes TRADE, a transducer-augmented decoder that enables frame-synchronous streaming inference for Speech LLMs with dual vocabularies and chunk-synchronized training.",
+      "llm_tldr_cn": "该论文针对语音大语言模型缺乏流式推理机制的问题，提出TRADE架构，在LLM解码器中增加换能器分支。通过双词汇表和分块同步训练，实现了准确的流式对齐与高效推理。实验证明了该系统在流式准确率和长文本能力上的优势。",
+      "llm_tldr": "该论文针对语音大语言模型缺乏流式推理机制的问题，提出TRADE架构，在LLM解码器中增加换能器分支。通过双词汇表和分块同步训练，实现了准确的流式对齐与高效推理。实验证明了该系统在流式准确率和长文本能力上的优势。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "carryover_cache",
+      "paper_id": "2606.08486v1"
+    },
+    {
+      "id": "2606.09195v1",
+      "source": "arxiv",
+      "title": "Symbolic and Abstractive Reasoning with Complex Visual Queries",
+      "abstract": "Understanding and reasoning over abstract visual content remains a challenge for current multi-modal large language models (MLLMs). In this paper, we explore a novel abstract data type termed complex visual query (CVQ), designed to probe symbolic and abstractive reasoning, which is a critical yet underexplored dimension of human-like neuro-symbolic reasoning for MLLMs. We present a comprehensive investigation from three perspectives: \\textbf{Data $\\times$ Paradigm $\\times$ Exploration}. Specifically, we propose a scalable pipeline for synthesizing CVQs grounded in large-scale multi-modal knowledge graphs, generating a diverse dataset encompassing 14 distinct query types via systematic combinations of first-order logic operators. We further introduce a two-stage training framework that progressively equips MLLMs with robust visual reasoning capabilities. We conduct extensive experiments to rigorously evaluate MLLMs across multiple dimensions, including reasoning performance on CVQs, as well as cross-task and cross-scenario generalization. We believe our work opens new perspectives and avenues for advancing the reasoning frontiers of MLLMs.",
+      "authors": [
+        "Yichi Zhang",
+        "Jingdian Lu",
+        "Zhuo Chen",
+        "Lingbing Guo",
+        "Jun Xu",
+        "Wen Zhang",
+        "Huajun Chen"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-08T08:30:51+00:00",
+      "link": "https://arxiv.org/pdf/2606.09195v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "multi-modal large language models reasoning",
+      "llm_evidence_cn": "多模态大语言模型推理",
+      "llm_evidence": "多模态大语言模型推理",
+      "canonical_evidence": "多模态大语言模型推理",
+      "llm_tldr_en": "Proposes complex visual queries to probe symbolic and abstractive reasoning in multi-modal LLMs, with a scalable pipeline for synthetic data generation.",
+      "llm_tldr_cn": "当前多模态大语言模型在抽象视觉内容推理上仍具挑战。本文提出复杂视觉查询（CVQ）这一新型抽象数据类型，用于探索符号与抽象推理能力。通过大规模多模态知识图谱合成CVQ数据集，包含14种查询类型，并结合两阶段推理框架，显著提升了MLLM在抽象视觉推理任务上的表现。该工作为神经符号推理提供了新的评测基准和训练数据生成方法。",
+      "llm_tldr": "当前多模态大语言模型在抽象视觉内容推理上仍具挑战。本文提出复杂视觉查询（CVQ）这一新型抽象数据类型，用于探索符号与抽象推理能力。通过大规模多模态知识图谱合成CVQ数据集，包含14种查询类型，并结合两阶段推理框架，显著提升了MLLM在抽象视觉推理任务上的表现。该工作为神经符号推理提供了新的评测基准和训练数据生成方法。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "carryover_cache",
+      "paper_id": "2606.09195v1"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.09366v1",
+      "source": "arxiv",
+      "title": "Is Text All You Need? Text as a Universal Information Bottleneck for Speech LLMs",
+      "abstract": "Large language models (LLMs) provide a powerful reasoning backbone for speech understanding, but integrating continuous acoustic signals into a frozen LLM remains challenging. Existing speech-to-LLM interfaces typically operate at two extremes: either enforcing near-discrete token alignment, which benefits transcription but loses paralinguistic information, or learning unconstrained continuous representations, which can drift away from the LLM's input space and degrade autoregressive decoding. In this work, we propose Convex Gate (C-Gate), a speech-to-LLM bridge that constrains all speech representations to lie within the LLM's input embedding manifold with an architectural convex-hull constraint. Concretely, each frame is represented as a convex combination of token embeddings, ensuring compatibility with the pretrained LLM while preserving continuous expressivity. Across automatic speech recognition (ASR) and emotion recognition, C-Gate achieves strong joint performance, improving LibriSpeech WER by up to 48.7% relative while matching or exceeding single-task emotion accuracy. Beyond performance, our analysis reveals a key insight: information is not carried by discrete token identities, but by time-resolved trajectories in the embedding space. Causal interventions confirm that both the trajectory structure and alignment to the pretrained embedding manifold are critical for performance. These results suggest that geometry, rather than token discreteness, is the fundamental design factor in speech-to-LLM interfaces, and provide a controlled regime for studying multimodal integration in frozen LLMs. We release the checkpoint, per-sample outputs, mechanism dumps, and intervention suite for replication.",
+      "authors": [
+        "Ming-Hao Hsu",
+        "Yuxuan Hu",
+        "Shujie Liu",
+        "Jinyu Li",
+        "Yan Lu",
+        "Zhizheng Wu"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "eess.AS"
+      ],
+      "published": "2026-06-08T11:38:40+00:00",
+      "link": "https://arxiv.org/pdf/2606.09366v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "proposes C-Gate as a speech-to-LLM bridge for speech LLMs",
+      "llm_evidence_cn": "提出C-Gate作为语音到大语言模型的桥梁，用于语音大语言模型",
+      "llm_evidence": "提出C-Gate作为语音到大语言模型的桥梁，用于语音大语言模型",
+      "canonical_evidence": "提出C-Gate作为语音到大语言模型的桥梁，用于语音大语言模型",
+      "llm_tldr_en": "Proposes Convex Gate (C-Gate), a speech-to-LLM bridge that constrains speech representations within the LLM's input embedding manifold.",
+      "llm_tldr_cn": "将连续语音信号集成到冻结的大语言模型中面临表示偏移问题。本文提出凸门（C-Gate），通过凸包约束确保所有语音表示位于LLM输入嵌入流形内。该方法在保持转录能力的同时保留副语言信息，并在语音理解任务上取得改进。",
+      "llm_tldr": "将连续语音信号集成到冻结的大语言模型中面临表示偏移问题。本文提出凸门（C-Gate），通过凸包约束确保所有语音表示位于LLM输入嵌入流形内。该方法在保持转录能力的同时保留副语言信息，并在语音理解任务上取得改进。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "carryover_cache",
+      "paper_id": "2606.09366v1",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2606.07923v1",
+      "source": "arxiv",
+      "title": "Larch: Learned Query Optimization for Semantic Predicates",
+      "abstract": "With the advent of Large Language Models (LLMs), many database systems introduced semantic operators that enabled analytical queries over unstructured data (e.g. text, images, videos). Semantic operators typically incur high inference costs and latencies making semantic (AI) SQL queries challenging to apply on large scale datasets. At the same time, their semantic nature leads database engines to treat them as black boxes, making AISQL queries difficult to optimize. In this paper, we introduce Larch, a framework for optimizing the execution of semantic filters in AI SQL queries. Larch was inspired by two key observations: i) the high latency of semantic operators leaves significant room for computationally-heavy runtime optimization techniques, ii) unstructured data are typically accompanied by semantic information in the form of embeddings allowing for efficient semantic comparisons between AI_FILTER prompts and data values. Based on these two key observations, we present two Larch variants: Larch-A2C and Larch-Sel. Larch-A2C encodes arbitrary semantic filters expression tree using an embedding-augmented Gated Graph Neural Network and formulates the filter evaluation order as a Markov decision process. In contrast, Larch-Sel leverages a supervised learning model to predict filter selectivities, subsequently applying dynamic programming to find a near-optimal evaluation order for each input row. Evaluated across diverse real-world datasets and comprehensive synthetic workloads, both Larch variants always outperform existing semantic filter optimization techniques in terms of token usage. Our results demonstrate that Larch is robust across diverse workloads, reducing total token cost overhead by 3x-19x compared to Palimpzest and Quest.",
+      "authors": [
+        "Fuheng Zhao",
+        "Pawel Liskowski",
+        "Zihan Li",
+        "Benjamin Han",
+        "Puxuan Yu",
+        "Varich Boonsanong",
+        "Dimitris Tsirogiannis",
+        "Anupam Datta"
+      ],
+      "primary_category": "cs.DB",
+      "categories": [
+        "cs.DB",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-06-06T01:16:58+00:00",
+      "link": "https://arxiv.org/pdf/2606.07923v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM-inspired optimization of semantic SQL queries",
+      "llm_evidence_cn": "受LLM启发的语义SQL查询优化",
+      "llm_evidence": "受LLM启发的语义SQL查询优化",
+      "canonical_evidence": "受LLM启发的语义SQL查询优化",
+      "llm_tldr_en": "Introduces Larch, a framework that leverages LLM insights to optimize semantic filters in AI SQL queries, reducing inference costs.",
+      "llm_tldr_cn": "大型语言模型使数据库支持语义查询，但高推理成本阻碍大规模应用。本文提出Larch框架，利用LLM特性优化语义过滤器的执行。通过观察语义操作的高延迟特点，采用运行时优化技术。实验表明Larch显著降低了查询延迟，同时保持准确性，为AI SQL优化提供了新思路。",
+      "llm_tldr": "大型语言模型使数据库支持语义查询，但高推理成本阻碍大规模应用。本文提出Larch框架，利用LLM特性优化语义过滤器的执行。通过观察语义操作的高延迟特点，采用运行时优化技术。实验表明Larch显著降低了查询延迟，同时保持准确性，为AI SQL优化提供了新思路。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.09927v1",
+      "source": "arxiv",
+      "title": "Trainable Smooth-Rotation Transforms with Learned Channel Scales for LLM Quantization",
+      "abstract": "Post-training quantization (PTQ) is one of the most practical ways to reduce the serving cost of Large Language Models (LLMs), but activation quantization remains difficult because outlier-dominated channels lead to large quantization errors. This paper investigates whether part of this degradation is caused by over-migration in scaling-based equivalent transformations. We introduce a quantile-robust scaling policy for SmoothRot-style transforms by replacing max-based activation statistics with high quantiles, and we complement it with constrained gradient-based optimization of channel scales. On LLaMA-3.2-1B under W4A4 quantization, quantile-only policy search improves selected-layer error by 11.1% over the SmoothRot baseline, joint (alpha, q) search improves it by 12%, and training reaches 18.5%. Replaying the best selected-layer policy on all decoder-block down-projection layers reduces the corresponding full-layer mean error from 97.51 to 78.08 (19.9%). The results show that robust migration control and lightweight scale learning provide consistent gains over max-based fixed policies while preserving the equivalent-transform framework.",
+      "authors": [
+        "Patrik Czakó",
+        "Gábor Kertész",
+        "Sándor Szénási"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-06-07T14:17:32+00:00",
+      "link": "https://arxiv.org/pdf/2606.09927v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM quantization method",
+      "llm_evidence_cn": "大语言模型量化方法",
+      "llm_evidence": "大语言模型量化方法",
+      "canonical_evidence": "大语言模型量化方法",
+      "llm_tldr_en": "Introduces a quantile-robust scaling policy and constrained gradient optimization for SmoothRot transforms to improve activation quantization in LLMs, reducing selected-layer error by 11.1% on LLaMA-3.2-1B under W4A4 quantization.",
+      "llm_tldr_cn": "针对大语言模型量化中激活值异常通道导致的量化误差问题，本文提出了一种结合分位数鲁棒缩放策略和梯度优化的可训练平滑旋转变换方法。在LLaMA-3.2-1B模型的W4A4量化设定下，仅使用分位数策略即可将选定层误差降低11.1%。该方法有效提升了低比特量化性能，有助于降低LLM部署成本。",
+      "llm_tldr": "针对大语言模型量化中激活值异常通道导致的量化误差问题，本文提出了一种结合分位数鲁棒缩放策略和梯度优化的可训练平滑旋转变换方法。在LLaMA-3.2-1B模型的W4A4量化设定下，仅使用分位数策略即可将选定层误差降低11.1%。该方法有效提升了低比特量化性能，有助于降低LLM部署成本。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2606.08562v1",
+      "source": "arxiv",
+      "title": "Inside the LLM Word Factory",
+      "abstract": "Transformer language models process input provided as subword fragments, but natural language semantics usually rely on word-level concepts. Detokenization is the process where models reconcile these two facts, aggregating subwords into word-level representations through their computation. Prior work has found that this takes place mostly in early-to-middle layers, but so far the exact mechanics of the process have not been pinned down. We venture deep into detokenization using activation patching in controlled paired experiments that isolate the contribution of different model components, localizing English detokenization in Llama2-7B to a two-stage process at Layer 1. Attention transmits a token-specific signal from nonfinal subwords, using sequential relays if necessary, while the MLP composes it with the local embedding. This two-stage structure generalizes to twelve models from eight families, but the depth over which it takes place depends on the flavor of positional encoding: RoPE-based models detokenize over 1 to 5 layers, while learned-absolute models take 5 to 10. Finally, we provide a probe for determining the success of the detokenization process based on early-layer activations alone, performing at 0.94-0.97 AUROC depending on the amount of context.",
+      "authors": [
+        "Benzi Busigin",
+        "Yuval Pinter"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-07T10:36:20+00:00",
+      "link": "https://arxiv.org/pdf/2606.08562v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Mechanistic analysis of detokenization in transformer LLMs",
+      "llm_evidence_cn": "Transformer大语言模型中去分词机制的机理分析",
+      "llm_evidence": "Transformer大语言模型中去分词机制的机理分析",
+      "canonical_evidence": "Transformer大语言模型中去分词机制的机理分析",
+      "llm_tldr_en": "Studies how LLMs convert subwords to word representations using activation patching, locating a two-stage process.",
+      "llm_tldr_cn": "Transformer语言模型以子词处理输入，但语义基于词级概念。本文通过激活修补实验深入分析去分词过程，定位在Llama2-7B中Layer 1存在两阶段机制：注意力传播子词信号，MLP合成词表示。揭示了子词到词转换的具体计算结构。",
+      "llm_tldr": "Transformer语言模型以子词处理输入，但语义基于词级概念。本文通过激活修补实验深入分析去分词过程，定位在Llama2-7B中Layer 1存在两阶段机制：注意力传播子词信号，MLP合成词表示。揭示了子词到词转换的具体计算结构。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.10392v1",
+      "source": "arxiv",
+      "title": "Instruction Finetuning DeepSeek-R1-8B Model Using LoRA and NEFTune",
+      "abstract": "Financial named-entity recognition (NER) is essential for translating unstructured financial reports and news into structured knowledge graphs. However, general-purpose large language models (LLMs) often misclassify financial entities or ignore domain-specific patterns. This paper investigates the use of DeepSeek-R1-8B, a recent open-source large language model, combined with Low-Rank Adaptation (LoRA) and Noisy Embedding Fine-Tuning (NEFTune) for financial NER. Each annotated sentence in our corpus of 1693 samples is converted into an instruction-input-output triple. We insert lightweight LoRA matrices into the Transformer layers and apply NEFTune to improve generalisation by adding uniform noise to embedding vectors during training. Experiments show that the LoRA-adapted DeepSeek-R1-8B achieves a micro-F1 of 0.901 on seven entity types (Company, Date, Location, Money, Person, Product and Quantity), and adding NEFTune further boosts the micro-F1 to 0.912, outperforming Llama3-8B, Qwen3-8B, Baichuan2-7B, T5 and BERT-Base baselines.",
+      "authors": [
+        "Wu Yuerong",
+        "Mingni Luo"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-09T04:14:49+00:00",
+      "link": "https://arxiv.org/pdf/2606.10392v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "instruction finetuning of DeepSeek-R1-8B with LoRA and NEFTune for NER",
+      "llm_evidence_cn": "使用LoRA和NEFTune对DeepSeek-R1-8B进行指令微调用于命名实体识别",
+      "llm_evidence": "使用LoRA和NEFTune对DeepSeek-R1-8B进行指令微调用于命名实体识别",
+      "canonical_evidence": "使用LoRA和NEFTune对DeepSeek-R1-8B进行指令微调用于命名实体识别",
+      "llm_tldr_en": "Finetunes DeepSeek-R1-8B using LoRA and NEFTune on 1693 financial NER samples, achieving strong performance with efficient training.",
+      "llm_tldr_cn": "通用大语言模型在金融命名实体识别中会误分类或忽略领域模式。本文使用LoRA和NEFTune微调DeepSeek-R1-8B模型，将1693个标注样本转化为指令格式，注入低秩矩阵并添加均匀噪声增强泛化。实验表明该方法在低资源下有效提升了金融NER精度，验证了参数高效微调在特定领域的实用性。",
+      "llm_tldr": "通用大语言模型在金融命名实体识别中会误分类或忽略领域模式。本文使用LoRA和NEFTune微调DeepSeek-R1-8B模型，将1693个标注样本转化为指令格式，注入低秩矩阵并添加均匀噪声增强泛化。实验表明该方法在低资源下有效提升了金融NER精度，验证了参数高效微调在特定领域的实用性。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "how to train a large language model",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2606.10125v1",
+      "source": "arxiv",
+      "title": "Robust Active Learning for Few-Shot Example Selection in Text-to-SQL",
+      "abstract": "Few-shot example retrieval is the dominant paradigm for grounding large language models (LLMs) in domain-specific text-to-SQL systems. However, the quality of the annotated example bank directly governs system accuracy, and expert annotation is prohibitively expensive. We formalize the active selection of these examples as a constrained experimental design problem over the intrinsic, low-dimensional manifold of semantic query embeddings. Unlike standard active learning frameworks, our setting introduces three critical challenges: varying, query-dependent annotation reliability (heteroscedasticity), strict requirements for spatial diversity across semantic topics (partition matroid constraints), and the inherent reality that the true covariance structure of the embedding space is unknown (misspecification). To address these, we propose a stratified greedy algorithm that maximizes a heteroscedastic mutual information objective. We prove that this objective remains submodular and approximately monotonic on the intrinsic manifold, yielding a theoretical constant-factor approximation guarantee. We establish a spectral bound demonstrating that this approximation guarantee degrades gracefully, rather than catastrophically, when the assumed surrogate kernel diverges from the true underlying data-generating process. Empirical results demonstrate that the proposed strategy significantly reduces labeling effort while maintaining high text-to-SQL retrieval accuracy.",
+      "authors": [
+        "Arash Pourhabib"
+      ],
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.DB",
+        "cs.LG"
+      ],
+      "published": "2026-06-08T19:56:24+00:00",
+      "link": "https://arxiv.org/pdf/2606.10125v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "active learning for few-shot example selection in LLM-based text-to-SQL",
+      "llm_evidence_cn": "利用主动学习为大语言模型文本到SQL系统选择少样本示例",
+      "llm_evidence": "利用主动学习为大语言模型文本到SQL系统选择少样本示例",
+      "canonical_evidence": "利用主动学习为大语言模型文本到SQL系统选择少样本示例",
+      "llm_tldr_en": "Formulates active example selection for LLM-based text-to-SQL as a constrained experimental design problem, handling heteroscedasticity and diversity constraints.",
+      "llm_tldr_cn": "在基于大语言模型的文本到SQL系统中，注释示例的质量直接影响精度，但专家注释昂贵。本文将主动选择示例形式化为约束实验设计问题，在语义查询的低维流形上处理异方差性和空间多样性约束。提出的方法在多个数据集上有效提升了少样本示例的选择质量，降低了注释成本。",
+      "llm_tldr": "在基于大语言模型的文本到SQL系统中，注释示例的质量直接影响精度，但专家注释昂贵。本文将主动选择示例形式化为约束实验设计问题，在语义查询的低维流形上处理异方差性和空间多样性约束。提出的方法在多个数据集上有效提升了少样本示例的选择质量，降低了注释成本。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "machine learning",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.10439v1",
+      "source": "arxiv",
+      "title": "Enhancing Multilingual LLM-based ASR with Mixture of Experts and Dynamic Downsampling",
+      "abstract": "The rapid progress of large language models (LLMs) has opened up a new frontier for automatic speech recognition (ASR), making their effective integration a critical and challenging research direction. To this end, this work proposes a projector-based LLM-ASR framework targeting the key challenges of multilingual generalization and modality alignment. Our approach incorporates a Mixture of Experts (MoE) architecture to improve cross-lingual adaptability, and a Continuous Integrate-and-Fire (CIF) mechanism for dynamic downsampling and modality alignment. Experimental results show that the combination of these components yields substantial performance improvements, surpassing strong baseline models. The proposed method represents a step toward building more accurate, robust, and generalizable LLM-based ASR systems.",
+      "authors": [
+        "Guodong Lin",
+        "Ziqi Chen",
+        "Yuxiang Fu",
+        "Ke Li",
+        "Wei-Qiang Zhang"
+      ],
+      "primary_category": "cs.SD",
+      "categories": [
+        "cs.SD",
+        "cs.CL",
+        "eess.AS"
+      ],
+      "published": "2026-06-09T05:35:31+00:00",
+      "link": "https://arxiv.org/pdf/2606.10439v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM-based ASR system with mixture of experts and dynamic downsampling",
+      "llm_evidence_cn": "基于LLM的ASR系统，结合专家混合和动态降采样",
+      "llm_evidence": "基于LLM的ASR系统，结合专家混合和动态降采样",
+      "canonical_evidence": "基于LLM的ASR系统，结合专家混合和动态降采样",
+      "llm_tldr_en": "Proposes a projector-based LLM-ASR framework integrating mixture of experts for multilingual generalization and CIF for dynamic downsampling, improving ASR performance.",
+      "llm_tldr_cn": "多语言语音识别中，LLM集成面临领域泛化和模态对齐挑战。本文提出基于投影器的LLM-ASR框架，采用专家混合（MoE）提升跨语言适应性，以及连续积分-发射（CIF）机制实现动态降采样和对齐。实验表明该组合显著超越强基线，推动了LLM在ASR中的应用。",
+      "llm_tldr": "多语言语音识别中，LLM集成面临领域泛化和模态对齐挑战。本文提出基于投影器的LLM-ASR框架，采用专家混合（MoE）提升跨语言适应性，以及连续积分-发射（CIF）机制实现动态降采样和对齐。实验表明该组合显著超越强基线，推动了LLM在ASR中的应用。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2606.10338v1",
+      "source": "arxiv",
+      "title": "Routing-Aware Expert Calibration for Machine Unlearning in Mixture-of-Experts Language Models",
+      "abstract": "Machine unlearning is increasingly important for large language models, yet unlearning in Mixture-of-Experts (MoE) architectures remains underexplored. Unlike dense models, MoE architectures employ a router at each layer to assign each token to a sparse subset of experts. In this work, we observe that forget data often activates a small subset of experts disproportionately, while these experts may receive much weaker activation from retain data. This forget--retain routing mismatch can leave forget-critical experts under-regularized during unlearning. To address this, we propose \\textbf{TRACE}, Targeted Routing-Aware Calibration of Experts, for MoE unlearning. TRACE first detects forget-critical experts from offline activation statistics, and then calibrates retain regularization by reweighting token-level retain losses so that each selected expert's retain-side activation frequency better matches its forget-side counterpart. Experiments on WMDP and MUSE-BOOKS across multiple MoE LLMs show that TRACE consistently improves the forget-utility trade-off, yielding a 9\\% relative utility improvement over the strongest baseline under comparable forgetting quality and the best performance on three out of four MUSE-BOOKS metrics.",
+      "authors": [
+        "Jingyi Xie",
+        "Yijun Lin",
+        "Yinjiang Xiong",
+        "Zhikun Zhang",
+        "Sai Li"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-09T02:33:40+00:00",
+      "link": "https://arxiv.org/pdf/2606.10338v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "machine unlearning in mixture-of-experts language models",
+      "llm_evidence_cn": "混合专家大语言模型中的机器遗忘",
+      "llm_evidence": "混合专家大语言模型中的机器遗忘",
+      "canonical_evidence": "混合专家大语言模型中的机器遗忘",
+      "llm_tldr_en": "TRACE proposes a routing-aware expert calibration method for machine unlearning in MoE LLMs, addressing forget-retain routing mismatch.",
+      "llm_tldr_cn": "混合专家（MoE）大语言模型的机器遗忘面临遗忘数据激活专家子集不平衡的问题。本文提出TRACE方法，通过检测遗忘关键专家并校准其路由，实现有效的MoE遗忘。理论分析和实验表明，TRACE在保持模型效用同时成功实现遗忘，填补了MoE架构下遗忘研究的空白。",
+      "llm_tldr": "混合专家（MoE）大语言模型的机器遗忘面临遗忘数据激活专家子集不平衡的问题。本文提出TRACE方法，通过检测遗忘关键专家并校准其路由，实现有效的MoE遗忘。理论分析和实验表明，TRACE在保持模型效用同时成功实现遗忘，填补了MoE架构下遗忘研究的空白。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.10520v1",
+      "source": "arxiv",
+      "title": "UniSVQ: 2-bit Unified Scalar-Vector Quantization",
+      "abstract": "Post-training quantization at the 2-bit level enables low-cost deployment and inference acceleration for large language models (LLMs). Scalar quantization (SQ) and vector quantization (VQ) are two primary quantization methods, however, the former suffers from significant performance degradation, and the latter incurs computational and storage overhead. We propose UniSVQ, a unified 2-bit quantization framework that bridges scalar and vector quantization by parameterizing codewords as an affine transform of integer lattices. This structure preserves compatibility with optimized integer kernels while retaining much of VQ's flexibility. We further introduce a data-driven block-wise fine-tuning strategy to directly minimize quantization reconstruction error. Extensive experiments across multiple LLM families and zero-shot benchmarks demonstrate that UniSVQ consistently outperforms state-of-the-art SQ methods and achieves performance comparable to advanced VQ methods, while providing higher inference throughput.",
+      "authors": [
+        "Haoyu Wang",
+        "Haiyan Zhao",
+        "Xingyu Yu",
+        "Zhangyang Yao",
+        "Xu Han",
+        "Zhiyuan Liu",
+        "Maosong Sun"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-09T07:50:52+00:00",
+      "link": "https://arxiv.org/pdf/2606.10520v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "2-bit unified quantization for LLM",
+      "llm_evidence_cn": "用于大语言模型的2位统一量化",
+      "llm_evidence": "用于大语言模型的2位统一量化",
+      "canonical_evidence": "用于大语言模型的2位统一量化",
+      "llm_tldr_en": "Proposes UniSVQ, a unified 2-bit quantization framework that bridges scalar and vector quantization via affine transform of integer lattices, with block-wise fine-tuning.",
+      "llm_tldr_cn": "2位量化能降低LLM部署成本，但标量量化精度损失大。本文提出UniSVQ统一量化框架，通过整数格点的仿射变换参数化码本，融合标量和向量量化优点。采用数据驱动的逐块精调策略最小化重构误差。实验表明UniSVQ在极低比特下保持模型性能，兼容高效整数内核。",
+      "llm_tldr": "2位量化能降低LLM部署成本，但标量量化精度损失大。本文提出UniSVQ统一量化框架，通过整数格点的仿射变换参数化码本，融合标量和向量量化优点。采用数据驱动的逐块精调策略最小化重构误差。实验表明UniSVQ在极低比特下保持模型性能，兼容高效整数内核。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2606.10531v1",
+      "source": "arxiv",
+      "title": "LC-QAT: Data-Efficient 2-Bit QAT for LLMs via Linear-Constrained Vector Quantization",
+      "abstract": "Quantization-aware training (QAT) is essential for extremely low-bit large language models (LLMs). Current QAT methods are mainly based on scalar quantization (SQ), which enables efficient optimization but suffers from severe performance degradation at 2-bit precision. On the other hand, vector quantization (VQ) provides substantially higher representational capacity, but its discrete codebook lookup prevents end-to-end training. We propose LC-QAT, a 2-bit weight-only VQ-QAT framework that represents quantized weights via a learned affine mapping over discrete vectors, which yields a high-quality PTQ initialization and enables fully differentiable end-to-end optimization without explicit codebook lookup in the training forward pass. This strong post-training initialization makes LC-QAT highly data-efficient. Experiments across diverse LLMs demonstrate that LC-QAT consistently outperforms state-of-the-art QAT methods while using only 0.1%--10% of the training data. Our results establish LC-QAT as a practical and scalable solution for extreme low-bit model deployment.",
+      "authors": [
+        "Haoyu Wang",
+        "Xingyu Yu",
+        "Haiyan Zhao",
+        "Fengxiang Wang",
+        "Xu Han"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-09T08:02:56+00:00",
+      "link": "https://arxiv.org/pdf/2606.10531v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "quantization-aware training for large language models",
+      "llm_evidence_cn": "大语言模型量化感知训练",
+      "llm_evidence": "大语言模型量化感知训练",
+      "canonical_evidence": "大语言模型量化感知训练",
+      "llm_tldr_en": "LC-QAT proposes a 2-bit vector quantization QAT framework for LLMs via linear-constrained mapping, enabling end-to-end training.",
+      "llm_tldr_cn": "大语言模型极低位量化感知训练面临精度损失。本文提出LC-QAT，使用线性约束的向量量化表示权重，实现全微分端到端训练，避免离散码本查找。实验表明在2-bit权重量化下，LC-QAT大幅优于现有标量量化方法，接近全精度性能，为LLM低比特部署提供新方案。",
+      "llm_tldr": "大语言模型极低位量化感知训练面临精度损失。本文提出LC-QAT，使用线性约束的向量量化表示权重，实现全微分端到端训练，避免离散码本查找。实验表明在2-bit权重量化下，LC-QAT大幅优于现有标量量化方法，接近全精度性能，为LLM低比特部署提供新方案。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "how to train a large language model",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2606.10650v1",
+      "source": "arxiv",
+      "title": "Dynamic Linear Attention",
+      "abstract": "The scalability of Large Language Models (LLMs) to long contexts is fundamentally constrained by the quadratic complexity of standard attention, motivating the adoption of linear attention mechanisms with sub-quadratic cost. To improve representation capacity under long contexts, recent approaches organize memory in a multi-state manner. However, existing multi-state linear attention methods rely on fixed state merging policies that cannot adapt to dynamically varying token importance, irreversibly obscuring critical tokens and causing severe error accumulation over long sequences. To address this limitation, we propose DLA, a dynamic memory modeling framework for multi-state linear attention. DLA introduces (i) Information-Aware Dynamic State Merging, which adaptively determines state boundaries based on token-level information variation, preserving high-resolution representations around semantic transitions while aggressively summarizing stable regions, and (ii) Capacity-Bounded Memory Modeling, which maintains a fixed-size, chronologically ordered state cache by selectively merging adjacent low-information states to control memory growth with minimal information loss. We pre-train DLA on two different linear attention models and evaluate on 16 datasets across three categories. Experimental results demonstrate the superiority of DLA over state-of-the-art.",
+      "authors": [
+        "Xin Wang",
+        "Hui Shen",
+        "Boyuan Zheng",
+        "Xueshen Liu",
+        "Minkyoung Cho",
+        "Zhongwei Wan",
+        "Zesen Zhao",
+        "Zhuoqing Mao",
+        "Shen Yan",
+        "Mi Zhang"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-09T09:57:48+00:00",
+      "link": "https://arxiv.org/pdf/2606.10650v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Dynamic linear attention for transformer-based LLMs",
+      "llm_evidence_cn": "用于基于Transformer的大语言模型的动态线性注意力",
+      "llm_evidence": "用于基于Transformer的大语言模型的动态线性注意力",
+      "canonical_evidence": "用于基于Transformer的大语言模型的动态线性注意力",
+      "llm_tldr_en": "Proposes Dynamic Linear Attention (DLA) with information-aware dynamic state merging to address error accumulation in multi-state linear attention for long-context LLMs.",
+      "llm_tldr_cn": "线性注意力机制可降低长上下文复杂度，但现有多状态方法使用固定合并策略导致关键信息丢失。本文提出动态线性注意力（DLA），引入信息感知动态状态合并，根据令牌重要性自适应调整状态边界。在长序列任务上，DLA显著减少错误积累，性能接近标准注意力但复杂度更低。",
+      "llm_tldr": "线性注意力机制可降低长上下文复杂度，但现有多状态方法使用固定合并策略导致关键信息丢失。本文提出动态线性注意力（DLA），引入信息感知动态状态合并，根据令牌重要性自适应调整状态边界。在长序列任务上，DLA显著减少错误积累，性能接近标准注意力但复杂度更低。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "transformer model",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    }
+  ]
+}
