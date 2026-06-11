@@ -6,73 +6,55 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-10
-- 运行时间：2026-06-10 22:39:01 UTC
+- 最新运行日期：2026-06-11
+- 运行时间：2026-06-11 22:24:39 UTC
 - 运行状态：成功
-- 本次总论文数：17
-- 精读区：6
-- 速读区：11
+- 本次总论文数：11
+- 精读区：4
+- 速读区：7
 
 ### 今日简报（AI）
-1. 今日共处理17篇文献，精读6篇，重点聚焦数据受限下的语言模型预训练与大模型遗忘技术。
-2. 最值得关注两项：数据受限预训练的改进正则化与尺度律（9.0分），以及零空间约束LoRA实现响应指定的大语言模型遗忘（9.0分）。
-3. 建议优先阅读精读列表中的两篇高分工作，它们分别对低资源训练和模型可控遗忘具有直接实用价值。
-- 详情：[/202606/10/README](/202606/10/README)
+1) 今日重点推荐两篇高分论文：数据自动进化框架DataEvolver与机器翻译源文重写强化学习方法。  
+2) 最值得关注的方向是LLM数据自主优化与翻译任务中的源文改写，两者均通过自我迭代提升模型性能。  
+3) 建议优先阅读精读论文，了解如何让模型主动优化训练数据或翻译结果。
+- 详情：[/202606/11/README](/202606/11/README)
 
 ### 精读区论文标签
-1. [Data-Constrained Language Model Pretraining: Improved Regularization and Scaling Laws](/202606/10/2606.06888v2-data-constrained-language-model-pretraining-improved-regularization-and-scaling-laws)  
-   标签：评分：9.0/10、query:ml-llm
-   evidence：数据受限的语言模型预训练与缩放定律
-2. [Null-Space Constrained Low-Rank Adaptation for Response-Specified Large Language Model Unlearning](/202606/10/2606.10989v1-null-space-constrained-low-rank-adaptation-for-response-specified-large-language-model-unlearning)  
-   标签：评分：9.0/10、query:ml-llm
-   evidence：使用低秩适应进行大语言模型遗忘
-3. [Constrained Paraphrase Consistency for LLM Hallucination Detection](/202606/10/2606.08158v1-constrained-paraphrase-consistency-for-llm-hallucination-detection)  
+1. [DataEvolver: Automatic Data Preparation for Large Language Models through Multi-Level Self-Evolving](/202606/11/2606.07001v2-dataevolver-automatic-data-preparation-for-large-language-models-through-multi-level-self-evolving)  
    标签：评分：8.0/10、query:ml-llm
-   evidence：利用约束性释义一致性检测大语言模型幻觉
-4. [TRADE: Transducer-Augmented Decoder for Speech LLM](/202606/10/2606.08486v1-trade-transducer-augmented-decoder-for-speech-llm)  
+   evidence：LLM自动数据准备系统
+2. [Rewrite to Translate, Translate to Reward: Reinforcement Learning for Source Rewriting in Machine Translation](/202606/11/2606.08011v2-rewrite-to-translate-translate-to-reward-reinforcement-learning-for-source-rewriting-in-machine-translation)  
    标签：评分：8.0/10、query:ml-llm
-   evidence：面向语音大语言模型的换能器增强解码器
-5. [A retrieval conditioned rebinding circuit for dynamic entity tracking in large language models](/202606/10/2606.08644v1-a-retrieval-conditioned-rebinding-circuit-for-dynamic-entity-tracking-in-large-language-models)  
+   evidence：在机器翻译中使用大语言模型进行源文本改写
+3. [Small Data, Big Noise: Adversarial Training for Robust Parameter-Efficient Fine-Tuning](/202606/11/2606.10610v1-small-data-big-noise-adversarial-training-for-robust-parameter-efficient-fine-tuning)  
    标签：评分：8.0/10、query:ml-llm
-   evidence：分析大语言模型中的注意力回路以实现动态实体追踪
-6. [Symbolic and Abstractive Reasoning with Complex Visual Queries](/202606/10/2606.09195v1-symbolic-and-abstractive-reasoning-with-complex-visual-queries)  
+   evidence：对基础模型进行对抗训练以增强PEFT鲁棒性
+4. [Task-Aware Structured Memory for Dynamic Multi-modal In-Context Learning](/202606/11/2606.11853v1-task-aware-structured-memory-for-dynamic-multi-modal-in-context-learning)  
    标签：评分：8.0/10、query:ml-llm
-   evidence：多模态大语言模型推理
+   evidence：通过结构化内存改进多模态LLM的上下文学习
 
 ### 速读区论文标签
-1. [Is Text All You Need? Text as a Universal Information Bottleneck for Speech LLMs](/202606/10/2606.09366v1-is-text-all-you-need-text-as-a-universal-information-bottleneck-for-speech-llms)  
-   标签：评分：8.0/10、query:ml-llm
-   evidence：提出C-Gate作为语音到大语言模型的桥梁，用于语音大语言模型
-2. [Trainable Smooth-Rotation Transforms with Learned Channel Scales for LLM Quantization](/202606/10/2606.09927v1-trainable-smooth-rotation-transforms-with-learned-channel-scales-for-llm-quantization)  
-   标签：评分：8.0/10、query:ml-llm
-   evidence：大语言模型量化方法
-3. [Instruction Finetuning DeepSeek-R1-8B Model Using LoRA and NEFTune](/202606/10/2606.10392v1-instruction-finetuning-deepseek-r1-8b-model-using-lora-and-neftune)  
-   标签：评分：8.0/10、query:ml-llm
-   evidence：使用LoRA和NEFTune对DeepSeek-R1-8B进行指令微调用于命名实体识别
-4. [Enhancing Multilingual LLM-based ASR with Mixture of Experts and Dynamic Downsampling](/202606/10/2606.10439v1-enhancing-multilingual-llm-based-asr-with-mixture-of-experts-and-dynamic-downsampling)  
-   标签：评分：8.0/10、query:ml-llm
-   evidence：基于LLM的ASR系统，结合专家混合和动态降采样
-5. [UniSVQ: 2-bit Unified Scalar-Vector Quantization](/202606/10/2606.10520v1-unisvq-2-bit-unified-scalar-vector-quantization)  
-   标签：评分：8.0/10、query:ml-llm
-   evidence：用于大语言模型的2位统一量化
-6. [LC-QAT: Data-Efficient 2-Bit QAT for LLMs via Linear-Constrained Vector Quantization](/202606/10/2606.10531v1-lc-qat-data-efficient-2-bit-qat-for-llms-via-linear-constrained-vector-quantization)  
-   标签：评分：8.0/10、query:ml-llm
-   evidence：大语言模型量化感知训练
-7. [Dynamic Linear Attention](/202606/10/2606.10650v1-dynamic-linear-attention)  
-   标签：评分：8.0/10、query:ml-llm
-   evidence：用于基于Transformer的大语言模型的动态线性注意力
-8. [Larch: Learned Query Optimization for Semantic Predicates](/202606/10/2606.07923v1-larch-learned-query-optimization-for-semantic-predicates)  
+1. [miniReranker: Efficient Multimodal Reranking through Visual Cache Reuse and Interaction Sparsity](/202606/11/2606.10759v1-minireranker-efficient-multimodal-reranking-through-visual-cache-reuse-and-interaction-sparsity)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：受LLM启发的语义SQL查询优化
-9. [Inside the LLM Word Factory](/202606/10/2606.08562v1-inside-the-llm-word-factory)  
+   evidence：使用多模态大语言模型进行高效重排序，采用视觉优先公式
+2. [Improving Cross-Format Robustness in Language Models with Multi-Format Training](/202606/11/2606.11643v1-improving-cross-format-robustness-in-language-models-with-multi-format-training)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：Transformer大语言模型中去分词机制的机理分析
-10. [Robust Active Learning for Few-Shot Example Selection in Text-to-SQL](/202606/10/2606.10125v1-robust-active-learning-for-few-shot-example-selection-in-text-to-sql)  
+   evidence：通过多格式训练提升LLM的跨格式鲁棒性
+3. [Lius: Translation Model Based Instructional Lingustic Using Continual Instruction Tuning In Kupang Malay](/202606/11/2606.11786v1-lius-translation-model-based-instructional-lingustic-using-continual-instruction-tuning-in-kupang-malay)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：利用主动学习为大语言模型文本到SQL系统选择少样本示例
-11. [Routing-Aware Expert Calibration for Machine Unlearning in Mixture-of-Experts Language Models](/202606/10/2606.10338v1-routing-aware-expert-calibration-for-machine-unlearning-in-mixture-of-experts-language-models)  
+   evidence：微调大语言模型用于低资源翻译
+4. [Beyond Fully Random Masking: Attention-Guided Denoising and Optimization for Diffusion Language Models](/202606/11/2606.12273v1-beyond-fully-random-masking-attention-guided-denoising-and-optimization-for-diffusion-language-models)  
    标签：评分：7.0/10、query:ml-llm
-   evidence：混合专家大语言模型中的机器遗忘
+   evidence：扩散语言模型的注意力引导优化
+5. [Enhancing AI Interpretability and Safety through Localised Architectures](/202606/11/2606.07998v2-enhancing-ai-interpretability-and-safety-through-localised-architectures)  
+   标签：评分：6.0/10、query:ml-llm
+   evidence：局部化机器学习模型提升可解释性和效率
+6. [QueryWeaver: Reliable Multi-Tool Query Execution Planning via LLM-Based Graph Generation](/202606/11/2606.08300v1-queryweaver-reliable-multi-tool-query-execution-planning-via-llm-based-graph-generation)  
+   标签：评分：6.0/10、query:ml-llm
+   evidence：基于LLM的图生成实现多工具查询执行
+7. [ICA Lens: Interpreting Language Models Without Training Another Dictionary](/202606/11/2606.11722v1-ica-lens-interpreting-language-models-without-training-another-dictionary)  
+   标签：评分：6.0/10、query:ml-llm
+   evidence：无需训练新字典即可解释语言模型表征
 
 
 <div class="dpr-home-promo-card">

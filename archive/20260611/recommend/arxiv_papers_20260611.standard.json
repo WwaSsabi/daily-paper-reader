@@ -1,0 +1,442 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-11T22:17:42.064206+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 4,
+    "deep_cap": 6,
+    "deep_selected": 4,
+    "quick_candidates": 7,
+    "quick_skim_target": 11,
+    "quick_selected": 7
+  },
+  "deep_dive": [
+    {
+      "id": "2606.07001v2",
+      "source": "arxiv",
+      "title": "DataEvolver: Automatic Data Preparation for Large Language Models through Multi-Level Self-Evolving",
+      "abstract": "High-quality training data is essential to large language models (LLMs) and typically requires extensive and costly manual curation. Existing automatic data preparation methods rely on predefined pipelines or customized human instructions, which limits their adaptability to diverse data distributions and lacks principled guidance from high-quality examples. In this paper, we introduce DataEvolver, the first self-evolving data preparation system that automatically constructs pipelines to transform raw data into high-quality data. DataEvolver employs a multi-level mechanism to ensure both pipeline executability and effectiveness. At the operator level, it incrementally expands the operator set to construct a logical plan while resolving dependency conflicts. At the pipeline level, it instantiates logical plans into executable code and iteratively refines pipeline orchestration through a feedback loop that reduces the distribution gap between prepared data and high-quality examples. Experiments on seven benchmarks show that DataEvolver substantially improves data quality and achieves an average 10\\% gain in downstream LLM performance compared with training on original data, highlighting new opportunities for the iterative co-evolution of LLMs and data.",
+      "authors": [
+        "Chao Deng",
+        "Shaolei Zhang",
+        "Ju Fan",
+        "Xiaoyong Du"
+      ],
+      "primary_category": "cs.DB",
+      "categories": [
+        "cs.DB",
+        "cs.AI"
+      ],
+      "published": "2026-06-05T07:44:34+00:00",
+      "link": "https://arxiv.org/pdf/2606.07001v2",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "automatic data preparation for LLMs",
+      "llm_evidence_cn": "LLM自动数据准备系统",
+      "llm_evidence": "LLM自动数据准备系统",
+      "canonical_evidence": "LLM自动数据准备系统",
+      "llm_tldr_en": "Introduces DataEvolver, a self-evolving data preparation system for LLMs that automatically constructs pipelines to transform raw data into high-quality data via multi-level mechanism.",
+      "llm_tldr_cn": "高质量训练数据对LLM至关重要但人工成本高。现有自动方法依赖固定管道或人工指令，适应性差。本文提出DataEvolver，首个自进化数据准备系统，通过操作符级和计划级多级机制自动构建并优化数据转换管道，将原始数据转化为高质量数据。",
+      "llm_tldr": "高质量训练数据对LLM至关重要但人工成本高。现有自动方法依赖固定管道或人工指令，适应性差。本文提出DataEvolver，首个自进化数据准备系统，通过操作符级和计划级多级机制自动构建并优化数据转换管道，将原始数据转化为高质量数据。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "how to train a large language model",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.08011v2",
+      "source": "arxiv",
+      "title": "Rewrite to Translate, Translate to Reward: Reinforcement Learning for Source Rewriting in Machine Translation",
+      "abstract": "Rewriting source text with large language models (LLMs) before translation has been shown to improve machine translation (MT) quality. However, we find that prompt-based rewriting can degrade translation quality rather than improve it, particularly when smaller LLMs, such as 4B-parameter models, are used. We argue that this limitation stems from the difficulty of controlling rewriting behavior through natural-language prompts alone: a rewrite is useful only if it improves downstream translation, yet existing prompt-based methods do not explicitly optimize for this signal. To address this issue, we propose RLSR (Reinforcement Learning for Source Rewriting), a reinforcement learning framework that trains the rewriting model with a reward based on the downstream translation-quality improvement produced by each rewrite. Experiments across six MT systems and 16 language pairs show that our 4B RLSR-trained rewriting models significantly outperform both the no-rewriting baseline and prompt-based rewriting baselines at the same model scale, while remaining competitive with baselines that use a 235B LLM.",
+      "authors": [
+        "Boxuan Lyu",
+        "Haiyue Song",
+        "Zhi Qu",
+        "Hidetaka Kamigaito",
+        "Kotaro Funakoshi",
+        "Manabu Okumura"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-06T07:00:44+00:00",
+      "link": "https://arxiv.org/pdf/2606.08011v2",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "uses large language models for source rewriting in machine translation",
+      "llm_evidence_cn": "在机器翻译中使用大语言模型进行源文本改写",
+      "llm_evidence": "在机器翻译中使用大语言模型进行源文本改写",
+      "canonical_evidence": "在机器翻译中使用大语言模型进行源文本改写",
+      "llm_tldr_en": "Proposes RLSR, a reinforcement learning framework that trains a rewriting model using downstream translation quality as reward, improving MT across models and language pairs.",
+      "llm_tldr_cn": "针对基于提示的源文本改写难以保证翻译质量提升的问题，提出RLSR强化学习框架，以翻译质量改进为奖励直接训练改写模型。在6个MT模型和16个语言对上实验表明，4B参数改写模型显著优于现有方法，无需针对每个MT模型调整提示。该方法为利用LLM提升机器翻译提供了一种自动化优化途径。",
+      "llm_tldr": "针对基于提示的源文本改写难以保证翻译质量提升的问题，提出RLSR强化学习框架，以翻译质量改进为奖励直接训练改写模型。在6个MT模型和16个语言对上实验表明，4B参数改写模型显著优于现有方法，无需针对每个MT模型调整提示。该方法为利用LLM提升机器翻译提供了一种自动化优化途径。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.10610v1",
+      "source": "arxiv",
+      "title": "Small Data, Big Noise: Adversarial Training for Robust Parameter-Efficient Fine-Tuning",
+      "abstract": "Parameter-Efficient Fine-Tuning (PEFT) has become essential for adapting foundation models to downstream NLP tasks. However, current PEFT methods often struggle with robustness to noise and performance degradation on limited training data. We propose SDBN (Small Data Big Noise), a unified framework that brings adversarial training to PEFT - a combination that remains less studied in the PEFT setting despite its complementary strengths - to enhance model robustness and generalization, outperforming alternative approaches. We also introduce two variants of the method that use discrete uncertainty sets: SDBN-h, which enumerates character-level edits and selects worst-case variants using gradients, and SDBN-p, which uses LLM-generated variants for robust optimization in generative tasks. Experiments across multiple benchmarks reveal substantial improvements, particularly in low-resource settings and under both word-level and character-level corruptions. This framework addresses the less explored intersection of adversarial training and parameter-efficient adaptation, without introducing additional parameters or only modest computational overhead, making PEFT deployments more reliable in real-world scenarios where data scarcity and linguistic variability often coexist",
+      "authors": [
+        "Eitan Cohen",
+        "Idan Simai",
+        "Uri Shaham"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-09T09:11:33+00:00",
+      "link": "https://arxiv.org/pdf/2606.10610v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "adversarial training for PEFT of foundation models",
+      "llm_evidence_cn": "对基础模型进行对抗训练以增强PEFT鲁棒性",
+      "llm_evidence": "对基础模型进行对抗训练以增强PEFT鲁棒性",
+      "canonical_evidence": "对基础模型进行对抗训练以增强PEFT鲁棒性",
+      "llm_tldr_en": "Proposes SDBN adversarial training framework for PEFT, enhancing robustness and generalization on limited data, with variants using character-level edits and LLM-generated perturbations.",
+      "llm_tldr_cn": "针对参数高效微调在噪声和小数据下性能退化问题，提出SDBN框架，将对抗训练引入PEFT，包含字符级编辑（SDBN-h）和LLM生成扰动（SDBN-p）两种变体，显著提升模型鲁棒性和泛化能力。",
+      "llm_tldr": "针对参数高效微调在噪声和小数据下性能退化问题，提出SDBN框架，将对抗训练引入PEFT，包含字符级编辑（SDBN-h）和LLM生成扰动（SDBN-p）两种变体，显著提升模型鲁棒性和泛化能力。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.11853v1",
+      "source": "arxiv",
+      "title": "Task-Aware Structured Memory for Dynamic Multi-modal In-Context Learning",
+      "abstract": "Multi-modal large language models (MLLMs) depend on in-context learning (ICL) for rapid task adaptation, but their scalability is severely limited by finite context windows and the growing cost of key-value (KV) caches in long multi-modal sequences. Existing memory compression approaches typically rely on rigid token removal or sample-dependent importance estimation, which introduces bias, disrupts semantic structure, particularly for visual representations, and yields static memories that cannot adapt to new queries. We introduce TASM (Task-Aware Structured Memory), a training-free framework that addresses these limitations through task-aware, structure-preserving, and dynamically accessible memory construction. TASM employs task-vector guided compression to replace sample-specific signals with a task-level direction that captures shared relevance across demonstrations. To preserve the underlying manifold, it applies semantics-aware token merging via bipartite graph matching, aggregating tokens without destructive pruning. Finally, TASM structures memory into a hierarchy comprising a compact Core Memory and a Latent Bank, facilitating query-adaptive dynamic retrieval. Evaluations confirm TASM maintains high performance under heavy compression, effectively balancing efficiency with adaptability.",
+      "authors": [
+        "Zhirui Chen",
+        "Ziwei Chen",
+        "Ling Shao"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-06-10T09:30:25+00:00",
+      "link": "https://arxiv.org/pdf/2606.11853v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Improves multi-modal LLM in-context learning with structured memory",
+      "llm_evidence_cn": "通过结构化内存改进多模态LLM的上下文学习",
+      "llm_evidence": "通过结构化内存改进多模态LLM的上下文学习",
+      "canonical_evidence": "通过结构化内存改进多模态LLM的上下文学习",
+      "llm_tldr_en": "Proposes TASM for task-aware structured memory to address context window and KV cache limitations in multi-modal LLMs, improving scalability.",
+      "llm_tldr_cn": "针对多模态大语言模型上下文窗口和KV缓存开销问题，提出任务感知结构化内存TASM，通过任务向量引导压缩保留语义结构，实现动态可访问的内存，提升长序列下的上下文学习性能。",
+      "llm_tldr": "针对多模态大语言模型上下文窗口和KV缓存开销问题，提出任务感知结构化内存TASM，通过任务向量引导压缩保留语义结构，实现动态可访问的内存，提升长序列下的上下文学习性能。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.10759v1",
+      "source": "arxiv",
+      "title": "miniReranker: Efficient Multimodal Reranking through Visual Cache Reuse and Interaction Sparsity",
+      "abstract": "Multimodal large language models (MLLMs) have recently shown strong potential as point-wise rerankers by directly modeling query--document relevance through next-token prediction. However, point-wise reranking suffers from substantial repeated computation across query--document pairs, while the causal structure of transformers allows only prefix segments to be reused via pre-caching. To address the misalignment of existing query-first and document-first formats with both VQA-style prompting and computation-aware reuse, we propose a \\textit{vision-first} formulation that improves both cache reuse efficiency and reranking performance. However, the remaining cost is still considerable and stems from three main sources: (1) \\textit{model depth}, for which we reduce active parameters via early exit; (2) \\textit{cross-segment attention}, which we restrict to a narrow interaction band across a few layers; and (3) \\textit{visual tokens}, where we reduce the number of tokens via embedder-guided pruning. Together, these designs form miniReranker, which reduces reranking runtime to <1% of the dense implementation under high-reuse settings for a single query, while preserving >96% of the dense model performance.",
+      "authors": [
+        "Yingqi Fan",
+        "Xuan Lu",
+        "Anhao Zhao",
+        "Junlong Tong",
+        "Ping Nie",
+        "Kai Zou",
+        "Yunpu Ma",
+        "Wei Zhang",
+        "Xiaoyu Shen"
+      ],
+      "primary_category": "cs.IR",
+      "categories": [
+        "cs.IR"
+      ],
+      "published": "2026-06-09T12:11:02+00:00",
+      "link": "https://arxiv.org/pdf/2606.10759v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "uses multimodal LLMs for efficient reranking with vision-first formulation",
+      "llm_evidence_cn": "使用多模态大语言模型进行高效重排序，采用视觉优先公式",
+      "llm_evidence": "使用多模态大语言模型进行高效重排序，采用视觉优先公式",
+      "canonical_evidence": "使用多模态大语言模型进行高效重排序，采用视觉优先公式",
+      "llm_tldr_en": "Proposes miniReranker, an efficient multimodal reranker using cache reuse and interaction sparsity with a vision-first formulation.",
+      "llm_tldr_cn": "针对多模态大语言模型在点式重排序中计算重复且缓存复用受限的问题，提出miniReranker。通过视觉优先的查询-文档格式，提高缓存复用效率并减少计算量。同时解决视觉-语言交互稀疏性问题，显著降低推理成本。实验表明，miniReranker在保持重排序性能的同时，大幅提升了效率，为多模态检索提供了实用方案。",
+      "llm_tldr": "针对多模态大语言模型在点式重排序中计算重复且缓存复用受限的问题，提出miniReranker。通过视觉优先的查询-文档格式，提高缓存复用效率并减少计算量。同时解决视觉-语言交互稀疏性问题，显著降低推理成本。实验表明，miniReranker在保持重排序性能的同时，大幅提升了效率，为多模态检索提供了实用方案。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.07998v2",
+      "source": "arxiv",
+      "title": "Enhancing AI Interpretability and Safety through Localised Architectures",
+      "abstract": "Recent advances in generative AI, especially powerful Large Language Models (LLMs) and Large Reasoning Models (LRMs), raise concerns over the interpretability, safety and sustainability of these large and opaque AI models. The power of such architectures is derived not only from the scalability of deep neural networks, but also massively parallel hardware such as GPU clusters. The diffuse nature of deep neural networks gives them great function-approximation capability when provided with sufficient training data but imposes a cost in interpretability and computational efficiency. Observing that localised machine learning (ML) models tend to be more interpretable and computationally efficient than deep neural networks on small datasets, we reason by analogy that similar advantages may apply to specific localised hardware ML architectures. We argue that localised architectures with lower bandwidth but higher expressivity per node have the potential to be fundamentally more interpretable than deep neural networks running on GPU clusters while remaining competitive for smaller datasets. We then evaluate the suitability of various hardware ML paradigms for implementing such localised architectures and evaluate their per-node expressivity, energy efficiency and practical maturity of the technology required.",
+      "authors": [
+        "Ian Seet",
+        "Jonas Bozenhard",
+        "Simon Ostermann"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-06-06T06:33:03+00:00",
+      "link": "https://arxiv.org/pdf/2606.07998v2",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Localised ML models for interpretability and efficiency",
+      "llm_evidence_cn": "局部化机器学习模型提升可解释性和效率",
+      "llm_evidence": "局部化机器学习模型提升可解释性和效率",
+      "canonical_evidence": "局部化机器学习模型提升可解释性和效率",
+      "llm_tldr_en": "Proposes localised machine learning models as alternatives to deep neural networks for better interpretability and computational efficiency on small datasets.",
+      "llm_tldr_cn": "大型语言模型虽然强大，但缺乏可解释性和计算效率。本文观察局部化机器学习模型在小数据集上更可解释且高效，通过类比推理认为局部化架构是提升AI可解释性和安全性的可行方向。论文分析现有架构并展望将局部化方法集成到更大系统中。",
+      "llm_tldr": "大型语言模型虽然强大，但缺乏可解释性和计算效率。本文观察局部化机器学习模型在小数据集上更可解释且高效，通过类比推理认为局部化架构是提升AI可解释性和安全性的可行方向。论文分析现有架构并展望将局部化方法集成到更大系统中。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "machine learning",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.11643v1",
+      "source": "arxiv",
+      "title": "Improving Cross-Format Robustness in Language Models with Multi-Format Training",
+      "abstract": "Large language models often remain sensitive to answer format: a question solved correctly in one form may fail in another semantically equivalent form. To study this gap, we define cross-format robustness as the extent to which a model answers the same underlying question consistently across formats. We then compare full-format training with FormatMix, which expands only a subset of training items into multiple equivalent formats using either random or targeted selection. Across GLM4 and Llama-3.1, multi-format supervision consistently improves both task performance and cross-format robustness, whereas Multiple-choice question (MCQ)-only supervision alone brings little benefit and can even reduce robustness. We further find that expanding only about 30% of the training set into multiple formats often recovers most of the gain from full-format training, and this effect appears across the model families and sizes we study. These results suggest that format diversity, rather than additional supervision alone, is the key driver of robustness. That lightweight multi-format augmentation is a practical way to make LLMs less sensitive to answer format without changing the base model.",
+      "authors": [
+        "June M. Liu",
+        "Shaomian Zheng",
+        "He Cao",
+        "Dingnan Jin",
+        "Qing Cui",
+        "Jun Zhou"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-10T04:07:41+00:00",
+      "link": "https://arxiv.org/pdf/2606.11643v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "cross-format robustness for LLMs via multi-format training",
+      "llm_evidence_cn": "通过多格式训练提升LLM的跨格式鲁棒性",
+      "llm_evidence": "通过多格式训练提升LLM的跨格式鲁棒性",
+      "canonical_evidence": "通过多格式训练提升LLM的跨格式鲁棒性",
+      "llm_tldr_en": "Studies cross-format robustness in LLMs and proposes FormatMix, which expands a subset of training items into multiple equivalent formats, improving both performance and robustness.",
+      "llm_tldr_cn": "大语言模型在不同答案格式下表现不一致。本文定义跨格式鲁棒性，提出FormatMix方法，仅扩展部分训练数据为多种等价格式。在GLM4和Llama-3.1上实验表明，多格式监督一致提升任务性能和跨格式鲁棒性，而仅用多项选择可能降低鲁棒性。",
+      "llm_tldr": "大语言模型在不同答案格式下表现不一致。本文定义跨格式鲁棒性，提出FormatMix方法，仅扩展部分训练数据为多种等价格式。在GLM4和Llama-3.1上实验表明，多格式监督一致提升任务性能和跨格式鲁棒性，而仅用多项选择可能降低鲁棒性。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.08300v1",
+      "source": "arxiv",
+      "title": "QueryWeaver: Reliable Multi-Tool Query Execution Planning via LLM-Based Graph Generation",
+      "abstract": "Many real-world queries over personal data span multiple applications and require structured planning, as individual tools expose only partial information. While LLMs show strong reasoning and tool use, reliably executing multi-step, cross-tool queries remains challenging. We introduce a system that converts natural language queries into structured graphs and executes them via a deterministic planner. Our approach uses depth-first search to resolve dependencies and combine results across tools, improving reliability and enabling queries beyond traditional keyword-based search. We demonstrate high accuracy even with smaller or locally hosted LLMs.",
+      "authors": [
+        "Aishwarya Chakravarthy",
+        "Vidhi Kulkarni",
+        "Duen Horng Chau"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-06T18:54:43+00:00",
+      "link": "https://arxiv.org/pdf/2606.08300v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM-based graph generation for multi-tool query execution",
+      "llm_evidence_cn": "基于LLM的图生成实现多工具查询执行",
+      "llm_evidence": "基于LLM的图生成实现多工具查询执行",
+      "canonical_evidence": "基于LLM的图生成实现多工具查询执行",
+      "llm_tldr_en": "Introduces a system using LLMs to convert natural language queries into structured graphs for reliable multi-tool execution, achieving high accuracy.",
+      "llm_tldr_cn": "针对个人数据跨应用查询需要多工具协作的问题，提出利用大语言模型将自然语言转换为结构化图并确定性执行的系统，通过深度优先搜索解析依赖和合并结果，在小模型上也能实现高精度，超越了传统关键词搜索。",
+      "llm_tldr": "针对个人数据跨应用查询需要多工具协作的问题，提出利用大语言模型将自然语言转换为结构化图并确定性执行的系统，通过深度优先搜索解析依赖和合并结果，在小模型上也能实现高精度，超越了传统关键词搜索。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.11786v1",
+      "source": "arxiv",
+      "title": "Lius: Translation Model Based Instructional Lingustic Using Continual Instruction Tuning In Kupang Malay",
+      "abstract": "Large Language Models (LLMs) offer new potential for translation tasks but often experience performance degradation when handling low-resource languages. To address this limitation, we propose an approach for fine-tuning LLMs on a low-resource language, Kupang Malay. Our approach involves designing a set of instructions by leveraging explicit lexical and semantic features from a bilingual dictionary, and introducing Continual Instruction Tuning (CIT), a training paradigm that enables iterative instruction-based training. Experimental results demonstrate that our model, named Lius, yields notable improvements over standard instruction-tuned models by outperforming 4-6 points, and surpassing both Neural Machine Translation (NMT) and Multilingual LLM models by 10-13 points on several evaluation metrics. These findings highlight the potential of our approach to mitigate the reliance on large-scale parallel data in low-resource language translation.",
+      "authors": [
+        "Joanito Agili Lopo",
+        "Yunita Sari",
+        "Guntur Budi Herwanto"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-10T08:20:09+00:00",
+      "link": "https://arxiv.org/pdf/2606.11786v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "fine-tunes LLM for low-resource translation",
+      "llm_evidence_cn": "微调大语言模型用于低资源翻译",
+      "llm_evidence": "微调大语言模型用于低资源翻译",
+      "canonical_evidence": "微调大语言模型用于低资源翻译",
+      "llm_tldr_en": "Fine-tunes LLM with continual instruction tuning on Kupang Malay, leveraging bilingual dictionary features, outperforming baselines by 4-6 points.",
+      "llm_tldr_cn": "针对大模型在低资源语言翻译任务中性能下降的问题，提出利用双语词典的词汇和语义特征设计指令，并引入持续指令微调范式。在Kupang Malay上训练Lius模型，比标准指令微调模型提升4-6个百分点，超越神经机器翻译方法。",
+      "llm_tldr": "针对大模型在低资源语言翻译任务中性能下降的问题，提出利用双语词典的词汇和语义特征设计指令，并引入持续指令微调范式。在Kupang Malay上训练Lius模型，比标准指令微调模型提升4-6个百分点，超越神经机器翻译方法。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.11722v1",
+      "source": "arxiv",
+      "title": "ICA Lens: Interpreting Language Models Without Training Another Dictionary",
+      "abstract": "Finding interpretable directions in language-model representations is critical for understanding and controlling model behavior. Sparse autoencoders (SAEs) have become the standard tool for this purpose, but using them as the default first lens often requires training, storing, and evaluating large overcomplete dictionaries. This bottleneck limits rapid exploration and raises a fundamental question: how much interpretable structure is already visible from activation geometry before training another neural dictionary? Our intuition is simple: many interpretable directions are selective on tokens, and these directions should look less Gaussian than random directions. We therefore revisit independent component analysis (ICA), a classical method for finding non-Gaussian directions, as a compact lens for language-model interpretability. We find that ICA has been underestimated for LLM interpretability, because prior uses often relied on off-the-shelf ICA implementations that are brittle on LLM activations and lacked systematic tools for inspecting and evaluating the recovered directions. To bridge these gaps, we introduce ICALens, the first practical workflow for stable, efficient, and auditable ICA analysis of LLM representations. It combines an optimized GPU-parallel FastICA pipeline with LLM-specific stability recipes and better fitting diagnostics, enabling efficient and reliable layer-wise analysis. Across GPT-2 Small, Gemma 2 2B, and Qwen 3.5 2B Base, ICALens efficiently recovers compact, human-interpretable directions without per-layer gradient-based dictionary training. On SAEBench, ICA is competitive with public SAEs in sparse probing and outperforms them in targeted probe perturbation under small-to-medium budgets. These results suggest that ICA should not be viewed as a weak baseline, but as an efficient and complementary first lens for exploring language-model representations.",
+      "authors": [
+        "Sida Liu",
+        "Feijiang Han"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-06-10T06:53:58+00:00",
+      "link": "https://arxiv.org/pdf/2606.11722v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "interprets language model representations without training new dictionaries",
+      "llm_evidence_cn": "无需训练新字典即可解释语言模型表征",
+      "llm_evidence": "无需训练新字典即可解释语言模型表征",
+      "canonical_evidence": "无需训练新字典即可解释语言模型表征",
+      "llm_tldr_en": "Revisits ICA to find interpretable directions in language model activations, showing that token-selective directions are less Gaussian, offering a simpler alternative to SAEs.",
+      "llm_tldr_cn": "针对稀疏自编码器训练开销大的问题，重新探索独立成分分析（ICA）用于语言模型表征解释。发现许多可解释方向对词元具有选择性且偏离高斯分布，无需训练额外神经网络字典即可从激活几何中提取有意义方向。",
+      "llm_tldr": "针对稀疏自编码器训练开销大的问题，重新探索独立成分分析（ICA）用于语言模型表征解释。发现许多可解释方向对词元具有选择性且偏离高斯分布，无需训练额外神经网络字典即可从激活几何中提取有意义方向。",
+      "llm_tags": [
+        "query:ml-llm:composite"
+      ],
+      "matched_query_tag": "query:ml-llm:composite",
+      "matched_query_text": "Papers central to 帮我查找和机器学习，LLM大模型相关, especially work that connects or combines: machine learning; large language model; supervised learning; transformer model; neural network; natural language processing; introduction to machine learning and large language models; how to train a large language model.",
+      "matched_requirement_id": "req-composite-ml-llm",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.12273v1",
+      "source": "arxiv",
+      "title": "Beyond Fully Random Masking: Attention-Guided Denoising and Optimization for Diffusion Language Models",
+      "abstract": "Diffusion large language models (dLLMs) offer an efficient alternative to autoregressive models through parallel decoding, yet existing post-training methods largely rely on random masking strategies that overlook intrinsic token dependencies. In this work, we present an empirical analysis of attention in dLLMs and show that tokens attending more strongly to unmasked context exhibit greater generation stability and play a critical role in reasoning. Motivated by these findings, we propose AGDO, an attention-guided denoising and optimization framework that aligns both training and optimization with attention-derived dependencies. AGDO determines the denoising order based on attention structure and emphasizes attention-critical tokens during supervised fine-tuning and reinforcement learning. Experiments on mathematical and coding benchmarks demonstrate that AGDO consistently improves reasoning performance, outperforming state-of-the-art post-training methods for dLLMs.",
+      "authors": [
+        "Jia Deng",
+        "Junyi Li",
+        "Wayne Xin Zhao",
+        "Jinpeng Wang",
+        "Hongyu Lu",
+        "Ji-Rong Wen"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-10T16:14:23+00:00",
+      "link": "https://arxiv.org/pdf/2606.12273v1",
+      "tags": [
+        "keyword:ml-llm",
+        "query:ml-llm"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "attention-guided optimization for diffusion language models",
+      "llm_evidence_cn": "扩散语言模型的注意力引导优化",
+      "llm_evidence": "扩散语言模型的注意力引导优化",
+      "canonical_evidence": "扩散语言模型的注意力引导优化",
+      "llm_tldr_en": "Proposes AGDO, an attention-guided denoising and optimization framework for diffusion LLMs, which aligns training and optimization with attention dependencies, improving generation stability.",
+      "llm_tldr_cn": "现有扩散语言模型后训练方法依赖随机掩码策略，忽略词间依赖。本文揭示注意力与生成稳定性关系，提出AGDO框架，根据注意力结构确定去噪顺序并强调关键token。实验表明AGDO提升了扩散LLM的生成稳定性和推理能力。",
+      "llm_tldr": "现有扩散语言模型后训练方法依赖随机掩码策略，忽略词间依赖。本文揭示注意力与生成稳定性关系，提出AGDO框架，根据注意力结构确定去噪顺序并强调关键token。实验表明AGDO提升了扩散LLM的生成稳定性和推理能力。",
+      "llm_tags": [
+        "query:ml-llm"
+      ],
+      "matched_query_tag": "query:ml-llm",
+      "matched_query_text": "large language model",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

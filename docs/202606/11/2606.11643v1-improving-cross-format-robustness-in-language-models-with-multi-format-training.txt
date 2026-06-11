@@ -1,0 +1,1495 @@
+Title: Improving Cross-Format Robustness in Language Models with Multi-Format Training
+
+URL Source: https://arxiv.org/pdf/2606.11643v1
+
+Published Time: Thu, 11 Jun 2026 00:31:34 GMT
+
+Number of Pages: 23
+
+Markdown Content:
+## Improving Cross-Format Robustness in Language Models with Multi-Format Training 
+
+June M. Liu 1*, Shaomian Zheng 1, He Cao 2, Dingnan Jin 1, Qing Cui 1, Jun Zhou 1†1Ant Group, 2International Digital Economy Academy (IDEA) 
+
+Abstract 
+
+Large language models often remain sensitive to answer format: a question solved correctly in one form may fail in another semantically equivalent form. To study this gap, we define cross-format robustness as the extent to which a model answers the same underlying question consistently across formats. We then compare full-format training with FormatMix, which ex-pands only a subset of training items into mul-tiple equivalent formats using either random or targeted selection. Across GLM4 and Llama-3.1, multi-format supervision consistently im-proves both task performance and cross-format robustness, whereas Multiple-choice question (MCQ)-only supervision alone brings little ben-efit and can even reduce robustness. We fur-ther find that expanding only about 30% of the training set into multiple formats often recovers most of the gain from full-format training, and this effect appears across the model families and sizes we study. These results suggest that format diversity, rather than additional super-vision alone, is the key driver of robustness. That lightweight multi-format augmentation is a practical way to make LLMs less sensitive to answer format without changing the base model. 
+
+1 Introduction 
+
+Multiple-choice question (MCQ) answering is a standard benchmark for large language models (LLMs), but MCQ accuracy conflates two factors: whether a model has the relevant knowledge and whether it can use that knowledge under a particu-lar question format. Recent work shows that LLMs are sensitive to answer options, choice presentation, and output format, often giving different answers to the same underlying question in multiple-choice and generative settings (Li et al., 2024b; Balepur 
+
+> *Work done during an internship at Ant Group
+> †Corresponding author. Email: jun.zhoujun@antgroup.com
+
+et al., 2024; Wang et al., 2025; Balepur et al., 2025; Nguyen et al., 2025; Takizawa et al., 2025). This matters beyond benchmark design. In real use, questions are rarely posed as MCQs; users ask open-ended questions, verify claims, or complete missing information. A model whose answers de-pend heavily on format is therefore not only hard to evaluate, but also hard to rely on. 
+
+Figure 1: Cross-format inconsistency on semantically matched questions. (a) Accuracy of the same under-lying items across four question formats on six bench-marks. (b) Conditional transfer accuracy: among items answered correctly in the source format, the fraction that remains correct in the target format. 
+
+In this paper, we study question-format ro-bustness : whether a model can answer semanti-cally equivalent questions consistently across for-mats. To test this directly, we built a controlled multi-format setting. Starting from each original MCQ item, we construct semantically matched true/false (TF), fill-in-the-blank (FIB), and open-ended (OPEN) versions, with multiple paraphrases per format and validation through automatic filter-ing and human annotation. This design keeps the underlying content fixed while varying only the question format. It enables a simple diagnostic question: if a model answers an item correctly in one format, does that correctness transfer to the others? Figure 1 shows that the answer is often 
+
+> arXiv:2606.11643v1 [cs.CL] 10 Jun 2026
+
+no. Accuracy varies substantially across formats and benchmarks, and items solved in one format frequently fail in another. Most prior work addresses this phenomenon from the evaluation side, for example, by adjust-ing MCQ scoring, perturbing answer choices, or improving answer matching (Cavalin et al., 2025; Chandak et al., 2025). These methods are valu-able for obtaining more reliable measurements, but they do not directly improve the model’s behav-ior when the same content is presented outside MCQ form. We take a complementary perspective: question-format sensitivity is also a training prob-lem. The central question of this paper is whether multi-format supervision can make knowledge ac-cess more robust across semantically equivalent question formats. To answer this question, we construct a multi-format QA corpus from several widely used MCQ benchmarks and introduce an item-level evalua-tion protocol that separates any-format solvability 
+
+from all-format consistency . Specifically, pass@4 
+
+measures whether an item is answered correctly in at least one of the four formats, whereas pass 4
+
+measures whether it is answered correctly in all four. Their ratio captures robustness conditioned on the item being solvable at all. We then compare standard MCQ-only fine-tuning with multi-format supervised fine-tuning. In addition to full expan-sion of every training item, we study budgeted set-tings that reformulate only a subset of items, either selected randomly or prioritized by observed cross-format inconsistency. Our experiments show a clear pattern. Multi-format supervision substantially improves cross-format robustness, whereas matched-scale MCQ-only training mainly improves MCQ accuracy and leaves all-format consistency largely unchanged. On GLM4-9B, full multi-format SFT increases 
+
+pass 4 from 12.08% to 19.61% and improves ro-bustness by 35% relative to the baseline. Moreover, expanding only a subset of items recovers much of the gain, and inconsistency-based selection is more effective than random selection under the same ex-pansion budget. These results suggest a practical lesson: format robustness is a trainable capability, and much of it can be gained without exhaustively rewriting the entire training set. Our contributions are threefold: • We reframe question-format sensitivity as a problem of robust knowledge access , and con-struct a validated multi-format QA corpus with semantically matched MCQ, true/false, fill-in-the-blank, and open-ended versions. • We introduce an item-level evaluation protocol for cross-format robustness based on pass@4 ,
+
+pass 4, and their ratio, which disentangles over-all solvability from consistency across formats. • We show that multi-format SFT improves cross-format robustness substantially beyond MCQ-only training, and that partial, inconsistency-targeted format expansion recovers most of the benefit of full multi-format supervision. 
+
+2 Related Work 
+
+Prior work most relevant to our study falls into three lines: evaluation of reliability across question-answering formats, model sensitivity to question format and prompt variation, and question reformu-lation as a semantic preservation problem. 
+
+2.1 Evaluation Reliability Across Question-Answering Formats 
+
+Multiple-choice evaluation is easy to score, but its results can reflect answer-set artifacts and scoring conventions rather than knowledge alone. Prior work shows that models can exploit the option set itself, that MCQ and long-form settings often probe different behaviors, and that success in MCQ may sometimes amount to selecting the least incorrect option rather than identifying a uniquely correct answer (Balepur et al., 2024; Li et al., 2024b; Wang et al., 2025). Accordingly, several studies propose consistency-aware scoring, altered answer choices, or improved extraction protocols to obtain more reliable estimates of model ability (Cavalin et al., 2025; Molfese et al., 2025; Balepur et al., 2025; Góral et al., 2025). Moving beyond MCQ can reduce option-induced shortcuts, and open-style questions or answer-matching protocols sometimes better align with human judgments (Myrzakhan et al., 2024; Chandak et al., 2025; Bernard et al., 2024). However, this shifts the problem to answer scoring: LLM-based judges can be biased, adver-sarially vulnerable, and self-inconsistent (Shi et al., 2025; Raina et al., 2024; Bavaresco et al., 2025; Haldar and Hockenmaier, 2025). Overall, these studies show that evaluation depends not only on question content, but also on the response format and scoring procedure. 2.2 Format Sensitivity and Robustness 
+
+Beyond answer-set artifacts, another line of work studies whether semantically equivalent prompts and output constraints yield stable model behav-ior. Nguyen et al. show that LLMs are biased to-ward particular output formats, and Takizawa et al. introduce MCQFormatBench to study robustness under variations within the MCQ family (Nguyen et al., 2025; Takizawa et al., 2025). More broadly, prompt sensitivity and stress-test studies show that small changes in phrasing can lead to substantial performance shifts (Hua et al., 2025; Zhao et al., 2025). Similar instability has also been observed in paraphrase consistency, value-laden questions, and knowledge representations that depend on superfi-cial resemblance (Moore et al., 2024; Haller et al., 2025). Mechanistic analyses further suggest that answer-symbol prediction itself can be sensitive to the surface form used to elicit the response (Wiegr-effe et al., 2024). Our work builds on this literature but differs in two ways. First, we study format sensitivity in a controlled item-aligned setting by comparing semantically matched MCQ, true/false, fill-in-the-blank, and open-ended versions of the same question. Second, rather than treating incon-sistency only as a diagnostic or evaluation concern, we ask whether it can be reduced through multi-format supervision. 
+
+2.3 Question Reformulation 
+
+Constructing aligned variants across formats is closely related to question rewriting. CA-NARD (Elgohary et al., 2019) established ques-tion rewriting as a semantic preservation problem, and subsequent works (Fu et al., 2024; Ye et al., 2022) show that rewritten questions can differ in answerability, consistency, and hardness depend-ing on the transformation used. These findings necessitate careful filtering and human validation to prevent meaning or difficulty shifts that could confound downstream comparisons. Unlike prior work focused on rewrite quality, we treat reformu-lation as a controlled tool to study cross-format robustness and test whether multi-format supervi-sion improves access to underlying knowledge. 
+
+3 Data Construction 
+
+We construct an item-aligned multi-format QA corpus in four stages. We begin with 6 MCQ benchmarks, screen items for reformulatability, and retain only those that can be faithfully con-verted into non-MCQ formats and graded automati-cally. We then generate semantically aligned MCQ, true/false, fill-in-the-blank, and open-ended vari-ants in the original language, with 3 paraphrases per format, followed by model-based review and arbitration. Human validation is conducted on a stratified subset. All train/test splits are defined at the source-item level before rewriting, so that no variants of the same item appear across splits. 
+
+3.1 Source Benchmarks 
+
+We collect source MCQ items from six widely used benchmarks: C-Eval (Huang et al., 2023), CMMLU (Li et al., 2024a), MMLU (Hendrycks et al., 2020), MMLU-Pro (Wang et al., 2024), GPQA (Rein et al., 2023), and SuperGPQA (Du et al., 2026). These benchmarks cover a broad range of domains, languages, and difficulty levels, making them suitable source pools for constructing an item-aligned multi-format QA corpus. We split data at the source-item level before rewriting, so that all format variants and paraphrases of the same underlying item stay in the same split. 
+
+3.2 Reformulatability Screening 
+
+Since not all MCQ items can be faithfully con-verted into other question formats—some de-pend heavily on the presence of answer op-tions, while others become ambiguous or dif-ficult to score in other formats—we first per-form a reformulatability screening step. For each source item, four LLMs independently as-sess whether it is suitable for multi-format refor-mulation: DeepSeek-V3.1 (DeepSeek-AI, 2024), Qwen3-235B-A22B-Instruct-2507 (Qwen Team, 2025), Kimi-K2.5 (Kimi Team et al., 2026), and GPT-OSS-120B (OpenAI, 2025). We retain an item only if at least three of the four models ap-prove it under a strict rubric focused on answer uniqueness, option independence, and automatic gradability. The full screening prompt is provided in Appendix 3. 
+
+3.3 Multi-Format Rewriting 
+
+For each retained source item, we construct se-mantically aligned variants in four formats: MCQ, true/false (TF), fill-in-the-blank (FIB), and open-ended (OPEN). We preserve the source language of the original benchmark and generate three para-phrases per format with temperature = 1 .0 and top-p = 0 .95 . To reduce dependence on any single model family, we adopt a multi-model generation, Figure 2: Overview of the proposed framework. Starting from source multiple-choice questions, we construct semantically aligned variants in four formats (MCQ, TF, FIB, and OPEN) through multi-stage rewriting and validation. We then evaluate models using an item-level cross-format protocol based on pass@4, pass 4, and robustness, and compare different multi-format supervision strategies. 
+
+review, and arbitration pipeline inspired by Gao et al. (2025). Specifically, we utilize the same four-model pool used in the screening stage. For each generation instance, we randomly select one model from this pool to act as the rewriter. The rewrites are designed to preserve the underlying factual con-tent and gold decision of the source item while changing only the interaction format and response space. For MCQ, we paraphrase the original ques-tion while preserving the answer set and correct answer, allowing the option order to vary. For TF, we convert the item into a single proposition de-rived from one source option: propositions based on the original correct option are labeled True ,while propositions based on incorrect options are labeled False . For FIB, we rewrite the item into a cloze-style question, and for OPEN, we rewrite the same content into an open-ended question that must be answered without access to options. Because downstream scoring for non-discrete formats relies on LLM-based judgment rather than exact string matching, we do not impose additional canonical-ization constraints on FIB or OPEN answers at construction time. We then apply format-specific quality control to all generated candidates. For each candidate, we randomly sample two models from the re-maining three LLMs in the pool to serve as in-dependent reviewers. Each rewrite is reviewed for meaning preservation, answer preservation, self-containedness, format fidelity, and scorability. If both reviewers approve the rewrite, it is retained; if both fail it, it is discarded. In cases of reviewer disagreement (one pass and one fail), the candidate enters an arbitration step. The fourth and final re-maining model in the pool acts as the arbitrator, evaluating the candidate alongside the scores and reasoning provided by the two reviewers to make a final keep or discard decision. To reduce answer-label prior artifacts, we encourage balanced label distributions during generation and enforce them at the corpus level after generation. Specifically, the prompts instruct the model to randomize MCQ correct-option positions and TF truth values when-ever possible, and we further monitor the aggregate distribution of generated labels; if particular MCQ option positions or TF labels are overrepresented, affected items are rewritten until the final corpus is approximately balanced. Detailed generation, review, and arbitration prompts are provided in Appendix A.4, and the review rubric is shown in Table 6. After screening and rewriting, we retain 11,842 source items. Since each item is associ-ated with four formats and three paraphrase vari-ants per format, the final corpus contains 142,104 item-format-paraphrase instances. See Table 8 for detailed statistics and Algorithm 1 for overall data construction pipeline. 
+
+3.4 Human Validation of Rewrites 
+
+To assess rewrite quality, we conduct human vali-dation on a subset of the generated data. Three in-dependent annotators judge each rewrite on five bi-nary criteria: meaning preservation, answer preser-vation, self-containedness, clarity and naturalness, and scorability. The full rubric is provided in Ap-pendix A.1. Table 7 shows that the rewrites are high quality overall. Average scores exceed 90% on all five criteria, including 97.83% for meaning preservation and 91.67% for answer preservation, indicating that most reformulations remain seman-tically aligned with the source item and preserve the intended answer. Clarity/naturalness (99.67%) and scorability (98.83%) are near ceiling, while self-containedness is somewhat lower at 90.67%, reflecting the greater difficulty of preserving full context across formats. Full agreement is also high, especially for clarity/naturalness (98.98%) and scorability (96.43%). Overall, these results support the reliability of the rewritten corpus for controlled cross-format evaluation. 
+
+4 Evaluation Protocol 
+
+Our goal is to measure not only whether a model can answer a question, but whether that answer re-mains accessible when the same underlying item is presented in different formats. Marginal accuracies alone are insufficient for this purpose: two models can achieve similar per-format accuracy while suc-ceeding on entirely different subsets of items. To isolate cross-format robustness, we evaluate at the source-item level and aggregate in two stages: first across paraphrases within a format, and then across formats for the same item. 
+
+4.1 Item-Level Aggregation and Cross-Format Metrics 
+
+Each source item q is instantiated in four formats, 
+
+f ∈ { MCQ , TF , FIB , OPEN }, with three para-phrases per format. For a given item and format, we say the model solves that format if it answers at least two of the three paraphrases correctly: 
+
+sf (q) = I
+
+" 3X
+
+> v=1
+
+correct( q, f, v ) ≥ 2
+
+#
+
+.
+
+This majority-over-paraphrases rule reduces sen-sitivity to spurious wording while still requiring stable success within a format. Per-format accu-racies reported in our results are the averages of 
+
+sf (q) over items. We then report three item-level metrics. pass@4 measures any-format solvability :the fraction of items solved in at least one of the four formats, 
+
+pass@4 = 1
+
+|Q| 
+
+X
+
+> q∈Q
+
+I
+
+X 
+
+> f∈F
+
+sf (q) ≥ 1
+
+ . (1) 
+
+pass 4 measures all-format consistency : the fraction of items solved in all four formats, 
+
+pass 4 = 1
+
+|Q| 
+
+X
+
+> q∈Q
+
+I
+
+X 
+
+> f∈F
+
+sf (q) = 4 
+
+ . (2) Finally, we define cross-format robustness as 
+
+pass 4
+
+pass@4 = P  solved in all four formats |
+
+solved in at least one format .
+
+This conditioning is important because it filters out unsolvable items, allowing us to measure robust-ness solely among questions the model is capable of answering. In other words, pass@4 asks whether the model can access the answer under some inter-face, whereas pass 4 asks whether that access is preserved across all interfaces. 
+
+4.2 Automatic Scoring 
+
+We use a deterministic scoring rule available for each format. For MCQ and TF, we first apply rule-based extraction to recover the model’s final option letter or true/false judgment. If no unambiguous final answer can be extracted, or if the output con-tains multiple conflicting answers, we fall back to LLM-as-a-Judge scoring. For FIB and OPEN, surface-form matching is often too brittle: a re-sponse may be semantically correct even when it differs from the reference answer lexically. We therefore score these formats directly with LLM judges. Our judge panel consists of GPT-5, Gemini-2.5-Pro, and Claude-Sonnet-4.6. Each judge re-ceives the question, the reference answer, and the model response, and outputs a binary correctness label. We use the majority vote across the three judges as the final automatic score. 
+
+4.3 Human Validation of Automatic Scoring 
+
+To assess the reliability of the scoring pipeline, we manually annotate a sample of 200 model re-sponses and compare the automatic labels against the majority human label. Agreement between hu-man annotation and automatic scoring is 95.33%. Human annotators also show high internal consis-tency, with 87.76% three-way exact agreement and 91.90% pairwise agreement. These results suggest that the remaining scoring ambiguity is limited and that the automatic pipeline is reliable enough for large-scale evaluation. 
+
+5 Experiments 
+
+Our item-aligned corpus allows controlled training: for each question, models see either one canoni-cal MCQ or multiple matched formats. This tests whether multi-format supervision improves both per-format accuracy and cross-format consistency. 
+
+5.1 Training Regimes 
+
+We structure the main experiments around three questions: (Q1) Does multi-format supervision im-prove cross-format robustness? (Q2) Are any gains due to format diversity rather than simply more supervised training? (Q3) Under a fixed expansion budget, is it better to expand items at random or to prioritize those that are most format-sensitive under the base model? All conditions are built from the same set of source training items and differ only in how those items are instantiated during training. A source item kept in MCQ-only form contributes its three MCQ paraphrases, whereas a source item expanded into all four formats contributes 12 instances (4 for-mats × 3 paraphrases). If a fraction ρ of source items is expanded, the resulting training set con-tains (1 + 3 ρ) times as many instances as MCQ-only training. In the main table, we use ρ = 0 .3
+
+as a representative mid-budget setting, yielding a 1.9 × training set relative to MCQ-only supervision, compared with 4.0 × for expanding every item. We do not treat 30% as an optimized choice; Section 6 later reports a 10/20/30% sweep. (1) Untuned base model (Baseline). The base model is evaluated without fine-tuning. This es-tablishes the model’s native level of cross-format robustness. (2) Full-Format SFT. Every training item is ex-panded into all four formats. This condition rep-resents exhaustive multi-format supervision and serves as an upper-bound condition rather than a budget-matched comparison. (3) Random-FormatMix SFT (30%). A fixed 30% of source training items are randomly selected and expanded into all four formats, while the re-maining 70% remain MCQ-only. This condition tests whether partial multi-format expansion al-ready captures a substantial fraction of the benefit of full expansion. (4) Targeted-FormatMix SFT (30%). The same 30% expansion budget is used, but items are se-lected according to their format sensitivity under the untuned base model on the training split only. For each source item q, we compute 
+
+Cross -format Std( q) = Std f ∈F 
+
+ acc( q, f ),
+
+where F = {MCQ , TF , FIB , OPEN } and 
+
+acc( q, f ) is the mean correctness over the three paraphrases in format f . A higher level indicates that the item is accessible under some interfaces but not others, making it a natural target for robustness-oriented supervision. Compared with binary item-level indicators such as pass@4 or pass 4, this con-tinuous score provides a finer-grained ranking sig-nal for data selection. (5) Size-Matched MCQ-only SFT (MCQ-Matched). This control matches the total number of training instances of the 30% FormatMix con-ditions, but keeps all supervision in MCQ form through resampling. It isolates the effect of format diversity from the effects of additional supervision and longer training. 
+
+5.2 Training Details 
+
+Our main experiments use GLM4-9B as the base model. We perform full-parameter supervised fine-tuning for one epoch with learning rate 1 × 10 −6,cosine learning rate decay, and warmup ratio 0.1. Training is conducted on 8 H20 GPUs. We use batch size 2 per device and gradient accumula-tion 4, resulting in an effective batch size of 64. All SFT runs use the same optimizer and data split. Random-FormatMix, Targeted-FormatMix, and MCQ-Matched are matched in total training in-stances (30% budget), forming our main controlled comparison. Full-Format SFT uses more data and serves as an upper bound. 
+
+5.3 Main Results Full multi-format supervision substantially im-proves cross-format robustness. As shown in Table 1, compared with the baseline, Full-Format SFT improves accuracy in every format and yields substantial gains on the three metrics: pass@4 in-creases by about 20%, pass 4 by about 62%, and cross-format robustness by 35%. In addition, there is a larger percentage of gains on TF, FIB, and OPEN. This pattern suggests that multi-format su-pervision does more than reinforce benchmark-specific MCQ behavior: it makes the underlying Condition pass@4 pass 4 Cross-format robustness MCQ Acc. TF Acc. FIB Acc. OPEN Acc.                                    
+
+> Baseline 0.7669 0.1208 0.1575 0.4769 0.6255 0.2478 0.2660 Full-Format 0.9222 0.1961 0.2126 0.5265 0.7747 0.3253 0.3421
+> Random-FormatMix 0.9041 0.1695 0.1875 0.5156 0.7392 0.2798 0.3066 Targeted-FormatMix 0.9015 0.1775 0.1969 0.5111 0.7392 0.2842 0.3071 MCQ-Matched 0.8157 0.1209 0.1482 0.5320 0.6354 0.2261 0.2657
+
+Table 1: Main results on GLM4-9B. Under the matched 30% budget, both FormatMix variants outperform the size-matched MCQ-only control, showing that gains come from format diversity rather than training volume alone. Targeted-FormatMix SFT is better on pass 4 and robustness, while Random-FormatMix SFT is slightly better on pass@4. Bold and underlined values denote the best and second-best results. 
+
+answer more consistently accessible across inter-faces. 
+
+The gain is not explained by training volume alone. The Size-Matched MCQ-only SFT control improves MCQ performance (0.4769 to 0.5320) but leaves pass 4 essentially unchanged (0.1208 to 0.1209) and slightly reduces cross-format robust-ness (0.1575 to 0.1482). In other words, additional single-format supervision sharpens performance in the seen interface without improving interface-invariant access to the answer. The contrast with the budget-matched FormatMix SFT conditions shows that the key ingredient is format diversity rather than simply more supervised updates. 
+
+Partial expansion already captures most of the benefit, and targeted expansion favors consis-tency over breadth. Under the fixed 30% ex-pansion budget, both Random-FormatMix and Targeted-FormatMix SFT substantially outperform the size-matched MCQ-only control on all cross-format metrics. Relative to the gains of Full-Format SFT over the base model, Random-FormatMix SFT recovers 88% of the pass@4 improvement, while Targeted-FormatMix SFT recovers 75% of the pass 4 improvement and 72% of the robustness improvement, despite using less than half the to-tal training volume of Full-Format SFT (1.9 × vs. 4.0 × MCQ-only training size). The two partial-expansion strategies also differ in a meaningful way: Random-FormatMix SFT is slightly stronger on pass@4, whereas Targeted-FormatMix SFT is numerically stronger on pass 4 and cross-format robustness. This is consistent with our selec-tion criterion: random expansion broadens cover-age, while targeted expansion preferentially repairs items whose answer accessibility is most format-sensitive. 
+
+6 Analysis 
+
+We now address three questions: the required scale of multi-format expansion, the behavioral changes induced by supervision, and whether these patterns generalize across model scales and families. 
+
+6.1 Multi-Format Expansion: Budget Efficiency & Cross-Family Transfer 
+
+Condition pass@4 pass 4 Cross-format Robustness 
+
+Baseline 0.7669 0.1208 0.1575 Random 10% 0.9074 0.1615 0.1779 Random 20% 0.9053 0.1648 0.1821 Random 30% 0.9041 0.1695 0.1875 Targeted 10% 0.8800 0.1682 0.1912 Targeted 20% 0.8779 0.1775 0.2022 
+
+Targeted 30% 0.9015 0.1775 0.1969 
+
+Table 2: Budget efficiency of partial multi-format ex-pansion on GLM4-9B. Targeted selection consistently trades some breadth for better cross-format consistency.                                  
+
+> Model pass@4 pass 4Cross-format robustness
+> Llama-3.1-70B (ref.) 0.7401 0.1534 0.2073 Baseline (Llama-3.1-8B) 0.6713 0.0669 0.0996 Full-Format 0.9011 0.1344 0.1492
+> MCQ-Matched 0.7502 0.0680 0.0907 Random 10% 0.8588 0.1162 0.1353 Random 20% 0.8783 0.1221 0.1391 Random 30% 0.8897 0.1302 0.1463 Targeted 10% 0.8724 0.1200 0.1376 Targeted 20% 0.8990 0.1268 0.1410 Targeted 30% 0.8500 0.1192 0.1402
+
+Table 3: Results on the Llama family. Llama-3.1-70B is included as a larger-scale reference model, while all SFT variants are based on Llama-3.1-8B. 
+
+Table 2 shows that even limited multi-format expansion is highly effective. On GLM4-9B, ex-panding only 10% of source items already raises pass@4 from 0.7669 to 0.9074 under random se-lection. However, pass 4 and cross-format robust-ness continue to improve as the expansion ra-tio increases from 10% to 30%, suggesting that a small expansion budget is sufficient to make many items solvable in at least one format, while stronger cross-format consistency requires addi-tional multi-format supervision. Under the same budget, Random-FormatMix SFT is consistently stronger on pass@4, whereas Targeted-FormatMix SFT is stronger on pass 4 and cross-format robust-ness. This suggests a trade-off between broader coverage and greater within-item stability: random expansion exposes the model to more items, while targeted expansion focuses supervision on ques-tions that are most format-sensitive. The same high-level pattern largely holds for Llama-3.1-8B (Table 3). Partial multi-format ex-pansion again recovers most of the benefit of Full-Format SFT, indicating that exhaustive expansion is unnecessary. However, the advantage of targeted selection is less stable than on GLM4-9B, since ran-dom and targeted expansion perform similarly over-all, and the best random setting is slightly stronger on the consistency metrics. We therefore view tar-geted selection as a useful budget-allocation heuris-tic rather than a universally superior strategy. 
+
+6.2 Does Model Scale Affect the Results? 
+
+Scaling already brings a substantial amount of na-tive format robustness. As shown in Table 4, the GLM4-32B baseline exceeds the GLM4-9B base-line on all three metrics, with especially large gains on pass 4 and cross-format robustness. Indeed, the 32B baseline robustness (0.2890) is already higher than the 9B model after Full-Format SFT (0.2126), indicating that larger models internalize more in-terface invariance even before task-specific adap-tation. Multi-format SFT nevertheless remains useful at 32B. Full-Format SFT further improves the 32B model from 0.8994 to 0.9332 on pass@4, from 0.2599 to 0.3111 on pass 4, and from 0.2890 to 0.3333 on cross-format robustness. Targeted-FormatMix also yields a smaller but still positive shift. The key pattern is therefore one of dimin-ishing headroom, not redundancy: model scale and multi-format SFT are complementary, but the marginal gain of supervision becomes smaller as the base model becomes more inherently robust. 
+
+6.3 Validation on External Dataset 
+
+To examine whether our main conclusions also transfer beyond the constructed benchmark, we evaluate on the BIG-Bench Hard (BBH) (Suzgun et al., 2023) covering MCQ, OPEN, and TF tasks. Since BBH does not provide semantically aligned                      
+
+> Condition pass@4 pass 4Cross-format robustness
+> GLM4-9B Baseline 0.7669 0.1208 0.1575 GLM4-9B Full 0.9222 0.1961 0.2126 GLM4-9B Targeted 0.9015 0.1775 0.1969 GLM4-32B Baseline 0.8994 0.2599 0.2890 GLM4-32B Full 0.9332 0.3111 0.3333 GLM4-32B Targeted 0.9091 0.2798 0.3078
+
+Table 4: Effect of model scale. 
+
+reformulations of the same underlying item across formats, item-level metrics such as pass@4 and pass 4 are not applicable here, so we report per-format accuracy only. As shown in Table 5, the overall pattern is broadly consistent with our in-domain results: Full-Format SFT improves over the baseline on all three formats, with gains on MCQ (0.5430 →0.5523), OPEN (0.2340 →0.2460), and TF (0.6214 →0.6228). Targeted-FormatMix remains the strongest 30%-budget variant and is especially competitive on OPEN, where it nearly matches Full-Format SFT (0.2450 vs. 0.2460). By contrast, MCQ-Matched achieves the best results on the two closed-form formats (0.5596 on MCQ and 0.6263 on TF) but lags behind on OPEN (0.2230), suggesting that additional single-format supervision primarily benefits constrained answer spaces, whereas format-diverse supervision trans-fers more clearly to open-ended settings.                   
+
+> Condition MCQ Acc. TF Acc. OPEN Acc. Baseline (GLM4-9B) 0.5430 0.6214 0.2340 Full-Format 0.5523 0.6228 0.2460
+> Random-FormatMix 0.5506 0.6068 0.2350 Targeted-FormatMix 0.5493 0.6054 0.2450 MCQ-Matched 0.5596 0.6263 0.2230
+
+Table 5: External validation on BIG-Bench Hard. 
+
+7 Conclusion 
+
+We study a simple but important robustness ques-tion: whether the same knowledge remains acces-sible when a question is expressed in different an-swer formats. Using an item-aligned multi-format benchmark and evaluation protocol, strong LLMs remain sensitive to format changes. Across GLM4 and Llama-3.1, multi-format supervision improves solvability and consistency, and these gains cannot be explained by additional MCQ-only supervision alone. We further find that much of the benefit can be obtained with partial expansion, while larger models, although more robust, still exhibit a clear gap between one-format success and consistent suc-cess across formats. Limitations 
+
+This study has several limitations. First, we eval-uate FormatMix on a fixed set of four text-based answer formats and on two model families, so the findings may not directly generalize to multimodal settings, freer-form interactive generation, or other architectures. Moreover, our corpus construction pipeline applies strict reformulatability filtering to ensure semantic alignment and reliable automatic evaluation across formats. While this improves experimental control, extending the framework to a broader range of naturally occurring questions remains an important direction for future work. Fi-nally, evaluation for FIB and OPEN formats relies primarily on LLM-as-a-judge scoring. Although human validation shows high agreement with auto-matic evaluation, incorporating larger-scale human assessment or open evaluation protocols would fur-ther strengthen reliability and reproducibility. 
+
+Acknowledgments 
+
+This work was supported by Ant Group Research Intern Program. 
+
+References 
+
+Nishant Balepur, Abhilasha Ravichander, and Rachel Rudinger. 2024. Artifacts or abduction: How do llms answer multiple-choice questions without the question? In Proceedings of the 62nd Annual Meet-ing of the Association for Computational Linguistics (Volume 1: Long Papers) , pages 10308–10330. Nishant Balepur, Rachel Rudinger, and Jordan Lee Boyd-Graber. 2025. Which of these best describes multiple choice evaluation with llms? a) forced b) flawed c) fixable d) all of the above. In Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) ,pages 3394–3418. Anna Bavaresco, Raffaella Bernardi, Leonardo Berto-lazzi, Desmond Elliott, Raquel Fernández, Albert Gatt, Esam Ghaleb, Mario Giulianelli, Michael Hanna, Alexander Koller, and 1 others. 2025. Llms instead of human judges? a large scale empirical study across 20 nlp evaluation tasks. In Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers) ,pages 238–255. Raymond Bernard, Shaina Raza, Subhabrata Das, and Rahul Murugan. 2024. Equator: A determinis-tic framework for evaluating llm reasoning with open-ended questions.# v1. 0.0-beta. arXiv preprint arXiv:2501.00257 .Paulo Cavalin, Cassia Sanctos, Marcelo Grave, Claudio Pinhanez, and Yago Primerano. 2025. Improving score reliability of multiple choice benchmarks with consistency evaluation and altered answer choices. 
+
+arXiv preprint arXiv:2511.21860 .Nikhil Chandak, Shashwat Goel, Ameya Prabhu, Moritz Hardt, and Jonas Geiping. 2025. Answer matching outperforms multiple choice for language model eval-uation. arXiv preprint arXiv:2507.02856 .DeepSeek-AI. 2024. Deepseek-v3 technical report. 
+
+Preprint , arXiv:2412.19437. Xeron Du, Yifan Yao, Kaijing Ma, Bingli Wang, Tianyu Zheng, Minghao Liu, Yiming Liang, Xiaolong Jin, Zhenlin Wei, Chujie Zheng, and 1 others. 2026. Su-pergpqa: Scaling llm evaluation across 285 graduate disciplines. Advances in Neural Information Process-ing Systems , 38. Ahmed Elgohary, Denis Peskov, and Jordan Boyd-Graber. 2019. Can you unpack that? learning to rewrite questions-in-context. In Proceedings of the 2019 Conference on Empirical Methods in Natu-ral Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP) , pages 5918–5924. Weiping Fu, Bifan Wei, Jianxiang Hu, Zhongmin Cai, and Jun Liu. 2024. Qgeval: benchmarking multi-dimensional evaluation for question generation. In 
+
+Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing , pages 11783–11803. Xin Gao, Qizhi Pei, Zinan Tang, Yu Li, Honglin Lin, Jiang Wu, Lijun Wu, and Conghui He. 2025. A strate-gic coordination framework of small lms matches large lms in data synthesis. In Proceedings of the 63rd Annual Meeting of the Association for Compu-tational Linguistics (Volume 1: Long Papers) , pages 11552–11570. Gracjan Góral, Emilia Wi´ snios, Piotr Sankowski, and Paweł Budzianowski. 2025. Wait, that’s not an op-tion: Llms robustness with incorrect multiple-choice options. In Proceedings of the 63rd Annual Meet-ing of the Association for Computational Linguistics (Volume 1: Long Papers) , pages 1495–1515. Rajarshi Haldar and Julia Hockenmaier. 2025. Rating roulette: Self-inconsistency in llm-as-a-judge frame-works. arXiv preprint arXiv:2510.27106 .Patrick Haller, Mark Ibrahim, Polina Kirichenko, Lev-ent Sagun, and Samuel J Bell. 2025. Llm knowledge is brittle: Truthfulness representations rely on superfi-cial resemblance. arXiv preprint arXiv:2510.11905 .Dan Hendrycks, Collin Burns, Steven Basart, Andy Zou, Mantas Mazeika, Dawn Song, and Jacob Steinhardt. 2020. Measuring massive multitask language under-standing. arXiv preprint arXiv:2009.03300 .Andong Hua, Kenan Tang, Chenhe Gu, Jindong Gu, Eric Wong, and Yao Qin. 2025. Flaw or artifact? re-thinking prompt sensitivity in evaluating llms. In Pro-ceedings of the 2025 Conference on Empirical Meth-ods in Natural Language Processing , pages 19900– 19910. Yuzhen Huang, Yuzhuo Bai, Zhihao Zhu, Junlei Zhang, Jinghan Zhang, Tangjun Su, Junteng Liu, Chuancheng Lv, Yikai Zhang, Yao Fu, and 1 others. 2023. C-eval: A multi-level multi-discipline chinese evaluation suite for foundation models. Advances in neural information processing systems , 36:62991– 63010. Kimi Team, Tongtong Bai, Yifan Bai, Yiping Bao, S. H. Cai, Yuan Cao, Y. Charles, H. S. Che, Cheng Chen, Guanduo Chen, Huarong Chen, Jia Chen, Ji-ahao Chen, Jianlong Chen, Jun Chen, Kefan Chen, Liang Chen, Ruijue Chen, Xinhao Chen, and 307 others. 2026. Kimi k2.5: Visual agentic intelligence. 
+
+Preprint , arXiv:2602.02276. Haonan Li, Yixuan Zhang, Fajri Koto, Yifei Yang, Hai Zhao, Yeyun Gong, Nan Duan, and Timothy Bald-win. 2024a. Cmmlu: Measuring massive multitask language understanding in chinese. In Findings of the Association for Computational Linguistics: ACL 2024 , pages 11260–11285. Wangyue Li, Liangzhi Li, Tong Xiang, Xiao Liu, Wei Deng, and Noa Garcia. 2024b. Can multiple-choice questions really be useful in detecting the abilities of llms? In Proceedings of the 2024 Joint International Conference on Computational Linguistics, Language Resources and Evaluation (LREC-COLING 2024) ,pages 2819–2834. Francesco Maria Molfese, Luca Moroni, Luca Giof-fré, Alessandro Scirè, Simone Conia, and Roberto Navigli. 2025. Right answer, wrong score: Uncover-ing the inconsistencies of llm evaluation in multiple-choice question answering. In Findings of the As-sociation for Computational Linguistics: ACL 2025 ,pages 18477–18494. Jared Moore, Tanvi Deshpande, and Diyi Yang. 2024. Are large language models consistent over value-laden questions? In Findings of the Association for Computational Linguistics: EMNLP 2024 , pages 15185–15221. Aidar Myrzakhan, Sondos Mahmoud Bsharat, and Zhiqiang Shen. 2024. Open-llm-leaderboard: From multi-choice to open-style questions for llms eval-uation, benchmark, and arena. arXiv preprint arXiv:2406.07545 .Ngoc-Hai Nguyen, Tiviatis Sim, Hieu Dao, Shafiq Joty, Kenji Kawaguchi, Nancy Chen, Min-Yen Kan, and 1 others. 2025. Llms are biased towards output for-mats! systematically evaluating and mitigating output format bias of llms. In Proceedings of the 2025 Con-ference of the Nations of the Americas Chapter of the Association for Computational Linguistics: Human Language Technologies (Volume 1: Long Papers) ,pages 299–330. OpenAI. 2025. gpt-oss-120b & gpt-oss-20b model card. 
+
+Preprint , arXiv:2508.10925. Qwen Team. 2025. Qwen3 technical report. Preprint ,arXiv:2505.09388. Vyas Raina, Adian Liusie, and Mark Gales. 2024. Is llm-as-a-judge robust? investigating universal adver-sarial attacks on zero-shot llm assessment. In Pro-ceedings of the 2024 Conference on Empirical Meth-ods in Natural Language Processing , pages 7499– 7517. David Rein, Betty Li Hou, Asa Cooper Stickland, Jack-son Petty, Richard Yuanzhe Pang, Julien Dirani, Ju-lian Michael, and Samuel R Bowman. 2023. Gpqa: A graduate-level google-proof q&a benchmark. arXiv preprint arXiv:2311.12022 .Lin Shi, Chiyu Ma, Wenhua Liang, Xingjian Diao, We-icheng Ma, and Soroush Vosoughi. 2025. Judging the judges: A systematic study of position bias in llm-as-a-judge. In Proceedings of the 14th International Joint Conference on Natural Language Processing and the 4th Conference of the Asia-Pacific Chapter of the Association for Computational Linguistics , pages 292–314. Mirac Suzgun, Nathan Scales, Nathanael Schärli, Se-bastian Gehrmann, Yi Tay, Hyung Won Chung, Aakanksha Chowdhery, Quoc Le, Ed Chi, Denny Zhou, and 1 others. 2023. Challenging big-bench tasks and whether chain-of-thought can solve them. In Findings of the Association for Computational Linguistics: ACL 2023 , pages 13003–13051. Hiroo Takizawa, Saku Sugawara, and Akiko Aizawa. 2025. Mcqformatbench: Robustness tests for multiple-choice questions. In Proceedings of the Fourth Workshop on Generation, Evaluation and Met-rics (GEM 2), pages 824–846. Haochun Wang, Sendong Zhao, Zewen Qiang, Nuwa Xi, Bing Qin, and Ting Liu. 2025. Llms may per-form mcqa by selecting the least incorrect option. In 
+
+Proceedings of the 31st International Conference on Computational Linguistics , pages 5852–5862. Yubo Wang, Xueguang Ma, Ge Zhang, Yuansheng Ni, Abhranil Chandra, Shiguang Guo, Weiming Ren, Aaran Arulraj, Xuan He, Ziyan Jiang, and 1 others. 2024. Mmlu-pro: A more robust and challenging multi-task language understanding benchmark. Ad-vances in Neural Information Processing Systems ,37:95266–95290. Sarah Wiegreffe, Oyvind Tafjord, Yonatan Belinkov, Hannaneh Hajishirzi, and Ashish Sabharwal. 2024. Answer, assemble, ace: Understanding how trans-formers answer multiple choice questions. arXiv preprint arXiv:2407.15018 .Hai Ye, Hwee Tou Ng, and Wenjuan Han. 2022. On the robustness of question rewriting systems to questions of varying hardness. In Proceedings of the 60th An-nual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) , pages 2100– 2113. Guangxiang Zhao, Saier Hu, Xiaoqi Jian, Jinzhu Wu, Yuhan Wu, Lin Sun, and Xiangzheng Zhang. 2025. Stress testing generalization: How minor modifica-tions undermine large language model performance. 
+
+> arXiv e-prints , pages arXiv–2502.
+
+A Appendix 
+
+A.1 Human Validation Rubric and Results of Rewrites 
+
+We conduct human validation to assess the qual-ity of the rewritten multi-format questions. Each rewritten question is evaluated along five binary dimensions: meaning preservation, answer preser-vation, self-containedness, clarity and naturalness, and scorability. Table 6 presents the annotation rubric. Table 7 summarizes the results. Avg. Score is the mean binary label across annotations, and All-Positive Agreement measures the fraction of items for which all three annotators assign a positive la-bel. These manual checks provide an independent lower-bound estimate of rewrite quality and con-firm that the automatic filtering pipeline removes most problematic cases before data release. 
+
+A.2 Source Benchmark and Screening Statistics C-Eval C-Eval (Huang et al., 2023) is a compre-hensive Chinese evaluation suite designed to assess the advanced knowledge and reasoning abilities of foundation models in a Chinese linguistic con-text. The dataset contains 13,948 multiple-choice questions meticulously collected from real-world human examinations. It covers a broad scope of 52 diverse disciplines, ranging from humanities to science and engineering. The benchmark evaluates models across four distinct difficulty levels: mid-dle school, high school, college, and professional, establishing it as a standard and highly challenging metric for assessing Chinese language proficiency and domain-specific knowledge. 
+
+CMMLU CMMLU (Li et al., 2024a) (Chinese Massive Multitask Language Understanding) is an extensive benchmark designed to measure the knowledge and reasoning capabilities of large lan-guage models within the Chinese cultural and lin-guistic context. Sourced from various professional assessments and academic exams, it consists of 11,528 multiple-choice questions. The benchmark covers 67 disciplines spanning natural sciences, social sciences, engineering, and humanities. No-tably, it includes numerous China-specific subjects that require deep regional understanding. The diffi-culty level comprehensively ranges from primary school all the way to advanced professional tiers. 
+
+MMLU MMLU (Hendrycks et al., 2020) (Mas-sive Multitask Language Understanding) is a widely adopted English benchmark created to evaluate the encyclopedic knowledge and zero-shot/few-shot capabilities of language models. The dataset consists of 15,908 multiple-choice ques-tions sourced from human examinations such as the GRE, USMLE, and various Advanced Placement (AP) tests. It spans 57 subjects across STEM, hu-manities, social sciences, and applied professional fields. The difficulty of the questions covers a wide spectrum from elementary school to expert profes-sional levels, making it a foundational standard for general knowledge evaluation. 
+
+MMLU-Pro MMLU-Pro (Wang et al., 2024) is a more robust and challenging enhancement of the original MMLU benchmark, specifically tai-lored to evaluate deep reasoning capabilities rather than mere memorization. It comprises over 12,000 rigorously curated questions sourced from a com-bination of the original MMLU dataset, college-level science exams (e.g., SciBench), and advanced STEM repositories (e.g., TheoremQA). The dataset condenses its focus into 14 distinct domains (in-cluding Biology, Chemistry, Physics, Law, and Math). Unlike the standard four-option format, MMLU-Pro increases the number of distractors to provide ten options per multiple-choice question, dramatically reducing the probability of random guessing. Targeted at the graduate and professional levels, it is significantly more difficult than MMLU, typically causing a 16% to 33% accuracy drop in state-of-the-art models. 
+
+GPQA GPQA (Rein et al., 2023) (Graduate-Level Google-Proof Q&A) is an exceptionally chal-lenging benchmark designed to test expert-level scientific reasoning. It consists of 448 high-quality multiple-choice questions exclusively written and verified by domain experts (PhDs and PhD candi-dates). The dataset is strictly focused on three core domains: Biology, Chemistry, and Physics. The questions are intentionally designed to be “Google-Criterion Score 1 Score 0 
+
+Meaning preservation The rewritten question asks the same underlying question as the original item. Key entities, condi-tions, temporal scope, comparison relations, and negation are preserved. The rewrite changes the core meaning, such as replacing the target entity, adding or removing key conditions, changing the comparison relation, narrowing or broadening the scope, or flipping the polarity. Answer preservation The rewritten reference answer is compatible with the rewritten question and does not obvi-ously change the intended answer. The rewritten question and reference answer are clearly inconsistent, or the rewrite makes the orig-inal answer no longer valid. Self-containedness The rewritten question can be understood and answered on its own, without relying on the orig-inal options, previous context, images, tables, or unresolved references. The question depends on missing context, such as “the above options”, “the figure”, “this statement”, or other unresolved references. Clarity and natural-ness The expression is fluent and clear, with no obvi-ous grammatical errors, broken sentences, cor-rupted symbols, or confusing references. The rewrite is unclear or unnatural, contains se-rious grammatical issues, incomplete sentences, corrupted text, or ambiguous references. Scorability The question has a stable and explicit correctness criterion, and the reference answer is sufficient for grading. The question is too open-ended or ambiguous, ad-mits many substantially different valid answers, or has an insufficiently specific reference answer. 
+
+Table 6: Human validation rubric for rewritten multi-format questions. Each dimension is annotated as a binary score.             
+
+> Criterion Avg. Score All-Positive Agreement
+> Meaning preservation 97.83% 93.88% Answer preservation 91.67% 81.12% Self-containedness 90.67% 73.47% Clarity and naturalness 99.67% 98.98% Scorability 98.83% 96.43%
+
+Table 7: Human validation results for rewritten ques-tions. Metrics: Avg. Score (mean binary rating) and All - Positive Agreement (full consensus). Rewrites per-form strongly across all dimensions, especially clar-ity/naturalness and scorability. 
+
+proof,” meaning that highly skilled non-expert hu-man validators equipped with unrestricted internet access achieve only around 34% accuracy. The benchmark represents the extreme upper bound of graduate-level difficulty, where even domain ex-perts with PhDs achieve approximately 65% accu-racy without external aids. 
+
+SuperGPQA SuperGPQA (Du et al., 2026) is a massive expansion of the graduate-level evaluation paradigm, designed to measure model capabilities across a vastly broader spectrum of human knowl-edge. Constructed through a novel Human-LLM collaborative filtering mechanism involving over 80 expert annotators, it contains 26,529 multiple-choice questions. The dataset scales the evaluation to 285 graduate-level disciplines, encompassing not only mainstream STEM fields but also heavily overlooked long-tail domains such as light indus-try, agriculture, and specialized services. With a heavy emphasis on mathematical calculation and formal reasoning, the difficulty remains strictly at the graduate level, serving as a challenging frontier benchmark where even the most advanced contem-porary reasoning models struggle to significantly surpass a 60% to 65% accuracy threshold. The aforementioned six benchmarks collectively serve as the foundational data pool for constructing our dataset. We provide the details of aggregation, quality control and splitting in Table 8. 
+
+Item Count Original source items 80,694 After reformulatability screening 30,669 Final retained source items 11,842 Train source items 9,476 Test source items 2,366 Final item-format-paraphrase instances 142,104 
+
+Table 8: Overall source-item and instance counts. Each retained source item is expanded into 12 final instances (4 formats × 3 paraphrases). A.3 Screening Criteria and Pipeline Algorithm 1 Multi-format data construction 
+
+Input: source item x
+
+Output: retained rewritten variants or D ROP  
+
+> 1:
+
+if ApproveCount (x) < 3 then  
+
+> 2:
+
+return DROP  
+
+> 3:
+
+end if  
+
+> 4:
+
+for each f ∈ { MCQ , TF , FIB , OPEN } do  
+
+> 5:
+
+for k ← 1 to 3 do  
+
+> 6:
+
+saved ← FALSE  
+
+> 7:
+
+retry ← 0 
+
+> 8:
+
+while retry ≤ 2 and ¬saved do  
+
+> 9:
+
+c ← Rewrite (x, f ) 
+
+> 10:
+
+s1 ← Review (c, reviewer 1) 
+
+> 11:
+
+s2 ← Review (c, reviewer 2) 
+
+> 12:
+
+if s1 = PASS and s2 = PASS then  
+
+> 13:
+
+Save (c) 
+
+> 14:
+
+saved ← TRUE  
+
+> 15:
+
+else if s1̸ = s2 then  
+
+> 16:
+
+sa ← Arbitrate (c, s 1, s 2) 
+
+> 17:
+
+if sa = PASS then  
+
+> 18:
+
+Save (c) 
+
+> 19:
+
+saved ← TRUE  
+
+> 20:
+
+end if  
+
+> 21:
+
+end if  
+
+> 22:
+
+retry ← retry + 1  
+
+> 23:
+
+end while  
+
+> 24:
+
+if ¬saved then  
+
+> 25:
+
+return DROP  
+
+> 26:
+
+end if  
+
+> 27:
+
+end for  
+
+> 28:
+
+end for  
+
+> 29:
+
+return RETAIN A.4 Prompt Templates 
+
+This section provides the prompt templates used in our rewriting and validation pipeline. We first show the prompt for rewriteability screening, followed by prompts for generating different answer formats. We then present the prompts used for format-specific review and final arbitration. Role : Question Type Adaptability Screener 
+
+Task : Given an original MCQ (multiple -choice question) data, evaluate whether this question is suitable for transformation into ALL of the following 
+
+three question type variants: 
+
+A. Open -ended QA 
+
+B. True/False (T/F) 
+
+C. Fill -in -the -blank 
+
+You must make judgments based solely on the question stem and option content, without introducing external knowledge or alter ing the original meaning .
+
+Evaluation Principles: 
+
+The transformed question must satisfy: clear meaning, unique answer, automatically gradable, and not dependent on seeing opti ons to make sense .
+
+Specific Criteria for Each Question Type: 
+
+A. Open -ended QA Suitability Criteria: 
+
+Suitable requires BOTH conditions: 
+
+1. The question stem itself is a directly answerable question, without option dependency 
+
+2. The standard answer can be expressed as a unique entity or statement, without option dependency 
+
+Not Suitable - any of the following: 
+
+- The stem uses "which of the following..." and cannot form a unique answer without options 
+
+- The stem uses "which of the following is incorrect/false/NOT..." (option -dependent) 
+
+- Answer options include "all of the above/none of the above/A and B" (aggregated options) 
+
+- The answer must be expressed as an option letter, or free -form answers would be ungradable 
+
+- The question is about "which is most suitable" involving option letters/numbering/combinations/ matching 
+
+B. True/False (T/F) Suitability Criteria: 
+
+Suitable requires: 
+
+1. The stem plus correct option can be rewritten as a verifiable true/false statement with unique truth value 
+
+2. The question is not purely "select which option" that cannot form a stable statement 
+
+Not Suitable - any of the following: 
+
+- The stem is a "multiple -choice operation instruction" (e.g., "select the most appropriate item/following combination") that ca nnot be statement -ized 
+
+- Correctness depends on missing context, creating "seems all correct/all incorrect" ambiguity after statement conversion 
+
+- The question tests "most/most suitable/best/main reason" without clear standards, making truth value unstable after statement conversion 
+
+C. Fill -in -the -blank Suitability Criteria: 
+
+Suitable requires BOTH conditions: 
+
+1. The standard answer can be expressed as a unique entity or statement, without option dependency 
+
+2. The stem can naturally have a blank: the blank position is unique and does not require options to limit scope 
+
+Not Suitable - any of the following: 
+
+- The stem uses "which of the following..." and cannot form a unique answer without options 
+
+- The stem uses "which of the following is incorrect/false/NOT..." (option -dependent) 
+
+- Answer options include "all of the above/none of the above/A and B" (aggregated options) 
+
+- The question is about "which is most suitable" involving option letters/numbering/combinations/matching 
+
+- Requires multiple blanks or combination filling (this task assumes single blank only )
+
+Final Decision Logic: 
+
+Output 1 ONLY when ALL THREE question types (A, B, C) are suitable 
+
+Output 0 if ANY ONE of the three question types is not suitable 
+
+Output Requirements: 
+
+Output ONLY one number: 0 or 1 
+
+1= All three question types are suitable, safe to transform 
+
+0= At least one question type is not suitable, exists risk 
+
+Do NOT output any other text, punctuation, explanations, line breaks, or spaces 
+
+Question to evaluate: Answer the following multiple -choice question. There is only one correct answer. The last line of your res ponse should be in the 
+
+format 'Answer: $LETTER' (without quotes), where LETTER is one of A, B, C, D, E, F, G, H, I, or J. 
+
+{Target MCQ} 
+
+Start evaluation: 
+
+Figure 3: Prompt used for rewriteability screening. Role : Specialist in Rewriting Multiple -Choice Questions 
+
+Task : Rewrite the given multiple -choice question in a different way, randomly shuffle the options, and update the correct answer let ter. 
+
+Input : Original question (including the question stem, list of options, and correct answer letter) 
+
+Rewriting principles :
+
+1. Semantic equivalence: All numerical values, units, formulas, physical/chemical relationships, and assumed conditions requi red for solving the problem 
+
+must be the same. 
+
+2. Significant difference in expression form: Sentence structure, vocabulary selection, and word order should have obvious va ria tions. 
+
+3. Mandatory random shuffling of options: The ABCD options content must be randomly shuffled; the original order of the conte nt must not be retained. 
+
+4. Answer label synchronization: After shuffling the options, the answer must be updated to match the new position label of t he correct option, whether the 
+
+labels are A/B/C/D or another numbering scheme. For batch rewriting, the correct answers should be distributed as evenly as p oss ible across all option 
+
+positions to avoid overconcentration on a single answer label. 
+
+5. Consistent language: If the original text is in Chinese, the rewritten text should be in Chinese; if the original text is in English, the rewritten text should 
+
+be in English. 
+
+6. Preservation of formula symbol format: LaTeX mathematical format, scientific symbols, etc. should remain unchanged. 
+
+Diversity rewriting dimensions (encouraging multi -angle adjustments): 
+
+- Sentence transformation: Active voice ↔ Passive voice; Compound sentence ↔ Simple sentence; Conditional preposition ↔ Conditional postposition 
+
+- Synonym/ near -synonym substitution: For example, "calculate" → "solve/determine/find out"; "correct" → "valid/fit"; "Which of the following" → 
+
+"Which of the following options" 
+
+- Question form rephrasing: For example, "Which of the following statements is correct?" → "Please select the option that confo rms to the question" 
+
+- Structure adjustment: Adjust the order of background information, condition descriptions and the question part; Split or comb ine long sentences 
+
+- Connector substitution: "Known" → "given/hypothesized"; "Then" → "so/following"; "If" → "suppose/when..." Time 
+
+Prohibited items :
+
+- Do not modify any numerical values, units, or the answers themselves. 
+
+- Do not introduce new information not provided in the original question or remove key constraints. 
+
+- Do not change the type of the question (such as converting a multiple -choice question to a fill -in -the -blank question or an es say question). 
+
+- Do not directly copy more than 30% of the original content. 
+
+- Do not keep the original option order unchanged (the options must be shuffled). 
+
+- Do not merely rearrange the word order or add/delete meaningless filler words. 
+
+Output format :
+
+You can ONLY output one JSON object, without any other words, explanations or markdown symbols 
+
+{
+
+"question_type ": " mcq ", 
+
+"question": Rewritten complete multiple -choice question, must include the question stem and all options, 
+
+"answer": Updated correct answer letter 
+
+}
+
+Examples :
+
+<Example 1> 
+
+Input: 
+
+Question: Consider the following data for a small open economy: Y=1000, C=700, G=150, I=250 -1000r*. If the world interest rate i s 5%, then the net 
+
+exports of the small open economy are 
+
+A. 50 
+
+B. -50 
+
+C. 150 
+
+D. -150 
+
+Answer: B 
+
+Output: 
+
+{
+
+"question_type ": " mcq ", 
+
+"question":"In a small open economy, given that national income Y=1000, consumption expenditure C=700, government spending G=150, and the 
+
+investment function is I=250 -1000r*. If the world interest rate is fixed at 5%, what is the net export NX of this small open eco nomy? 
+
+A. 150 
+
+B. -150 
+
+C. -50 
+
+D. 50", 
+
+"answer":"C "
+
+}
+
+</Example 1> 
+
+<Example 2> 
+
+…
+
+</Example 2> 
+
+Now please start to rewrite the Multiple -Choice Question: 
+
+Input: 
+
+{Target MCQ} 
+
+Output: Figure 4: Prompt used to rewrite MCQ items. Role : Specialist in Rewriting Multiple -Choice Questions 
+
+Task : Rewrite the given multiple -choice questions into true/false (T/F) format. 
+
+Input : Original question (including the question stem, list of options, and correct answer letter) 
+
+Rewriting principles :
+
+1. Transform the question stem and an option into a declarative sentence that can be judged as true or false. 
+
+2. Ensure that the meaning of the rewritten statement is consistent with the meaning when the option is substituted into the ori ginal question. 
+
+3. Add a natural True/False prompt, such as "Is this statement correct?", "Is this description correct?", "Does this conclusi on hold?", or "Is this judgment 
+
+correct?" 
+
+4. Modify the descriptions in the question stem related to the multiple -choice questions to adapt them for the judgment question s. 
+
+5. Before and after the rewriting, the meaning, conditions, and information content must be consistent. 
+
+6. Do not introduce external knowledge, additional conditions, or information. 
+
+7. Keep the formatting of formula symbols consistent before and after the rewriting. 
+
+8. Balance True/False distribution: Approximately 50% of questions should have answer=False. To create a False statement, use on e of the incorrect 
+
+options from the original MCQ instead of the correct answer. 
+
+Diversity rewriting dimensions (encouraging multi -angle adjustments): 
+
+- Statement structure variation: The content may be rewritten as different types of assertions, such as definitional judgments, result -based judgments, 
+
+classification judgments, causal judgments, computational conclusion judgments, or property judgments. 
+
+- Variety in question endings: Avoid repeatedly using fixed endings such as “Is this statement correct?” or “Does this conclusi on hold?”. These may be 
+
+varied into expressions like “Is this judgment correct?”, “Does this formulation hold true?”, “Is the above statement true?”, “I s this assertion accurate?”, or 
+
+“Does this judgment stand?”. 
+
+- Sentence pattern transformation: active voice ↔ passive voice; simple sentences ↔ complex sentences; condition -first ↔ conclusion -first structures. 
+
+- Variation in stem -option integration: The original question stem and option may be combined naturally, or the option content m ay be embedded into the 
+
+main clause as a predicative, object, modifier, or independent clause. 
+
+- Variety in true/false construction: Use the correct option to build True statements and an incorrect option to build False st atements. In batch rewriting, try 
+
+to rotate among different distractor sources to avoid repetitive patterns. 
+
+Prohibited items: 
+
+- Do not alter the original meaning of the question 
+
+- Do not add or delete key information 
+
+- The truth value of the declarative sentence must be unique 
+
+Output format: 
+
+You can ONLY output one JSON object, without any other words, explanations or markdown symbols 
+
+{
+
+"question_type ": " true_false ", 
+
+"question": Rewritten statement of the judgment question, 
+
+"answer": True or False 
+
+}
+
+Examples: 
+
+<Example 1> 
+
+Input: 
+
+Question: Consider the following data for a small open economy: Y=1000, C=700, G=150, I=250 -1000r*. If the world interest rate i s 5%, then the net 
+
+exports of the small open economy are 
+
+A. 50 
+
+B. -50 
+
+C. 150 
+
+D. -150 
+
+Answer: B 
+
+Output: 
+
+{
+
+"question_type ": " true_false ", 
+
+"question": "In a small open economy, suppose national income is Y=1000, consumption is C=700, government spending is G=150, and the investment 
+
+function is I=250 -1000r*. If the world interest rate is 5%, then net exports NX are -50. Does this conclusion hold?", 
+
+"answer": True 
+
+}
+
+</Example 1> 
+
+<Example 2> 
+
+…
+
+</Example 2> 
+
+Now please start to rewrite the Multiple -Choice Question: 
+
+Input: 
+
+{Target MCQ} 
+
+Output: Figure 5: Prompt used to rewrite MCQ items into true/false format. Role : Specialist in Rewriting Multiple -Choice Questions 
+
+Task : Rewrite the given Multiple -Choice Question into an open -ended QA (Question and Answer) format 
+
+Input : Original question (including the question stem, list of options, and correct answer letter) 
+
+Rewriting principles: 
+
+1. Change selection -type prompts to direct solution -type questions 
+
+2. Modify descriptions in the question stem related to multiple -choice questions, adapting them for open -ended questions 
+
+3. Modify references in question phrases related to options: such as "the following/which of the following/which item/fill -in -th e-blank/parentheses" etc. 
+
+4. Ensure consistent question meaning, conditions, and information volume before and after rewriting 
+
+5. Do not introduce external knowledge, additional conditions, or information 
+
+6. Maintain consistent formatting for formulas, symbols, etc., before and after rewriting 
+
+Diversity Rewriting Dimensions (Encouraged Multi -Angle Variations): 
+
+- Variation in question structure: The item may be rewritten into different open -ended formats, such as direct value retrieval, direct problem solving, 
+
+category identification, concept confirmation, result determination, name retrieval, or property explanation. 
+
+- Variety in question phrasing: Avoid repeatedly relying on a single pattern such as “What is” or “How much is.” Natural altern atives include expressions 
+
+like “Please provide …,” “Please determine …,” “How should … be expressed?,” “What can be obtained for …?,” or “What is the c orr esponding result?”. 
+
+- Sentence structure variation: The rewritten question may take the form of a declarative -style prompt, conditional question, ca usal question, judgment -to -
+
+open -question transformation, or either a simple or complex sentence. 
+
+- Information order adjustment: The background conditions may be presented before the question, or the target to be solved may be asked first and 
+
+followed by limiting conditions, as long as the meaning and answer uniqueness remain unchanged. 
+
+- Variation in stem integration: The original stem may be directly rewritten into an open -ended question, or the answer -related content may be embedded 
+
+into the sentence as an object, predicative, complement, or independent clause to form a natural question. 
+
+Prohibited items: 
+
+- Do not alter the original meaning of the question 
+
+- Do not add or delete key information 
+
+- The answer cannot be the letter of the option (such as A/B/C/D), it must be the specific content 
+
+- Produce an answer that is not unique or cannot be determined from the original question 
+
+Output format: 
+
+You can ONLY output one JSON object, without any other words, explanations or markdown symbols 
+
+{
+
+"question_type ": " open_qa ", 
+
+"question": Rewritten question stem of the question, 
+
+"answer": Specific answer content 
+
+}
+
+Examples: 
+
+<Example 1> 
+
+Input: 
+
+Question: Consider the following data for a small open economy: Y=1000, C=700, G=150, I=250 -1000r*. If the world interest rate i s 5%, then the net 
+
+exports of the small open economy are 
+
+A. 50 
+
+B. -50 
+
+C. 150 
+
+D. -150 
+
+Answer: B 
+
+Output: 
+
+{
+
+"question_type ": " open_qa ", 
+
+"question": "In a small open economy, suppose national income is Y=1000, consumption is C=700, government spending is G=150, and the investment 
+
+function is I=250 -1000r*. If the world interest rate is 5%, what are the net exports NX of this small open economy?", 
+
+"answer": " -50" 
+
+}
+
+</Example 1> 
+
+<Example 2> 
+
+…
+
+</ Example 2> 
+
+Now please start to rewrite the Multiple -Choice Question: 
+
+Input: 
+
+{Target MCQ} 
+
+Output: Figure 6: Prompt used to rewrite MCQ items into an open-ended format. Role : Specialist in Rewriting Multiple -Choice Questions 
+
+Task : Rewrite the given multiple -choice question into fill -in -the -blank format. 
+
+Input : Original question (including the question stem, list of options, and correct answer letter) 
+
+Rewriting principles: 
+
+1. Only one blank space is allowed (this task assumes a single blank). The empty space should be filled with a uniform placeh old er: "__" 
+
+2. The blank position should be the core word of the answer phrase. Avoid filling too much space, which may make the answer a lo ng sentence. 
+
+3. Modify the descriptions related to the multiple -choice questions in the question stem to adapt them to the fill -in -the -blank format. 
+
+4. Before and after rewriting, ensure that the question meaning, conditions, and information content are consistent. 
+
+5. Do not introduce external knowledge, additional conditions, or information. 
+
+6. Maintain the same format for formula symbols before and after rewriting. 
+
+Diversity Rewriting Dimensions (Encouraged Multi -Angle Variations): 
+
+- Sentence structure variation: The rewritten item may take the form of a declarative sentence, conditional sentence, causal se ntence, judgment sentence, 
+
+result -focused sentence, or a more complex sentence with modifiers or adverbial clauses. 
+
+- Information order adjustment: The background conditions may be presented before the blank, or the conclusion frame may be giv en first and followed 
+
+by limiting conditions, provided the answer remains uniquely identifiable. 
+
+- Variation in stem -answer integration: The original stem and the correct option may be naturally merged before introducing the blank, or the answer -
+
+related content may be embedded into the sentence as a predicative, object, complement, or independent clause. 
+
+- Variety in phrasing and tone: Avoid repeatedly using a single pattern such as “____ is” or “____ equals.” Natural alternative s include expressions like 
+
+“can be expressed as ____,” “should be filled with ____,” “the result is ____,” “corresponds to ____,” or “can be determined as ____.” 
+
+- Variation in blank granularity: Prefer removing the core word or core phrase of the answer and avoid mechanically placing the blank at the end of every 
+
+sentence. The blank position may be adjusted flexibly according to the question type. 
+
+Prohibited items: 
+
+- Do not alter the original meaning of the question 
+
+- Do not add or delete key information 
+
+- Cannot make any alterations (this task only allows for single blank answers) 
+
+- Produce a blank whose answer is not unique or cannot be determined from the original question 
+
+Output format: 
+
+You can ONLY output one JSON object, without any other words, explanations or markdown symbols 
+
+{
+
+"question_type ": " fill_blank ", 
+
+"question": Rewritten fill -in -the -blank question stem, with ____ placeholder, 
+
+"answer": Correct answer for the blank space 
+
+}
+
+Examples: 
+
+<Example 1> 
+
+Input: 
+
+Question: Consider the following data for a small open economy: Y=1000, C=700, G=150, I=250 -1000r*. If the world interest rate i s 5%, then the net 
+
+exports of the small open economy are 
+
+A. 50 
+
+B. -50 
+
+C. 150 
+
+D. -150 
+
+Answer: B 
+
+Output: 
+
+{
+
+"question_type ": " fill_blank ", 
+
+"question": "In a small open economy, suppose national income is Y=1000, consumption is C=700, government spending is G=150, and the investment 
+
+function is I=250 -1000r*. If the world interest rate is 5%, then net exports NX are ____.", 
+
+"answer": " -50" 
+
+}
+
+</Example 1> 
+
+<Example 2> 
+
+…
+
+</Example 2> 
+
+Now please start to rewrite the Multiple -Choice Question: 
+
+Input: 
+
+Answer the following multiple -choice question. There is only one correct answer. The last line of your response should be in the format 'Answer: 
+
+$LETTER' (without quotes), where LETTER is one of A, B, C, D, E, F, G, H, I, or J. 
+
+Question: The smallest particle of matter that can be identified as an element is called 
+
+A) an atom. 
+
+B) a proton. 
+
+C) an electron. 
+
+D) a molecule. 
+
+Answer: A 
+
+Output: Figure 7: Prompt used to rewrite MCQ items into fill-in-the-blank format. Role : You are a Multiple -Choice Question (MCQ) exam question quality evaluator. Your task is to 
+
+assess the quality of rewritten MCQ items by comparing them against the original versions. Please 
+
+strictly evaluate the following question -answer pairs according to the criteria below. 
+
+Evaluation Criteria (all items below must be satisfied): 
+
+(1) Non -empty Check: 
+
+- The question field must contain actual content (cannot be empty, cannot contain only spaces) 
+
+- The answer field must contain actual content (cannot be empty, cannot contain only spaces) 
+
+(2) Question Type Verification: 
+
+- The question must explicitly adopt a multiple -choice question format 
+
+- Cannot be a True/False question, fill -in -the -blank, open -ended essay, or other types 
+
+(3) Answer Format Verification: 
+
+- The answer must be in valid MCQ format 
+
+(4) Question Quality: 
+
+- The question statement must be grammatically correct and complete 
+
+- Wording must be clear and unambiguous, without confusing expressions 
+
+- The question must be understandable without additional context 
+
+- Cannot contain vague terms or unclear references 
+
+(5) Answer Correctness (Critical): 
+
+- The provided answer must be factually correct for the given question 
+
+- Verify logical consistency between question and answer 
+
+- The answer must accurately identify the correct option among the provided choices 
+
+(6) Answer Uniqueness: 
+
+- There must be one and only one option that is clearly correct 
+
+(7) Option Quality 
+
+- No Duplicates or Logical Clues: 
+
+- All options must be unique (no duplicate or identical options) 
+
+- Options cannot contain logical clues that reveal the correct answer 
+
+- Distractors should appear plausible but be clearly incorrect 
+
+(8) Semantic equivalence validation: 
+
+- Numerical values, units, and formulas must be completely consistent 
+
+- Key conditions and assumptions must not be added or removed 
+
+- The substantive content of the correct option must not change 
+
+(9) Expression difference validation: 
+
+- Question sentence structure and vocabulary should have changes 
+
+Input :
+
+{Original question and answer} 
+
+{Rewritten question} 
+
+{Rewritten answer} 
+
+Output Format Requirements: 
+
+- Must output a JSON object, no other text 
+
+- JSON contains two fields: score and reason 
+
+- score must be a number 0 or 1 (1 if all eight items are satisfied, otherwise 0) 
+
+- reason must be a string explaining the scoring rationale, within 200 words 
+
+- Do not include markdown markers, explanations, or extra text 
+
+Output Example 1: 
+
+{
+
+"score":1, 
+
+"reason":Provide specific reason for giving 1 point 
+
+}
+
+Output Example 2: 
+
+{
+
+"score":0, 
+
+"reason":Provide specific reason for giving 0 points 
+
+}
+
+Your Response: Figure 8: Prompt used to review MCQ rewrites. Role : You are a True/False exam question quality evaluator. Your task is to assess the quality of rewritten True/False 
+
+questions by comparing them against the original versions. Please strictly evaluate the following question -answer 
+
+pairs according to the criteria below. 
+
+Evaluation Criteria (all items below must be satisfied): 
+
+(1) Non -empty Check: 
+
+- The question field must contain actual content (cannot be empty or contain only spaces) 
+
+- The answer field must contain actual content (cannot be empty or contain only spaces) 
+
+(2) Question Type Verification: 
+
+- The question must clearly adopt a True/False format 
+
+- Cannot be multiple choice, fill -in -the -blank, open -ended essay, or other types 
+
+(3) Answer Format Verification: 
+
+- The answer must be in a valid True/False format 
+
+(4) Question Quality: 
+
+- The question statement must be grammatically correct and complete 
+
+- Wording must be clear and unambiguous, without confusing expressions 
+
+- The question must be understandable without additional context 
+
+- Cannot contain vague terms or unclear references 
+
+(5) Answer Correctness (Critical): 
+
+- The provided answer must be factually correct for the given question 
+
+- Verify logical consistency between question and answer 
+
+- The answer must accurately reflect the truth value of the statement 
+
+(6) Answer Uniqueness: 
+
+- The answer must be clearly True or False, not both 
+
+- Cannot have other valid correct answers 
+
+- The statement cannot be ambiguous, allowing both True and False to be valid 
+
+(7) Semantic Consistency: 
+
+- The rewritten statement must be semantically consistent with the original question 
+
+- Must not change the core judgment point of the original question 
+
+- Must not add information or conditions not present in the original question 
+
+- Must not delete key qualifiers from the original question (such as time, scope, degree, etc.) 
+
+(8) Information Completeness: 
+
+- Key information from the original question (numbers, names, conditions, etc.) must be preserved 
+
+- Formulas, symbols, and technical terms must remain unchanged 
+
+- Multiple -choice specific expressions (such as "which of the following is correct") should be appropriately 
+
+converted to true/false statement format 
+
+Input :
+
+{Original question and answer} 
+
+{Rewritten question} 
+
+{Rewritten answer} 
+
+Output Format Requirements: 
+
+- Must output a JSON object, no other text 
+
+- JSON contains two fields: score and reason 
+
+- score must be a number 0 or 1 (1 if all eight items are satisfied, otherwise 0) 
+
+- reason must be a string explaining the scoring rationale, within 200 words 
+
+- Do not include markdown markers, explanations, or extra text 
+
+Output Example 1: 
+
+{
+
+"score":1, 
+
+"reason":Provide specific reason for giving 1 point 
+
+}
+
+Output Example 2: 
+
+{
+
+"score":0, 
+
+"reason":Provide specific reason for giving 0 points 
+
+}
+
+Your Response: Figure 9: Prompt used to review true/false rewrites. Role : You are an Open -Ended exam question quality evaluator. Your task is to assess the quality of rewritten Open -Ended 
+
+questions by comparing them against the original versions. Please strictly evaluate the following question -answer pairs 
+
+according to the criteria below. 
+
+Evaluation Criteria (all items below must be satisfied): 
+
+(1) Non -Empty Check: 
+
+- The question field must contain actual content (cannot be empty, cannot contain only spaces) 
+
+- The answer field must contain actual content (cannot be empty, cannot contain only spaces) 
+
+(2) Question Type Verification: 
+
+- The question must explicitly adopt an open -ended Q&A format 
+
+- Cannot be True/False questions, multiple choice questions, fill -in -the -blank questions, or other types 
+
+(3) Answer Format Verification: 
+
+- The answer must be in a valid open -ended Q&A format 
+
+(4) Question Quality: 
+
+- The question statement must be grammatically correct and complete 
+
+- Wording must be clear and unambiguous, without confusing expressions 
+
+- The question must be understandable without additional context 
+
+- Cannot contain vague terms or unclear references 
+
+(5) Answer Correctness (Critical): 
+
+- The provided answer must be factually correct for the given question 
+
+- Verify logical consistency between question and answer 
+
+- The answer must accurately and fully respond to what the question asks 
+
+- The answer must be on -topic and relevant to the subject 
+
+(6) Original Question Consistency Verification: 
+
+- The rewritten question must be consistent with the original question in meaning 
+
+- Do not add conditions or information not present in the original question 
+
+- Do not delete or weaken any key conditions from the original question 
+
+- Do not introduce external knowledge or additional assumptions 
+
+(7) Format Consistency Verification: 
+
+- The format of formulas, symbols, and technical terms must remain consistent with the original question 
+
+- Brackets, blanks, and other markers with special meanings in the original must be reasonably converted in the rewrite 
+
+Input: 
+
+{Original question and answer} 
+
+{Rewritten question} 
+
+{Rewritten answer} 
+
+Output Format Requirements: 
+
+- Must output a JSON object, no other text 
+
+- JSON contains two fields: score and reason 
+
+- score must be a number 0 or 1 (1 if all eight items are satisfied, otherwise 0) 
+
+- reason must be a string explaining the scoring rationale, within 200 words 
+
+- Do not include markdown markers, explanations, or extra text 
+
+Output Example 1: 
+
+{
+
+"score":1, 
+
+"reason":Provide specific reason for giving 1 point 
+
+}
+
+Output Example 2: 
+
+{
+
+"score":0, 
+
+"reason":Provide specific reason for giving 0 points 
+
+}
+
+Your Response: Figure 10: Prompt used to review open-ended rewrites. Role : You are a Fill -in -the -Blank exam question quality evaluator. Your task is to assess the quality of rewritten Fill -in -the -
+
+Blank questions by comparing them against the original versions. Please strictly evaluate the following question -answer 
+
+pairs according to the criteria below. 
+
+Evaluation Criteria (all items below must be satisfied): 
+
+(1) Non -Empty Check: 
+
+- The question field must contain actual content (cannot be empty, cannot contain only spaces) 
+
+- The answer field must contain actual content (cannot be empty, cannot contain only spaces) 
+
+(2) Question Type Verification: 
+
+- The question must explicitly adopt a fill -in -the -blank format 
+
+- Cannot be a True/False question, multiple -choice question, open -ended essay question, or other types 
+
+(3) Answer Format Verification: 
+
+- The answer must be in a valid fill -in -the -blank format 
+
+(4) Question Quality: 
+
+- The question statement must be grammatically correct and complete 
+
+- Wording must be clear and unambiguous, without confusing expressions 
+
+- The question must be understandable without additional context 
+
+- Cannot contain vague terms or unclear references 
+
+- The blank position must be logically reasonable within the sentence 
+
+(5) Answer Correctness (Critical): 
+
+- The provided answer must be factually correct for the given question 
+
+- Verify logical consistency between the question and answer 
+
+- The answer must grammatically and semantically fit properly into the blank 
+
+- When the answer is filled into the blank, the complete sentence must be accurate and coherent 
+
+(6) Original Question Consistency Verification: 
+
+- The rewritten question must maintain the core meaning and conditions of the original question 
+
+- Do not delete key information or conditions from the original question 
+
+- Do not introduce external knowledge or additional conditions not present in the original question 
+
+- Numbers, formulas, proper nouns, etc. in the question must be consistent with the original question 
+
+(7) Blank -Filling Specification Verification: 
+
+- The question must contain exactly one "____" placeholder 
+
+- Cannot blank out the entire sentence or overly large segments that would make the answer a long sentence 
+
+(8) Multiple -Choice Trace Cleanup: 
+
+- The question must not contain residual multiple -choice related expressions such as "options", "A/B/C/D", "choose", etc. 
+
+- Should be adapted to fill -in -the -blank descriptions (e.g., "please answer", "please fill in", etc.) 
+
+Input :
+
+{Original question and answer} 
+
+{Rewritten question} 
+
+{Rewritten answer} 
+
+Output Format Requirements: 
+
+- Must output a JSON object, no other text 
+
+- JSON contains two fields: score and reason 
+
+- score must be a number 0 or 1 (1 if all eight items are satisfied, otherwise 0) 
+
+- reason must be a string explaining the scoring rationale, within 200 words 
+
+- Do not include markdown markers, explanations, or extra text 
+
+Output Example 1: 
+
+{
+
+"score":1, 
+
+"reason":Provide specific reason for giving 1 point 
+
+}
+
+Output Example 2: 
+
+{
+
+"score":0, 
+
+"reason":Provide specific reason for giving 0 points 
+
+}
+
+Your Response :Figure 11: Prompt used to review fill-in-the-blank rewrites. Role : You are an arbitrator for the quality of rewritten question. Your task is to make a final decision on the quality of a 
+
+rewritten question by considering input information and the scores and reasons from two reviewers. 
+
+You are the last line of defense for quality control. You need to: 
+
+- Objectively evaluate whether the two reviewers' scores are reasonable 
+
+- Identify whether any substantive defects have been overlooked 
+
+- Make a final Pass/Fail decision (1=Pass, 0=Fail) 
+
+Input :
+
+{Original question and answer} 
+
+{Target type (MCQ, TF, OPEN or FIB)} 
+
+{Rewrite evaluation criteria of the target question type} 
+
+{Rewritten question} 
+
+{Rewritten answer} 
+
+{Reviewer 1’s score and reason} 
+
+{Reviewer 2’s score and reason} 
+
+Output Format Requirements: 
+
+- Must output a JSON object, no other text 
+
+- JSON contains two fields: score and reason 
+
+- score must be a number 1 or 0 (1=Pass, 0=Fail) 
+
+- reason must be a string explaining the arbitration reason, within 200 characters 
+
+- reason should briefly explain why you adopted or overruled a Reviewer's opinion 
+
+- Do not include markdown markers, explanations, or extra text 
+
+Output Example 1: 
+
+{
+
+"score":1, 
+
+"reason":Provide specific reasons for giving 1 point 
+
+}
+
+Output Example 2: 
+
+{
+
+"score":0, 
+
+"reason":Provide specific reasons for giving 0 point 
+
+}
+
+Your response: Figure 12: Prompt used for final arbitration of rewrite quality.
