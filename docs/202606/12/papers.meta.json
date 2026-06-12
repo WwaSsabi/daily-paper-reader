@@ -1,0 +1,69 @@
+{
+  "label": "2026-06-12",
+  "date": "2026-06-12",
+  "generated_at": "2026-06-12T21:08:30",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202606/12/2606.08411v1-asynclane-decoupling-refinement-from-advancement-in-diffusion-language-model-decoding",
+      "section": "deep",
+      "title_en": "AsyncLane: Decoupling Refinement from Advancement in Diffusion Language Model Decoding",
+      "authors": "Yingxuan Ren, Yuxuan Lou, Yong Liu, Pengcheng Fang, Ziming Wang, Pengfei Zhou, Yang You",
+      "date": "2026-06-07",
+      "pdf": "https://arxiv.org/pdf/2606.08411v1",
+      "score": "8.0",
+      "evidence": "扩散大语言模型解码调度",
+      "tldr": "扩散语言模型的标准块式解码要求下一块必须等待当前块完全解码，效率受限。AsyncLane 在检测到可靠分隔边界时，将生成车道分叉为细化车道和推进车道，使前缀编辑与后续生成并行。通过共享前缀批处理、草稿复用、级联终止和缓存刷新，避免模型调用随车道数增长。在数学推理和代码生成任务上，相比最优基线，LLaDA 和 Dream 骨干分别实现 2.95x 和 3.04x 的峰值加速，且保持竞争质量。AsyncLane 无需训练，可直接替代现有块式采样器。",
+      "tags": "query:ml-llm",
+      "abstract_en": "Block-wise semi-autoregressive decoding is the standard inference paradigm for diffusion large language models (DLMs), but it imposes a strict dependency between blocks: the next block cannot begin until the current block is fully decoded or its denoising budget is exhausted. We observe that once a block exposes a reliable delimiter boundary or stable semantic prefix, continuation generation need not wait for every residual token to be resolved. We propose AsyncLane, a training-free decoding scheduler that decouples refinement from advancement. AsyncLane forks a generate lane at observed delimiter boundaries into a refine lane and a continuation generate lane: the prefix remains editable, while the continuation advances before prefix refinement finishes. The resulting lane tree records decoding dependencies and output order, while execution proceeds over the active lane set. To make this asynchronous schedule efficient under bidirectional attention, AsyncLane combines shared-prefix lane batching, lookahead draft reuse, cascading termination, and compact cache refresh with refresh-logit reuse, preventing model-call cost from scaling directly with the number of lanes. AsyncLane is a drop-in replacement for block-wise DLM samplers and requires no retraining. Experiments on mathematical reasoning and code generation show that AsyncLane consistently improves throughput while maintaining competitive quality. Across LLaDA and Dream backbones, AsyncLane achieves the highest TPS in all evaluated benchmark-length settings; relative to the fastest competing baseline, it reaches peak speedups of 2.95x on LLaDA and 3.04x on Dream, with especially large gains under longer generation budgets.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/12/2606.09514v1-buddy-budget-driven-dynamic-depth-routing-for-adaptive-large-language-model-inference",
+      "section": "deep",
+      "title_en": "BUDDY: BUdget-Driven DYnamic Depth Routing for Adaptive Large Language Model Inference",
+      "authors": "Yuhua Zhou, Shaoqi Yu, Shichao Weng, Changhai Zhou, Mingze Yin, Fei Yang, Aimin Pan",
+      "date": "2026-06-08",
+      "pdf": "https://arxiv.org/pdf/2606.09514v1",
+      "score": "8.0",
+      "evidence": "面向大语言模型的动态深度路由以降低推理成本",
+      "tldr": "大语言模型推理计算开销大，深度剪枝通过跳过冗余Transformer层来降低延迟，但现有方法难以灵活满足用户指定预算，且推理过程中路由固定。本文提出Buddy，一种预算驱动的动态深度路由框架，利用轻量级决策模块根据输入对中间层打分，确定性地执行top-k层以遵守给定预算。此外，Buddy复用首层KV缓存作为全局上下文，结合最新token表示进行动态路由，并可选预算预测器自适应分配计算量。实验表明，Buddy在Llama和Qwen模型上优于或媲美静态剪枝方法，同时支持严格预算控制、解码时路径调整和单一模型适配多种预算。",
+      "tags": "query:ml-llm",
+      "abstract_en": "Large language models (LLMs) incur high inference cost due to their depth and parameter scale. Depth pruning can reduce latency by skipping redundant Transformer blocks, but existing methods (i) provide limited control under user-specific compute budgets and (ii) typically fix the routing path, failing to adapt as the context grows during decoding. We propose Buddy, a budget-driven dynamic depth routing framework. Buddy uses a lightweight Decision Module to score intermediate layers conditioned on the input and deterministically executes the top-k layers to satisfy a given budget. To support decode-time adaptation, Buddy reuses the first-layer KV cache as a low-overhead global context source and pools it together with the newest token representation before each routing decision. When no explicit budget is provided, an optional Budget Predictor estimates an input-dependent compute level to balance quality and efficiency. Experiments on Llama-family and Qwen models show that Buddy is competitive with strong static pruning baselines and often improves the accuracy-compute trade-off, while uniquely supporting strict budget control, decode-time rerouting, and multiple budgets within a single trained model.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/12/2606.12400v1-doc-to-atom-learning-to-compile-and-compose-memory-atoms",
+      "section": "deep",
+      "title_en": "Doc-to-Atom: Learning to Compile and Compose Memory Atoms",
+      "authors": "Xingjian Diao, Wenbo Li, Yashas Malur Saidutta, Avinash Amballa, Lazar Valkov, Srinivas Chappidi",
+      "date": "2026-06-10",
+      "pdf": "https://arxiv.org/pdf/2606.12400v1",
+      "score": "8.0",
+      "evidence": "面向LLM的可组合参数化记忆，降低注意力成本",
+      "tldr": "长序列输入导致注意力二次成本高，现有方法Doc-to-LoRA生成单一适配器遭遇无关查询干扰和组合召回不足。Doc-to-Atom将文档分解为语义知识原子，每个原子编译为独立微LoRA适配器和溯源键，推理时查询路由器选择相关原子组装成查询专用适配器。多目标蒸馏框架端到端训练。在六个QA基准上优于Doc-to-LoRA，同时降低文档内部化的内存成本。",
+      "tags": "query:ml-llm",
+      "abstract_en": "Long input sequences are central to document understanding and multi-step reasoning in Large Language Models, yet the quadratic cost of attention makes inference both memory-intensive and slow. Context distillation mitigates this by compressing contextual information into model parameters, and recent work such as Doc-to-LoRA amortizes context distillation into a single forward pass that generates one LoRA adapter per document. However, producing a single monolithic adapter for all queries leads to irrelevant-query interference, limited compositional recall, and poor scalability to long-document reasoning. To address these challenges, we propose Doc-to-Atom (Doc2Atom), a compositional parametric memory framework that decomposes each document into semantically typed knowledge atoms. Each atom is compiled into an independent micro-LoRA adapter and a provenance retrieval key. At inference time, a lightweight query router selects and assembles only the relevant atoms into a query-specific adapter, which is then injected into a frozen base model. The entire system is trained end-to-end through a multi-objective distillation framework. Experiments on six diverse QA benchmarks demonstrate that Doc2Atom outperforms Doc-to-LoRA baselines while reducing the memory cost of document internalization.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/12/2606.06906v1-ease-ttt-evidence-aligned-selective-test-time-training-for-long-context-question-answering",
+      "section": "quick",
+      "title_en": "EASE-TTT: Evidence-Aligned Selective Test-Time Training for Long-Context Question Answering",
+      "authors": "Xiaopeng Yuan, Zebin Wang, Suwen Wang, Zongxin Yang, Haohan Wang, Yushun Dong",
+      "date": "2026-06-05",
+      "pdf": "https://arxiv.org/pdf/2606.06906v1",
+      "score": "7.0",
+      "evidence": "长上下文问答中的测试时训练",
+      "tldr": "长上下文问答中，小模型即使输入包含证据也难以准确回答。现有方法或仅暴露证据块而忽视注意力适应，或缺乏证据定位。本文提出EASE-TTT，将检索到的证据块转化为软注意力监督信号，在测试时微调查询侧注意力参数，使模型从原始全上下文生成答案。在6个LongBench任务上，该方法平均性能超越全上下文推断、检索基线和qTTT，证明了证据对齐的测试时适应能有效提升小模型长上下文问答能力。",
+      "tags": "query:ml-llm",
+      "abstract_en": "Long-context question answering (QA) remains challenging for smaller language models even when answer-bearing evidence is already present in the input. Existing within-context retrieval methods localize and expose candidate evidence chunks for the question, but they stop at input-level evidence exposure rather than adapting the query-side attention parameters that control how the model allocates attention over full-context positions. In contrast, lightweight test-time adaptation methods, such as query-only test-time training (qTTT), leave evidence localization unresolved because their generic span-level self-supervised objectives do not identify which context positions support the current answer. In this paper, we propose Evidence-Aligned SElective Test-Time Training (EASE-TTT), a within-context retrieval-augmented test-time training framework that converts selected evidence chunks into a soft attention supervision target over their token positions. Instead of replacing the full context with retrieved chunks, EASE-TTT uses the resulting attention target to guide query-side adaptation, with the adapted model generating the final answer from the original full context. Experiments on six LongBench QA tasks and three small decoder-only language models show that EASE-TTT achieves the strongest macro-average performance among full-context inference, retrieval-only baselines, and qTTT, supporting evidence-aligned test-time adaptation in long-context QA.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
