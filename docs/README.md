@@ -6,32 +6,22 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-12
-- 运行时间：2026-06-12 21:08:25 UTC
+- 最新运行日期：2026-06-13
+- 运行时间：2026-06-13 20:22:07 UTC
 - 运行状态：成功
-- 本次总论文数：4
-- 精读区：3
-- 速读区：1
+- 本次总论文数：0
+- 精读区：0
+- 速读区：0
 
 ### 今日简报（AI）
-今日关注：Diffusion模型解码解耦与LLM动态路由两大突破，及长文本测试时训练新方法。推荐精读《AsyncLane: Decoupling Refinement from Advancement》实现生成质量与速度双提升，《BUDDY: 预算驱动动态深度路由》优化LLM推理成本。建议优先关注动态路由方案在实际部署中的性价比优势。
-- 详情：[/202606/12/README](/202606/12/README)
+> 今日无新推荐，系统未产出可展示论文。
+- 详情：[/202606/13/README](/202606/13/README)
 
 ### 精读区论文标签
-1. [AsyncLane: Decoupling Refinement from Advancement in Diffusion Language Model Decoding](/202606/12/2606.08411v1-asynclane-decoupling-refinement-from-advancement-in-diffusion-language-model-decoding)  
-   标签：评分：8.0/10、query:ml-llm
-   evidence：扩散大语言模型解码调度
-2. [BUDDY: BUdget-Driven DYnamic Depth Routing for Adaptive Large Language Model Inference](/202606/12/2606.09514v1-buddy-budget-driven-dynamic-depth-routing-for-adaptive-large-language-model-inference)  
-   标签：评分：8.0/10、query:ml-llm
-   evidence：面向大语言模型的动态深度路由以降低推理成本
-3. [Doc-to-Atom: Learning to Compile and Compose Memory Atoms](/202606/12/2606.12400v1-doc-to-atom-learning-to-compile-and-compose-memory-atoms)  
-   标签：评分：8.0/10、query:ml-llm
-   evidence：面向LLM的可组合参数化记忆，降低注意力成本
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [EASE-TTT: Evidence-Aligned Selective Test-Time Training for Long-Context Question Answering](/202606/12/2606.06906v1-ease-ttt-evidence-aligned-selective-test-time-training-for-long-context-question-answering)  
-   标签：评分：7.0/10、query:ml-llm
-   evidence：长上下文问答中的测试时训练
+- 本次无速读推荐。
 
 
 <div class="dpr-home-promo-card">
